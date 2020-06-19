@@ -22,7 +22,7 @@ function varargout = Main(varargin)
 
 % Edit the above text to modify the response to help Main
 
-% Last Modified by GUIDE v2.5 04-May-2020 16:25:01
+% Last Modified by GUIDE v2.5 15-Jun-2020 07:28:00
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -79,31 +79,29 @@ function LoadImageStack_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
  
-global filefullpath;
+global gImages;
 [file,path] = uigetfile('*.tif');
-filefullpath = path+"\"+file;
+gImages.filefullpath = path+"\"+file;
+gImages.rawImagesStack = FastReadTirf(gImages.filefullpath);
+[gImages.imgHeight,gImages.imgWidth,gImages.stackSize]= size(gImages.rawImagesStack);
+gImages.ZprojectMean = mean(gImages.rawImagesStack,3);
+gImages.ZprojectMax = max(gImages.rawImagesStack,[],3);
 
-
-global meanImage;
-global maxImage;
-global imgHeight; 
-global imgWidth; 
-global stackSize;
-global rawImagesStack;
-global mouseDownPosition;
-
-rawImagesStack = FastReadTirf(filefullpath);
-[imgHeight,imgWidth,stackSize]= size(rawImagesStack);
-mouseDownPosition = [floor(imgHeight),floor(imgWidth)];
+low = floor(mean(mean(gImages.ZprojectMean)));
+high = floor(max(max(gImages.ZprojectMean)));
+set(handles.Threadhold,'Min',low);
+set(handles.Threadhold,'Max',high);
+set(handles.Threadhold,'value',400);
 
 set(handles.StackProgress,'Min',1);
-set(handles.StackProgress,'Max',stackSize);
+set(handles.StackProgress,'Max',gImages.stackSize);
 set(handles.StackProgress,'value',1);
 set(gcf,'WindowButtonDownFcn',{@mouseDown,handles});
-
+imshow(gImages.ZprojectMean,[] ,'Parent',handles.ImageWindowAxes);
 
 
 function mouseDown (object, eventdata,handles)
+return;
 set(gcf,'WindowButtonMotionFcn', {@mouseMove,handles});
 C = get (gca, 'CurrentPoint');
 xPos = floor(C(1,1));
@@ -118,11 +116,12 @@ id =  floor(get(handles.StackProgress,'Value'));
 hold(handles.ImageWindowAxes, 'on');
 plot(xPos,yPos,'go','Parent',handles.ImageWindowAxes);
 hold(handles.ImageWindowAxes, 'off');
-imshow(rawImagesStack((yPos-5):(yPos+5),(xPos-5):(xPos+5),id),[low,threadhold] ,'Parent',handles.axes4);
+imshow(rawImagesStack((yPos-5):(yPos+5),(xPos-5):(xPos+5),id),[low,threadhold] ,'Parent',handles.ZoomAxes);
 
 set(gcf,'WindowButtonUpFcn',{@mouseUp,handles});
 
 function mouseMove (object, eventdata,handles)
+return;
 C = get (gca, 'CurrentPoint');
 xPos = floor(C(1,1));
 yPos = floor(C(1,2));
@@ -140,6 +139,7 @@ imshow(rawImagesStack(:,:,id),[low,threadhold] ,'Parent',handles.ImageWindowAxes
 rectangle('Position',[originX,originY,abs(xPos-originX),abs(yPos-originY)],'EdgeColor','r');
 
 function mouseUp (object, eventdata,handles)
+return;
 C = get (gca, 'CurrentPoint');
 xPos = floor(C(1,1));
 yPos = floor(C(1,2));
@@ -156,25 +156,19 @@ function Threadhold_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+
+global gImages;
 threadhold = get(hObject,'Value');
-global meanImage;
-global particlePosition;
-meanImage= GroupZProject(rawImagesStack,stackSize);
-low = mean(mean(meanImage));
-high = max(max(meanImage));
-imshow(meanImage,[low,high] ,'Parent',handles.ImageWindowAxes);
-set(handles.Threadhold,'Min',low);
-set(handles.Threadhold,'Max',high);
-set(handles.Threadhold,'value',high);
-particlePosition = FindPoints(meanImage,threadhold);
-low = mean(mean(meanImage));
-high = max(max(meanImage));
-imshow(meanImage,[low,threadhold] ,'Parent',handles.ImageWindowAxes);
-if  get(handles.ShowOverlay,'Value')
-    hold(handles.ImageWindowAxes, 'on');
-    plot(particlePosition(:,1),particlePosition(:,2),'ro','Parent',handles.ImageWindowAxes);
-    hold(handles.ImageWindowAxes, 'off');
+low = get(hObject,'Min');
+imageId = floor(get(handles.StackProgress,'Value'));
+stackSize = floor(get(handles.StackProgress,'Max'));
+if imageId ==stackSize
+    imshow(gImages.IRMImage,[low,threadhold] ,'Parent',handles.ImageWindowAxes);
+else
+    imshow(gImages.ZprojectMean,[low,threadhold] ,'Parent',handles.ImageWindowAxes);
 end
+
+
 % --- Executes during object creation, after setting all properties.
 function Threadhold_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to Threadhold (see GCBO)
@@ -195,32 +189,24 @@ function StackProgress_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-global rawImagesStack;
-global meanImage;
-global particlePosition;
-global mouseDownPosition;
-
-xPos = mouseDownPosition(1);
-yPos = mouseDownPosition(2);
+global gImages;
+ 
 id =  floor(get(hObject,'Value')); 
-low = mean(mean(meanImage));
+low = get(handles.Threadhold,'Min');
 threadhold = get(handles.Threadhold,'Value');
+ 
 if id ==1
-    imshow(meanImage,[low,threadhold] ,'Parent',handles.ImageWindowAxes);
+    imshow(gImages.ZprojectMean,[low,threadhold] ,'Parent',handles.ImageWindowAxes);
 else
-    imshow(rawImagesStack(:,:,id),[low,threadhold] ,'Parent',handles.ImageWindowAxes);
-    imshow(rawImagesStack((yPos-5):(yPos+5),(xPos-5):(xPos+5),id),[low,threadhold] ,'Parent',handles.axes4);
+    if id ==1000
+        imshow(gImages.IRMImage,[low,threadhold] ,'Parent',handles.ImageWindowAxes);   
+    else
+        imshow(gImages.rawImagesStack(:,:,id),[low,threadhold] ,'Parent',handles.ImageWindowAxes);
+
+    end
 end
 
-hold(handles.ImageWindowAxes, 'on');
-plot(xPos,yPos,'go','Parent',handles.ImageWindowAxes);
-hold(handles.ImageWindowAxes, 'off');
-
-if  get(handles.ShowOverlay,'Value')
-    hold(handles.ImageWindowAxes, 'on');
-    plot(particlePosition(:,1),particlePosition(:,2),'ro','Parent',handles.ImageWindowAxes);
-    hold(handles.ImageWindowAxes, 'off');
-end
+ 
 
 % --- Executes during object creation, after setting all properties.
 function StackProgress_CreateFcn(hObject, eventdata, handles)
@@ -240,16 +226,16 @@ function ShowPreviouTrace_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 index = str2double(get(handles.CurrentDisplayIndex,'String'))-1;
-global traces;
-global posNum;
+global gTraces;
+global gImages;
 if index<1
     index = 1;
 end
-if index >posNum
-    index = posNum;
+if index >gTraces.CurrentShowNums
+    index = gTraces.CurrentShowNums;
 end
 set(handles.CurrentDisplayIndex,'String',int2str(index));
-plot(traces(index,:),'parent',handles.TraceAxes);
+PlotTrace(gImages,gTraces,gTraces.CurrentShowIndex(index),handles);
 
 
 % --- Executes on button press in ShowNextTrace.
@@ -258,17 +244,18 @@ function ShowNextTrace_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 index = str2double(get(handles.CurrentDisplayIndex,'String'))+1;
-global traces;
-global posNum;
+global gTraces;
+global gImages;
+    
 if index<1
     index = 1;
 end
-if index >posNum
-    index = posNum;
+if index >gTraces.CurrentShowNums
+    index =gTraces.CurrentShowNums;
 end
 set(handles.CurrentDisplayIndex,'String',int2str(index));
-plot(traces(index,:),'parent',handles.TraceAxes);
-
+PlotTrace(gImages,gTraces,gTraces.CurrentShowIndex(index),handles);
+ 
 
 function CurrentDisplayIndex_Callback(hObject, eventdata, handles)
 % hObject    handle to CurrentDisplayIndex (see GCBO)
@@ -278,15 +265,17 @@ function CurrentDisplayIndex_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of CurrentDisplayIndex as text
 %        str2double(get(hObject,'String')) returns contents of CurrentDisplayIndex as a double
 index = str2double(get(hObject,'String'));
-global traces;
-global posNum;
+global gTraces;
+global gImages;
+
 if index<1
     index = 1;
 end
-if index >posNum
-    index = posNum;
+if index >gTraces.CurrentShowNums
+    index = gTraces.CurrentShowNums;
 end
-plot(traces(index,:),'parent',handles.TraceAxes);
+set(handles.CurrentDisplayIndex,'String',int2str(index));
+PlotTrace(gImages,gTraces,gTraces.CurrentShowIndex(index),handles);
 
 % --- Executes during object creation, after setting all properties.
 function CurrentDisplayIndex_CreateFcn(hObject, eventdata, handles)
@@ -301,158 +290,209 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-% --- Executes on button press in BuildTraces.
-function BuildTraces_Callback(hObject, eventdata, handles)
-% hObject    handle to BuildTraces (see GCBO)
+% --- Executes on button press in LoadIRMImage.
+function LoadIRMImage_Callback(hObject, eventdata, handles)
+% hObject    handle to LoadIRMImage (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global particlePosition;
-global traces;
-global stackSize;
-global rawImagesStack;
-global imgWidth;
-global imgHeight;
-global posNum;
-posNum = size(particlePosition,1);
-traces = zeros(posNum,stackSize);
-trace = zeros(stackSize); 
-magrin = 4;
-for i = 1:posNum
-    x = particlePosition(i,1);
-    y = particlePosition(i,2);  
-    if x <magrin || x >imgWidth-200
-        continue
+global gImages;
+warning off;
+[file,path] = uigetfile('*.tif');
+filefullpath = path+"\"+file;
+gImages.IRMImage = FastReadTirf(filefullpath);
+
+low = gather(floor(mean(mean(gImages.IRMImage))));
+high = gather(floor(max(max(gImages.IRMImage))));
+
+set(handles.Threadhold,'Min',low/2);
+set(handles.Threadhold,'Max',high);
+ 
+try
+    if gImages.stackSize<1
+        gImages.stackSize  =1;
     end
-    if y <magrin || y >imgHeight-magrin
-        continue
-    end
-    trace = rawImagesStack(y-1,x-1,:)+rawImagesStack(y-1,x,:)+rawImagesStack(y-1,x+1,:);
-    trace = trace+rawImagesStack(y,x-1,:)+rawImagesStack(y,x,:)+rawImagesStack(y,x+1,:);
-    trace = trace+rawImagesStack(y+1,x-1,:)+rawImagesStack(y+1,x,:)+rawImagesStack(y+1,x+1,:);
-    trace = trace/9;  
-    traces(i,:) = gather(trace);
+catch
+    gImages.stackSize = 1;
 end
-plot(traces(1,:),'parent',handles.TraceAxes);
-set(handles.CurrentDisplayIndex,'String',int2str(1));
-set(handles.TotalParticleNum,'String',int2str(posNum));
+set(handles.StackProgress,'Min',1);
+set(handles.StackProgress,'Max',gImages.stackSize);
+set(handles.StackProgress,'value',gImages.stackSize);
+ 
+imshow(gImages.IRMImage,[low,high] ,'Parent',handles.ImageWindowAxes);
 
 
-% --- Executes on button press in pushbutton5.
-function pushbutton5_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton5 (see GCBO)
+% --- Executes on button press in SaveCatalog.
+function SaveCatalog_Callback(hObject, eventdata, handles)
+% hObject    handle to SaveCatalog (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+global gTraces;
 
+catalogs.catalogs1 =gTraces.catalogs1;
+catalogs.catalogs2 = gTraces.catalogs2;
+catalogs.catalogs3 =gTraces.catalogs3;
+catalogs.catalogs4 =gTraces.catalogs4;
+catalogs.catalogs5 = gTraces.catalogs5;
 
-
-function ObserveState_Callback(hObject, eventdata, handles)
-% hObject    handle to ObserveState (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of ObserveState as text
-%        str2double(get(hObject,'String')) returns contents of ObserveState as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function ObserveState_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to ObserveState (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-% --- Executes on button press in SaveTraces.
-function SaveTraces_Callback(hObject, eventdata, handles)
-% hObject    handle to SaveTraces (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-global traces;
-global filefullpath;
-filename = filefullpath+".csv";
-writematrix(traces,filename);
-
+[file,path] = uiputfile('*.mat');
+save([path,file],'catalogs');
 
 % --- Executes on button press in LoadTraces.
 function LoadTraces_Callback(hObject, eventdata, handles)
 % hObject    handle to LoadTraces (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-[file,path] = uigetfile('*.csv');
+global gTraces;
+global gImages;
+[file,path] = uigetfile('*.mat');
 filefullpath = path+"\"+file;
-global traces;
-global posNum;
-traces = csvread(filefullpath);
-plot(traces(1,:),'parent',handles.TraceAxes);
-posNum = size(traces,1);
+
+gTraces.catalogs1 = [];
+gTraces.catalogs2 = [];
+gTraces.catalogs3 = [];
+gTraces.catalogs4 = [];
+gTraces.catalogs5 = [];
+
+gTraces.molecules = LoadFiestaMatData(filefullpath); 
+gTraces.showCatalog = 1:size(gTraces.molecules,2);
+gTraces.moleculenum = max(gTraces.showCatalog);
+
+gTraces.CurrentShowTpye = 'All';
+gTraces.CurrentShowNums = gTraces.moleculenum ;
+gTraces.CurrentShowIndex = 1:gTraces.moleculenum;
+fiducialIndex = [7,8];
+[gTraces.driftx,gTraces.drifty,gTraces.smoothDriftx,gTraces.smoothDrifty]=SmoothDriftTraces(gTraces,fiducialIndex);%save the result to Traces struct
+
+PlotTrace(gImages,gTraces,1,handles);
+ 
 set(handles.CurrentDisplayIndex,'String',int2str(1));
-set(handles.TotalParticleNum,'String',int2str(posNum));
+set(handles.TotalParticleNum,'String',int2str(gTraces.moleculenum));
+
+ 
+ 
 
 
-% --- Executes on button press in BuiltHistgram.
-function BuiltHistgram_Callback(hObject, eventdata, handles)
-% hObject    handle to BuiltHistgram (see GCBO)
+% --- Executes on button press in AddCatalog1.
+function AddCatalog1_Callback(hObject, eventdata, handles)
+% hObject    handle to AddCatalog1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global traces;
-[w,h] = size(traces);
-temp = reshape(traces,1,w*h);
-binning = str2double(get(handles.HistgramBinning,'String'));
-histogram(temp,binning,'parent',handles.HistgramAxes);
+global gTraces;
+index = str2num(get(handles.CurrentDisplayIndex,'String'));
+if ~ismember(index,gTraces.catalogs1)
+    gTraces.catalogs1 = [gTraces.catalogs1,index];
+end
+% --- Executes on button press in AddCatalog2.
+function AddCatalog2_Callback(hObject, eventdata, handles)
+% hObject    handle to AddCatalog2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global gTraces;
+index = str2num(get(handles.CurrentDisplayIndex,'String'));
+if ~ismember(index,gTraces.catalogs2)
+    gTraces.catalogs2 = [gTraces.catalogs2,index];
+end
+% --- Executes on button press in AddCatalog3.
+function AddCatalog3_Callback(hObject, eventdata, handles)
+% hObject    handle to AddCatalog3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global gTraces;
+index = str2num(get(handles.CurrentDisplayIndex,'String'));
+if ~ismember(index,gTraces.catalogs3)
+    gTraces.catalogs3 = [gTraces.catalogs3,index];
+end
+% --- Executes on button press in AddCatalog4.
+function AddCatalog4_Callback(hObject, eventdata, handles)
+% hObject    handle to AddCatalog4 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global gTraces;
+index = str2num(get(handles.CurrentDisplayIndex,'String'));
+if ~ismember(index,gTraces.catalogs4)
+    gTraces.catalogs4 = [gTraces.catalogs4,index];
+end
+% --- Executes on button press in AddCatalog5.
+function AddCatalog5_Callback(hObject, eventdata, handles)
+% hObject    handle to AddCatalog5 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global gTraces;
+index = str2num(get(handles.CurrentDisplayIndex,'String'));
+if ~ismember(index,gTraces.catalogs5)
+    gTraces.catalogs5 = [gTraces.catalogs5,index];
+end
+
+% --- Executes on button press in LoadCatalog.
+function LoadCatalog_Callback(hObject, eventdata, handles)
+% hObject    handle to LoadCatalog (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global gTraces;
+[file,path] = uigetfile('*.mat');
+if file ==0
+    return;
+end
+filefullpath = path+"\"+file;
+catalogs = load(filefullpath);
+catalogs = catalogs.catalogs;
+gTraces.catalogs1 = catalogs.catalogs1;
+gTraces.catalogs2 = catalogs.catalogs2;
+gTraces.catalogs3 = catalogs.catalogs3;
+gTraces.catalogs4 = catalogs.catalogs4;
+gTraces.catalogs5 = catalogs.catalogs5;
+all = [catalogs.catalogs1,catalogs.catalogs2,catalogs.catalogs3,catalogs.catalogs4,catalogs.catalogs5];
+set(handles.CurrentDisplayIndex,'String',num2str(max(all)));
 
 
-
-function HistgramBinning_Callback(hObject, eventdata, handles)
-% hObject    handle to HistgramBinning (see GCBO)
+% --- Executes on selection change in ShowType.
+function ShowType_Callback(hObject, eventdata, handles)
+% hObject    handle to ShowType (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of HistgramBinning as text
-%        str2double(get(hObject,'String')) returns contents of HistgramBinning as a double
-global traces;
-[w,h] = size(traces);
-temp = reshape(traces,1,w*h);
-binning = str2double(get(handles.HistgramBinning,'String'));
-histogram(temp,binning,'parent',handles.HistgramAxes);
-
+% Hints: contents = cellstr(get(hObject,'String')) returns ShowType contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from ShowType
+contents = cellstr(get(hObject,'String'));
+selectedType = contents{get(hObject,'Value')};
+global gTraces;
+switch selectedType
+    case 'All'
+        gTraces.CurrentShowTpye = 'All';
+        gTraces.CurrentShowNums = gTraces.moleculenum ;
+        gTraces.CurrentShowIndex = 1:gTraces.moleculenum;
+    case 'Stuck'
+         gTraces.CurrentShowTpye = 'Stuck';
+         gTraces.CurrentShowNums = size(gTraces.catalogs1,2);
+         gTraces.CurrentShowIndex = gTraces.catalogs1;
+    case 'BigStep'
+         gTraces.CurrentShowTpye = 'BigStep';
+         gTraces.CurrentShowNums = size(gTraces.catalogs2,2);
+         gTraces.CurrentShowIndex = gTraces.catalogs2;
+    case 'Linear'
+         gTraces.CurrentShowTpye = 'Linear';
+         gTraces.CurrentShowNums = size(gTraces.catalogs3,2);
+         gTraces.CurrentShowIndex = gTraces.catalogs3;
+    case 'BackForward'
+         gTraces.CurrentShowTpye = 'BackForward';
+         gTraces.CurrentShowNums = size(gTraces.catalogs4,2);
+         gTraces.CurrentShowIndex = gTraces.catalogs4;
+    case 'Other'      
+         gTraces.CurrentShowTpye = 'Other';
+         gTraces.CurrentShowNums = size(gTraces.catalogs5,2);
+         gTraces.CurrentShowIndex = gTraces.catalogs5;
+end
+set(handles.CurrentDisplayIndex,'String',num2str(1)); %go to the first
+set(handles.TotalParticleNum,'String',int2str(gTraces.CurrentShowNums));
+gTraces.CurrentShowIndex
 % --- Executes during object creation, after setting all properties.
-function HistgramBinning_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to HistgramBinning (see GCBO)
+function ShowType_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to ShowType (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
-% Hint: edit controls usually have a white background on Windows.
+% Hint: listbox controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
-
-% --- Executes on button press in AddTraces.
-function AddTraces_Callback(hObject, eventdata, handles)
-% hObject    handle to AddTraces (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-[file,path] = uigetfile('*.csv');
-filefullpath = path+"\"+file;
-global traces;
-global posNum;
-temp = csvread(filefullpath);
-traces = [traces;temp];
-plot(traces(1,:),'parent',handles.TraceAxes);
-posNum = size(traces,1);
-set(handles.CurrentDisplayIndex,'String',int2str(1));
-set(handles.TotalParticleNum,'String',int2str(posNum));
-
-
-% --- Executes on button press in ShowOverlay.
-function ShowOverlay_Callback(hObject, eventdata, handles)
-% hObject    handle to ShowOverlay (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-  
