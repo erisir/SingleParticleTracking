@@ -738,19 +738,18 @@ end
 DistanceRunLength(find(DistanceRunLength ==0)) = [];
 PathLengthSlope(find(PathLengthSlope ==0)) = [];
 DistanceSlope(find(DistanceSlope ==0)) = [];
-
-numBinDRL = floor(max(DistanceRunLength)/2);%2nm res.
-numBinPLS = floor(max(PathLengthSlope)*2);%0.5nm/s
-numBinDS = floor(max(DistanceSlope)*2);%0.5nm/s
+maxDRL = max(DistanceRunLength);
+maxPLS = max(PathLengthSlope);
+maxDS = max(DistanceSlope);
 
 %hist(handles.IntensityAxes,IntensityDwell,500);
-h1 = histogram(handles.IntensityAxes,DistanceRunLength,numBinDRL);
-h2 = histogram(handles.PathLengthAxes,PathLengthSlope,numBinPLS);
-h3 = histogram(handles.DistanceAxes,DistanceSlope,numBinDS);
+h1 = histogram(handles.IntensityAxes,DistanceRunLength,maxDRL/5);%5nm res.
+h2 = histogram(handles.PathLengthAxes,PathLengthSlope,maxPLS*2);%0.5nm/s
+h3 = histogram(handles.DistanceAxes,DistanceSlope,maxDS*2);%0.5nm/s
 
-axis(handles.IntensityAxes,[0,150,0,max(h1.Values)+5]);
-axis(handles.PathLengthAxes,[0,25,0,max(h2.Values)+5]);
-axis(handles.DistanceAxes,[0,25,0,max(h3.Values)+5]);
+axis(handles.IntensityAxes,[0,100,0,celmax(h1.Values)]);
+axis(handles.PathLengthAxes,[0,25,0,max(h2.Values)]);
+axis(handles.DistanceAxes,[0,25,0,max(h3.Values)]);
 
 dwellTime = mean(IntensityDwell);
 runLength = mean(DistanceRunLength);

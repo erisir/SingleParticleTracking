@@ -19,22 +19,20 @@ function [slopes] = PlotTrace(images,traces,TracesId,handles,plotIndex)
     set(handles.PathLengthList,'String',P);
     set(handles.DistanceList,'String',D);
     setCatalog = traces.Metadata(TracesId).SetCatalog;
-    switch setCatalog
+     switch setCatalog
         case 'All'
-            set(handles.SetTypeList,'Value',1);
-        case 'Stuck_Go'
-             set(handles.SetTypeList,'Value',2);
-        case 'Go_Stuck'
-             set(handles.SetTypeList,'Value',3);
-        case 'Stuck_Go_Stuck'
-             set(handles.SetTypeList,'Value',4);
-        case 'Go_Stuck_Go'
-            set(handles.SetTypeList,'Value',5);
-        case 'NonLinear'      
-            set(handles.SetTypeList,'Value',6);
-        case 'Perfect'      
-            set(handles.SetTypeList,'Value',7);
-    end
+            set(handles.SetTypeList,'Value',0);
+        case 'Stuck'
+             set(handles.SetTypeList,'Value',1);
+        case 'BigStep'
+             set(handles.SetTypeList,'Value',0);
+        case 'Linear'
+             set(handles.SetTypeList,'Value',0);
+        case 'BackForward'
+            set(handles.SetTypeList,'Value',0);
+        case 'Other'      
+            set(handles.SetTypeList,'Value',0);
+       end
     % cd use to plot the rainbow plot, define the color dictionary
     cd = [uint8(jet(datalength)*255) uint8(ones(datalength,1))].';%rainbow plot
     
@@ -134,9 +132,9 @@ function [slopes] = PlotTrace(images,traces,TracesId,handles,plotIndex)
     end
     if plotIndex == 0 || plotIndex ==2
         smPathLength = smooth(pathlenght);
-        pltPathLength = plot(handles.PathLengthAxes,framecloumn,smPathLength,'-','LineWidth',1);  %plot the smooth pathlength
+        pltPathLength = plot(handles.PathLengthAxes,framecloumn,smPathLength,'LineWidth',1);  %plot the smooth pathlength
         hold(handles.PathLengthAxes, 'on');
-        pltPathLength2 = plot(handles.PathLengthAxes,framecloumn,pathlenght,'-k*','Markersize',1);%plot raw pathlength in backgroud in a transparent way      
+        pltPathLength2 = plot(handles.PathLengthAxes,framecloumn,pathlenght,'k');%plot raw pathlength in backgroud in a transparent way      
         pltPathLength2.Color(4) = 0.2;
         res= ylim(handles.PathLengthAxes);
         yMax = floor(res(2));
@@ -156,12 +154,12 @@ function [slopes] = PlotTrace(images,traces,TracesId,handles,plotIndex)
         try
             P1 = polyfit(framecloumn(fitStart:fitEnd),smPathLength(fitStart:fitEnd),1);
             P2 = polyfit(framecloumn(fitStart2:fitEnd2),smPathLength(fitStart2:fitEnd2),1);
-            pltP1 = plot(handles.PathLengthAxes,framecloumn(fitStart:fitEnd),P1(1)*framecloumn(fitStart:fitEnd)+P1(2),'r','LineWidth',2);
-            pltP2 = plot(handles.PathLengthAxes,framecloumn(fitStart2:fitEnd2),P2(1)*framecloumn(fitStart2:fitEnd2)+P2(2),'r','LineWidth',2);
+            pltP1 = plot(handles.PathLengthAxes,framecloumn(fitStart:fitEnd),P1(1)*framecloumn(fitStart:fitEnd)+P1(2),'r');
+            pltP2 = plot(handles.PathLengthAxes,framecloumn(fitStart2:fitEnd2),P2(1)*framecloumn(fitStart2:fitEnd2)+P2(2),'r');
             slopes(1) = P1(1);
             slopes(2) = P2(1);
-            pltP1.Color(4) = 0.1;
-            pltP2.Color(4) = 0.1;
+            pltP1.Color(4) = 0.2;
+            pltP2.Color(4) = 0.2;
         catch
         end
         hold(handles.PathLengthAxes, 'off');
@@ -173,7 +171,7 @@ function [slopes] = PlotTrace(images,traces,TracesId,handles,plotIndex)
         smDisplacement = smooth(displacement);
         pltDisplacement = plot(handles.DistanceAxes,framecloumn,smDisplacement,'LineWidth',1);  %plot the smooth distance
         hold(handles.DistanceAxes, 'on');
-        pltDisplacement2 = plot(handles.DistanceAxes,framecloumn,displacement,'-k*','Markersize',1); %plot raw smooth in backgroud in a transparent way      
+        pltDisplacement2 = plot(handles.DistanceAxes,framecloumn,displacement,'k'); %plot raw smooth in backgroud in a transparent way      
         pltDisplacement2.Color(4) = 0.2;
         plot(handles.DistanceAxes,framecloumn,fitError,'r');
         
@@ -195,8 +193,8 @@ function [slopes] = PlotTrace(images,traces,TracesId,handles,plotIndex)
         try
             P1 = polyfit(framecloumn(fitStart:fitEnd),smDisplacement(fitStart:fitEnd),1);
             P2 = polyfit(framecloumn(fitStart2:fitEnd2),smDisplacement(fitStart2:fitEnd2),1);
-            pltP1 = plot(handles.DistanceAxes,framecloumn(fitStart:fitEnd),P1(1)*framecloumn(fitStart:fitEnd)+P1(2),'r','LineWidth',2);
-            pltP2 = plot(handles.DistanceAxes,framecloumn(fitStart2:fitEnd2),P2(1)*framecloumn(fitStart2:fitEnd2)+P2(2),'r','LineWidth',2);
+            pltP1 = plot(handles.DistanceAxes,framecloumn(fitStart:fitEnd),P1(1)*framecloumn(fitStart:fitEnd)+P1(2),'r');
+            pltP2 = plot(handles.DistanceAxes,framecloumn(fitStart2:fitEnd2),P2(1)*framecloumn(fitStart2:fitEnd2)+P2(2),'r');
             slopes(3) = P1(1);
             slopes(4) = P2(1);
             pltP1.Color(4) = 0.2;
@@ -238,7 +236,7 @@ function [slopes] = PlotTrace(images,traces,TracesId,handles,plotIndex)
             end
             hold(handles.ImageWindowAxes,'on');
         catch
-            %msg =('no image stack loaded!')
+            msg =('no image stack loaded!')
         end    
 
         plot(handles.ImageWindowAxes,meanx,meany,'ro','MarkerSize',10);

@@ -1,6 +1,8 @@
 function [returnArray] = GroupZArray(inputArray,groupSize,method)
-%GROUPZARRAY 此处显示有关此函数的摘要
-%   此处显示详细说明
+%GROUPZARRAY GroupZArray of a 1D array
+%   defaut method is sum 
+%   inputArray = [1,1,2,2,3,3,4,4],
+%   GroupZArray(inputArray,2) returns [2,4,6,8]
 arraySize = max(size(inputArray));
 newSize = floor(arraySize/groupSize);
 if newSize <0

@@ -1,6 +1,6 @@
 function [intensity] = GetZprojectIntensityByXY(TifRawData,meanx,meany)
-%GETINTENSITY 此处显示有关此函数的摘要
-%   此处显示详细说明
+%GETINTENSITY  return the average 3*3 pixels intensity profile in time
+% meanx,meany is the center of the point(Qdot) that we want to trace its intensity  
 row1 = TifRawData(meany-1,meanx-1,:)+TifRawData(meany-1,meanx,:)+TifRawData(meany-1,meanx+1,:);
 row2 = TifRawData(meany,meanx-1,:)+TifRawData(meany,meanx,:)+TifRawData(meany,meanx+1,:);
 row3 = TifRawData(meany+1,meanx-1,:)+TifRawData(meany+1,meanx,:)+TifRawData(meany+1,meanx+1,:);

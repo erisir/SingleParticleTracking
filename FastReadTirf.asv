@@ -1,6 +1,6 @@
 function [data] = FastReadTirf(filename)
-    %FASTREADTIRF read and load big tif in a faster way
-    %   return the raw tif data in 3D stack
+    %FASTREADTIRF read and load
+    %   此处显示详细说明
     tstack  = Tiff(filename);
     [I,J] = size(tstack.read());
     K = length(imfinfo(filename));

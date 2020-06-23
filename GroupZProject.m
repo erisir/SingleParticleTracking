@@ -1,6 +1,7 @@
 function [outputImageStack] = GroupZProject(imageStack,groupSize)
-%GROUPZPROJECT 此处显示有关此函数的摘要
-%   此处显示详细说明
+%GROUPZPROJECT same as the imagej does, return the mean intensity of
+%groupSize images in 3D,
+%   
 [height,width,stackSize]= size(imageStack);
 if mod(stackSize,groupSize) ~= 0 || stackSize<groupSize
     outputImageStack = [];

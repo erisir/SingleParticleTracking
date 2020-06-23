@@ -1,7 +1,7 @@
 function [supported] = CheckGpuSupported()
-%CHECKGPUSUPPORTED 此处显示有关此函数的摘要
-%   此处显示详细说明
-device = gpuDevice;
-supported = ~device.DeviceSupported;
+%CHECKGPUSUPPORTED  check if the computer supports GPU[CUDA]
+%   return false here just for further upgrate
+%device = gpuDevice;
+supported = 1==0;%~device.DeviceSupported;
 end
 

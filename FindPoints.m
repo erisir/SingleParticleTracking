@@ -1,6 +1,6 @@
 function [pos] = FindPoints(img,threadhold)
-%FINDPOINTS 此处显示有关此函数的摘要
-%   此处显示详细说明
+%FINDPOINTS find points base on the intensity
+%   return list of pos 2D array, with xi = pos(i,1) , yi=pos(i,2);
 [height,width] = size(img);
 img(find(img<threadhold)) = 0;
 locs = imregionalmax(img);
