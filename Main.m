@@ -22,7 +22,7 @@ function varargout = Main(varargin)
 
 % Edit the above text to modify the response to help Main
 
-% Last Modified by GUIDE v2.5 22-Jun-2020 19:55:01
+% Last Modified by GUIDE v2.5 25-Jun-2020 17:40:26
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -101,8 +101,9 @@ set(handles.StackProgress,'Max',gImages.stackSize);
 set(handles.StackProgress,'value',1);
 set(gcf,'WindowButtonDownFcn',{@mouseDown,handles});
 imshow(gImages.ZprojectMean,[] ,'Parent',handles.ImageWindowAxes);
-
-
+set(handles.StackProgress,'SliderStep',[1/gImages.stackSize,0.01]);
+set(handles.Threadhold,'SliderStep',[0.001,0.01]);
+  
 function mouseDown (object, eventdata,handles)
 return;
 set(gcf,'WindowButtonMotionFcn', {@mouseMove,handles});
@@ -119,7 +120,7 @@ id =  floor(get(handles.StackProgress,'Value'));
 hold(handles.ImageWindowAxes, 'on');
 plot(xPos,yPos,'go','Parent',handles.ImageWindowAxes);
 hold(handles.ImageWindowAxes, 'off');
-imshow(rawImagesStack((yPos-5):(yPos+5),(xPos-5):(xPos+5),id),[low,threadhold] ,'Parent',handles.ZoomAxes);
+imshow(rawImagesStack((yPos-5):(yPos+5),(xPos-5):(xPos+5),id),[low,threadhold] ,'Parent',handles.IRMZoomAxes);
 
 set(gcf,'WindowButtonUpFcn',{@mouseUp,handles});
 
@@ -193,27 +194,21 @@ function StackProgress_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 global gImages;
+global gTraces;
  
-id =  floor(get(hObject,'Value')); 
+frameId =  floor(get(hObject,'Value')); 
 low = get(handles.Threadhold,'Min');
 threadhold = get(handles.Threadhold,'Value');
- 
-if id ==1
+set(handles.FrameId,'String',num2str(frameId));
+tracesId = gTraces.CurrentShowIndex(str2num(get(handles.CurrentDisplayIndex,'String')));
+
+if frameId ==1
     imshow(gImages.ZprojectMean,[low,threadhold] ,'Parent',handles.ImageWindowAxes);
-else
-   
-    if id ==1000
+else   
+    if frameId ==1000
         imshow(gImages.IRMImage,[low,threadhold] ,'Parent',handles.ImageWindowAxes);   
-    else
-        imshow(gImages.rawImagesStack(:,:,id),[low,threadhold] ,'Parent',handles.ImageWindowAxes);
-    try
-        width = 40;
-        meany = 300;
-        meanx = 300;
-        newCombImg = [gImages.IRMImage(meany-width:meany+width,meanx-width:meanx+width);gImages.rawImagesStack(meany-width:meany+width,meanx-width:meanx+width,id)];
-        imshow(newCombImg,[low,threadhold],'Parent',handles.ZoomAxes);
-    catch 
-    end
+    else  
+        PlotTrace(gImages,gTraces,tracesId,handles,1);
     end
 end
 
@@ -320,6 +315,7 @@ high = gather(floor(max(max(gImages.IRMImage))));
 
 set(handles.Threadhold,'Min',low/2);
 set(handles.Threadhold,'Max',high);
+set(handles.Threadhold,'Value',high/2);
  
 try
     if gImages.stackSize<1
@@ -359,46 +355,21 @@ global gTraces;
 global gImages;
 [file,path] = uigetfile('*.mat');
 filefullpath = [path,file];
+
 if path ==0
     return
 end
-gTraces.Stuck_Go = [];
-gTraces.Go_Stuck = [];
-gTraces.Stuck_Go_Stuck = [];
-gTraces.Go_Stuck_Go = [];
-gTraces.NonLinear = [];
-gTraces.Perfect = [];
 
-gTraces.molecules = LoadFiestaMatData(filefullpath); 
-gTraces.showCatalog = 1:size(gTraces.molecules,2);
-gTraces.moleculenum = max(gTraces.showCatalog);
-%initial metadata
-metadata.Intensity = [0,0,0,0];
-metadata.IntensityDwell = [0,0];
-metadata.PathLength = [0,0,0,0];
-metadata.PathLengthSlope = [0,0];
-metadata.Distance = [0,0,0,0];
-metadata.DistanceSlope = [0,0];
-metadata.SetCatalog = 'All';
-
-for i = 1:gTraces.moleculenum
-    results = gTraces.molecules(i).Results;
-    framecloumn = results(:,1);
-    startFrame = min(framecloumn);
-    endFrame = max(framecloumn);
-    temp = [startFrame,endFrame,startFrame,endFrame];
-    metadata.Intensity = temp;
-    metadata.PathLength = temp;
-    metadata.Distance = temp;
-    metadata.IntensityDwell = [endFrame-startFrame,endFrame-startFrame];
-    gTraces.Metadata(i) = metadata;    
-end
+gTraces = [];
+gTraces.molecules = LoadFiestaMatData(filefullpath);
+InitializeTracesMetadata();%prepare for adding new info[dwell,start,end,slope,etc.] to the traces
  
-gTraces.CurrentShowTpye = 'All';
-gTraces.CurrentShowNums = gTraces.moleculenum ;
-gTraces.CurrentShowIndex = 1:gTraces.moleculenum;
-fiducialIndex = [7,8];
-[gTraces.driftx,gTraces.drifty,gTraces.smoothDriftx,gTraces.smoothDrifty]=SmoothDriftTraces(gTraces,fiducialIndex);%save the result to Traces struct
+gTraces.fiducialIndex = [4851,4869];%FindFiducialIndex(gTraces);
+[gTraces.driftx,gTraces.drifty,gTraces.smoothDriftx,gTraces.smoothDrifty]=SmoothDriftTraces(gTraces,gTraces.fiducialIndex);%save the result to Traces struct
+
+framecolumn = gTraces.molecules(gTraces.fiducialIndex(1)).Results(:,1);
+
+gTraces.fiducialStartOffset = min(framecolumn)-1;%save the start frame of the ficucial for substrate
 
 PlotTrace(gImages,gTraces,1,handles,0);%plot all
  
@@ -406,9 +377,6 @@ set(handles.CurrentDisplayIndex,'String',int2str(1));
 set(handles.TotalParticleNum,'String',int2str(gTraces.moleculenum));
 
  
- 
-
-
 % --- Executes on button press in AddCatalog1.
 function AddCatalog1_Callback(hObject, eventdata, handles)
 % hObject    handle to AddCatalog1 (see GCBO)
@@ -713,9 +681,9 @@ end
  
 
 
-% --- Executes on button press in IntensityAddNew.
-function IntensityAddNew_Callback(hObject, eventdata, handles)
-% hObject    handle to IntensityAddNew (see GCBO)
+% --- Executes on button press in ShowHistgram.
+function ShowHistgram_Callback(hObject, eventdata, handles)
+% hObject    handle to ShowHistgram (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 global gTraces;
@@ -739,6 +707,10 @@ DistanceRunLength(find(DistanceRunLength ==0)) = [];
 PathLengthSlope(find(PathLengthSlope ==0)) = [];
 DistanceSlope(find(DistanceSlope ==0)) = [];
 
+totalNumDRL = size(DistanceRunLength,2);
+totalNumPLS = size(PathLengthSlope,2);
+totalNumDS = size(DistanceSlope,2);
+
 numBinDRL = floor(max(DistanceRunLength)/2);%2nm res.
 numBinPLS = floor(max(PathLengthSlope)*2);%0.5nm/s
 numBinDS = floor(max(DistanceSlope)*2);%0.5nm/s
@@ -757,9 +729,9 @@ runLength = mean(DistanceRunLength);
 velocity_PathLength = mean(PathLengthSlope);
 velocity_Distance = mean(DistanceSlope);
 
-title(handles.IntensityAxes,['mean runLength  =  ',num2str(runLength),' nm--------- mean dwell time = ',int2str(dwellTime),' s']);
-title(handles.PathLengthAxes,['mean velocity(PathLength) =  ',num2str(velocity_PathLength),' nm/s']);
-title(handles.DistanceAxes,['mean velocity(Distance) =  ',num2str(velocity_Distance),' nm/s']);
+title(handles.IntensityAxes,['mean runLength  =  ',num2str(runLength),' nm--------- mean dwell time = ',int2str(dwellTime),' s   N = ',num2str(totalNumDRL)]);
+title(handles.PathLengthAxes,['mean velocity(PathLength) =  ',num2str(velocity_PathLength),' nm/s  N = ',num2str(totalNumPLS)]);
+title(handles.DistanceAxes,['mean velocity(Distance) =  ',num2str(velocity_Distance),' nm/s  N = ',num2str(totalNumDS)]);
 grid(handles.IntensityAxes,'on');
 grid(handles.PathLengthAxes,'on');
 grid(handles.DistanceAxes,'on');
@@ -807,3 +779,56 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
  
+
+
+
+function FrameId_Callback(hObject, eventdata, handles)
+% hObject    handle to FrameId (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of FrameId as text
+%        str2double(get(hObject,'String')) returns contents of FrameId as a double
+global gImages;
+global gTraces;
+value = str2double(get(hObject,'String'));
+set(handles.StackProgress,'Value',value);
+tracesId = gTraces.CurrentShowIndex(str2num(get(handles.CurrentDisplayIndex,'String')));
+PlotTrace(gImages,gTraces,tracesId,handles,1);
+
+% --- Executes during object creation, after setting all properties.
+function FrameId_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to FrameId (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in ShowRawIntensity.
+function ShowRawIntensity_Callback(hObject, eventdata, handles)
+% hObject    handle to ShowRawIntensity (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of ShowRawIntensity
+
+
+% --- Executes on button press in ShowDrift.
+function ShowDrift_Callback(hObject, eventdata, handles)
+% hObject    handle to ShowDrift (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+ 
+
+global gTraces;
+global gImages;
+
+fiducialIndex = gTraces.fiducialIndex;
+PlotTrace(gImages,gTraces,fiducialIndex(1),handles,0);
+
