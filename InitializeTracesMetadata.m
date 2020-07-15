@@ -12,10 +12,13 @@ gTraces.Go_Stuck = [];
 gTraces.Stuck_Go_Stuck = [];
 gTraces.Go_Stuck_Go = [];
 gTraces.NonLinear = [];
+gTraces.Stepping = [];
 gTraces.Perfect = [];
+gTraces.Temp = [];
 
 gTraces.showCatalog = 1:size(gTraces.molecules,2);
 gTraces.moleculenum = max(gTraces.showCatalog);
+gTraces.fiducialMarkerIndex = [];
 
 %initial metadata
 metadata.Intensity = [0,0,0,0];

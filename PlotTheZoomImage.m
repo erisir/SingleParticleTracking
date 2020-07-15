@@ -4,10 +4,11 @@ function [] = PlotTheZoomImage(handles,images,frameIndicator,absXposition,absYpo
  %the result is used to show the corresponding spot so we can compare
     %the traces and the raw images
  
-    stackSize = floor(get(handles.StackProgress,'Max'));
-    low = get(handles.Threadhold,'Min');
-    threadhold = get(handles.Threadhold,'Value');
-    currentDisplayFrame = floor(get(handles.StackProgress,'Value'));
+    stackSize = floor(get(handles.Slider_Stack_Index,'Max'));
+    intensity_low = get(handles.Slider_Threadhold_Low,'Value');
+    intensity_high = get(handles.Slider_Threadhold_High,'Value');
+    
+    currentDisplayFrame = floor(get(handles.Slider_Stack_Index,'Value'));
     
     indexInFramecloumn = find(frameIndicator ==currentDisplayFrame);% to avoid the skiped frame that due to blinking in fiesta
     if  indexInFramecloumn~=0
@@ -32,7 +33,7 @@ function [] = PlotTheZoomImage(handles,images,frameIndicator,absXposition,absYpo
         cropedIRM = images.IRMImage(meany-width:meany+width,meanx-width:meanx+width);
         cropedRawImages=images.rawImagesStack(meany-width:meany+width,meanx-width:meanx+width,currentDisplayFrame); 
         imshow(cropedIRM,[],'Parent',handles.IRMZoomAxes);
-        imshow(cropedRawImages,[min(Amplitude),max(Amplitude)],'Parent',handles.RawImageZoomAxes);   
+        imshow(cropedRawImages,[intensity_low,intensity_high],'Parent',handles.RawImageZoomAxes);   
     catch
         try
             width  =5;          
@@ -42,6 +43,8 @@ function [] = PlotTheZoomImage(handles,images,frameIndicator,absXposition,absYpo
             imshow(cropedRawImages,[],'Parent',handles.RawImageZoomAxes);   
         catch
             %disp('no images load or out of range');
+            imshow([0,0;0,0],[],'Parent',handles.RawImageZoomAxes);  
+            imshow([0,0;0,0],[],'Parent',handles.IRMZoomAxes);
         end
     end
    
@@ -54,12 +57,13 @@ function [] = PlotTheZoomImage(handles,images,frameIndicator,absXposition,absYpo
     
     try% not importance 
         if currentDisplayFrame ==stackSize
-            imshow(images.IRMImage,[low,threadhold] ,'Parent',handles.ImageWindowAxes);
+            imshow(images.IRMImage,[intensity_low,intensity_high] ,'Parent',handles.ImageWindowAxes);
         else
-            imshow(images.rawImagesStack(:,:,currentDisplayFrame),[low,threadhold] ,'Parent',handles.ImageWindowAxes);
+            imshow(images.rawImagesStack(:,:,currentDisplayFrame),[intensity_low,intensity_high] ,'Parent',handles.ImageWindowAxes); 
         end
             
     catch
+        imshow([0,0;0,0],[],'Parent',handles.ImageWindowAxes); 
     end
     hold(handles.ImageWindowAxes,'on');
     plot(handles.ImageWindowAxes,meanx,meany,'ro','MarkerSize',10);

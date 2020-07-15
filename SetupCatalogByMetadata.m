@@ -1,19 +1,21 @@
 function [] = SetupCatalogByMetadata()
-%SETUPCATALOGBYMETADATA 此处显示有关此函数的摘要
-%   此处显示详细说明
+%SETUPCATALOGBYMETADATA  
+%    
 global gTraces;
 gTraces.Stuck_Go = [];
 gTraces.Go_Stuck = [];
 gTraces.Stuck_Go_Stuck = [];
 gTraces.Go_Stuck_Go = [];
 gTraces.NonLinear = [];
+gTraces.Stepping = [];
 gTraces.Perfect = [];
-for i = 1:gTraces.moleculenum
+gTraces.Temp = [];
+
+for i = 1:size(gTraces.Metadata,2)
     setType = gTraces.Metadata(i).SetCatalog;
     switch setType
         case 'Stuck_Go'
-             gTraces.Stuck_Go = [gTraces.Stuck_Go,i];
-           
+             gTraces.Stuck_Go = [gTraces.Stuck_Go,i];          
         case 'Go_Stuck'
              gTraces.Go_Stuck = [gTraces.Go_Stuck,i];
  
@@ -25,10 +27,12 @@ for i = 1:gTraces.moleculenum
  
         case 'NonLinear'      
              gTraces.NonLinear = [gTraces.NonLinear,i];
- 
+        case 'Stepping'
+            gTraces.Stepping = [gTraces.Stepping,i];
         case 'Perfect'      
              gTraces.Perfect = [gTraces.Perfect,i];
- 
+        case 'Temp'
+             gTraces.Temp = [gTraces.Temp,i];
     end
 end
 end
