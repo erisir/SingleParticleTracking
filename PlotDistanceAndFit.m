@@ -7,7 +7,7 @@ hold(handles.DistanceAxes, 'on');
 pltDisplacement2 = plot(handles.DistanceAxes,frameIndicator,displacement,'-k*','Markersize',1); %plot raw smooth in backgroud in a transparent way      
 pltDisplacement2.Color(4) = 0.2;
 plot(handles.DistanceAxes,frameIndicator,fitError,'r');
-
+ 
 res= ylim(handles.DistanceAxes);
 yMax = floor(res(2));
 x = ones(1,yMax);
@@ -36,7 +36,8 @@ try
     slopes(2) = P2(1);
     pltP1.Color(4) = 0.4;
     pltP2.Color(4) = 0.4;
-catch
+catch ME
+     LogMsg(handles,ME.identifier);
 end
 
 

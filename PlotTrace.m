@@ -10,7 +10,13 @@ function [slopes] = PlotTrace(images,traces,TracesId,handles,plotFalg)
     [I,P,D] = GetMetadataByTracesId(traces,TracesId); %gets the start and end frames of each trace from metadata
     setCatalog = traces.Metadata(TracesId).SetCatalog;
     UpdateMetadataInGUI(handles,setCatalog,plotFalg,I,P,D);%sets the start and end frames in gui
- 
+    if plotFalg == 0
+        if ~isempty(images)
+            set(handles.Slider_Stack_Index,'Value',str2num(I(1)));%go to the beginning of the trace when first call
+        end
+        set(handles.Current_Frame_Id,'String',I(1));%go to the beginning of the trace when first call
+     end
+        
     % get detail info by id,prepare necessary data for processing
     results = traces.molecules(TracesId).Results;
     datalength = size(results,1);
@@ -64,10 +70,11 @@ function [slopes] = PlotTrace(images,traces,TracesId,handles,plotFalg)
             sl = PlotPathLengthAndFit(handles,pathlenght,frameIndicator,P,traces,TracesId,cd);
             s2 = PlotDistanceAndFit(handles,displacement,frameIndicator,D,traces,TracesId,cd,fitError);
             PlotScatterAxes(handles,datalength,relativePositionX,relativePositionY,smoothRelativePosX,smoothRelativePosY,cd);
-            slopes(1) = sl(1);
-            slopes(2) = sl(2);          
-            slopes(2) = s2(1);
-            slopes(4) = s2(2);            
+ 
+            slopes(1) =  sl(1);
+            slopes(2) =  sl(2);          
+            slopes(2) =  s2(1);
+            slopes(4) =  s2(2);            
         case 1
             PlotTheZoomImage(handles,images,frameIndicator,absXposition,absYposition,pixelSize,Amplitude);  
             PlotTheIntensityTrace(handles,images,frameIndicator,Amplitude,I);           
@@ -95,6 +102,6 @@ function [slopes] = PlotTrace(images,traces,TracesId,handles,plotFalg)
             disp('err');
             
     end
-    slopes = slopes/time_per_frames;
+    %slopes = slopes/time_per_frames;
 end
 

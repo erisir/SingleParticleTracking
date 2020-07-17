@@ -108,7 +108,7 @@ set(handles.Slider_Stack_Index,'SliderStep',[1/gImages.stackSize,0.01]);
 set(handles.Slider_Threadhold_Low,'SliderStep',[2/intensity_high,0.01]);
 set(handles.Slider_Threadhold_High,'SliderStep',[2/intensity_high,0.01]);
 
-LogMsg(handles,"Finish Loading Stack");
+LogMsg(handles,["Finish Loading Stack   ",file]);
 
 % --- Executes on button press in LoadIRMImage.
 function LoadIRMImage_Callback(hObject, eventdata, handles)
@@ -126,8 +126,6 @@ LogMsg(handles,"Start to Load IRM image");
 
 gImages.IRMImage = mean(FastReadTirf(filefullpath),3);
 
-LogMsg(handles,"Finish Loading IRM image");
-
 intensity_low = floor(mean(mean(gImages.IRMImage)));
 intensity_high = floor(max(max(gImages.IRMImage)));
 
@@ -135,6 +133,7 @@ set(handles.Slider_Threadhold_Low,'Value',intensity_low);
 set(handles.Slider_Threadhold_High,'Value',intensity_high);
   
 imshow(gImages.IRMImage,[intensity_low,intensity_high] ,'Parent',handles.ImageWindowAxes);
+LogMsg(handles,["Finish Loading IRM image  ",file]);
 
 % --- Executes on button press in LoadTraces.
 function LoadTraces_Callback(hObject, eventdata, handles)
@@ -144,16 +143,18 @@ function LoadTraces_Callback(hObject, eventdata, handles)
 
 global gTraces;
 global gImages;
+LogMsg(handles,"Start to Load Traces Data");
+
 if ~get(handles.System_Debug,'value')
     [file,path] = uigetfile('*.mat');
-    file_path = [path,file];
+    filefullpath = [path,file];
 
     if path ==0
         return
     end
 
     gTraces = [];
-    rawdata = load(file_path);
+    rawdata = load(filefullpath);
     gTraces.molecules = rawdata.Molecule;
     InitializeTracesMetadata();%prepare for adding new info[dwell,start,end,slope,etc.] to the traces
 end 
@@ -170,6 +171,7 @@ PlotTrace(gImages,gTraces,1,handles,0);%plot all
  
 set(handles.Current_Trace_Id,'String',int2str(1));
 set(handles.TotalParticleNum,'String',int2str(gTraces.moleculenum));
+LogMsg(handles,["Finish Loading Traces Data  ",file]);
 
 % --- Executes on button press in LoadMetadata.
 function LoadMetadata_Callback(hObject, eventdata, handles)
@@ -201,7 +203,7 @@ try
     set(handles.PathLengthAxes_BinEnd,'String',num2str(temp.PathLengthAxesBinEnd));
     set(handles.IntensityAxes_BinSize,'String',num2str(temp.IntensityAxesBinSize));
     set(handles.IntensityAxes_BinEnd,'String',num2str(temp.IntensityAxesBinEnd));
-    LogMsg(handles,'Finish Loading Metadata');
+    LogMsg(handles,"Finish Loading Metatata "+file);
 catch
     LogMsg(handles,'Finish Loading Metatata,you need to set the binsize for histgram');
 end
@@ -411,9 +413,13 @@ if index >gTraces.CurrentShowNums
     index =gTraces.CurrentShowNums;
 end
 set(handles.Current_Trace_Id,'String',int2str(index));
-PlotTrace(gImages,gTraces,gTraces.CurrentShowIndex(index),handles,0);
+try
+    PlotTrace(gImages,gTraces,gTraces.CurrentShowIndex(index),handles,0);
+catch ME
+    LogMsg(handles,ME.message);
+end
 
-% --- Executes on button press in ShowHistgram.
+% --- Executes on button press in ShowHistgram. 
 function ShowHistgram_Callback(hObject, eventdata, handles)
 % hObject    handle to ShowHistgram (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -544,7 +550,7 @@ res= xlim(handles.DistanceAxes);
 set(handles.Slider_Section_Select,'min',res(1));
 set(handles.Slider_Section_Select,'max',res(2));
 set(handles.Slider_Section_Select,'Value',value);
-set(handles.Slider_Section_Select,'SliderStep',[1/(res(2)-res(1)),1/res(2)]);
+set(handles.Slider_Section_Select,'SliderStep',[1/(res(2)-res(1)),1/(res(2)-res(1))]);
 
 % --- Executes on selection change in Traces_SetType_List.
 function Traces_SetType_List_Callback(hObject, eventdata, handles)

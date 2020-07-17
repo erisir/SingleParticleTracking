@@ -27,25 +27,31 @@ function [] = PlotTheZoomImage(handles,images,frameIndicator,absXposition,absYpo
     %of the image,this will cause a out of array size error.(then we can reduce the ROI size to 10*10)
     %the images is composed of ROI from the Qdot images and the IRM images
     %we load in to workspace previously.
-
-    try   
-        width  =40;          
-        cropedIRM = images.IRMImage(meany-width:meany+width,meanx-width:meanx+width);
-        cropedRawImages=images.rawImagesStack(meany-width:meany+width,meanx-width:meanx+width,currentDisplayFrame); 
-        imshow(cropedIRM,[],'Parent',handles.IRMZoomAxes);
-        imshow(cropedRawImages,[intensity_low,intensity_high],'Parent',handles.RawImageZoomAxes);   
-    catch
-        try
-            width  =5;          
+    width  =40;        
+    if ~isempty(images)
+        try   
+            width  =40;          
             cropedIRM = images.IRMImage(meany-width:meany+width,meanx-width:meanx+width);
             cropedRawImages=images.rawImagesStack(meany-width:meany+width,meanx-width:meanx+width,currentDisplayFrame); 
             imshow(cropedIRM,[],'Parent',handles.IRMZoomAxes);
-            imshow(cropedRawImages,[],'Parent',handles.RawImageZoomAxes);   
+            imshow(cropedRawImages,[intensity_low,intensity_high],'Parent',handles.RawImageZoomAxes);   
         catch
-            %disp('no images load or out of range');
-            imshow([0,0;0,0],[],'Parent',handles.RawImageZoomAxes);  
-            imshow([0,0;0,0],[],'Parent',handles.IRMZoomAxes);
+            try
+                width  =5;          
+                cropedIRM = images.IRMImage(meany-width:meany+width,meanx-width:meanx+width);
+                cropedRawImages=images.rawImagesStack(meany-width:meany+width,meanx-width:meanx+width,currentDisplayFrame); 
+                imshow(cropedIRM,[],'Parent',handles.IRMZoomAxes);
+                imshow(cropedRawImages,[],'Parent',handles.RawImageZoomAxes);   
+            catch ME
+                %disp('no images load or out of range');
+                imshow([0,0;0,0],[],'Parent',handles.RawImageZoomAxes);  
+                imshow([0,0;0,0],[],'Parent',handles.IRMZoomAxes);
+                rethrow(ME)
+            end
         end
+    else
+         imshow([0,0;0,0],[],'Parent',handles.RawImageZoomAxes);  
+         imshow([0,0;0,0],[],'Parent',handles.IRMZoomAxes);
     end
    
     hold(handles.IRMZoomAxes, 'on');         
@@ -55,14 +61,14 @@ function [] = PlotTheZoomImage(handles,images,frameIndicator,absXposition,absYpo
     hold(handles.IRMZoomAxes, 'off');
     hold(handles.RawImageZoomAxes, 'off');
     
-    try% not importance 
+    if ~isempty(images)% not importance 
         if currentDisplayFrame ==stackSize
             imshow(images.IRMImage,[intensity_low,intensity_high] ,'Parent',handles.ImageWindowAxes);
         else
             imshow(images.rawImagesStack(:,:,currentDisplayFrame),[intensity_low,intensity_high] ,'Parent',handles.ImageWindowAxes); 
         end
             
-    catch
+    else
         imshow([0,0;0,0],[],'Parent',handles.ImageWindowAxes); 
     end
     hold(handles.ImageWindowAxes,'on');

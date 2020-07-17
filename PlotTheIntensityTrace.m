@@ -1,18 +1,16 @@
 function [outputArg1,outputArg2] = PlotTheIntensityTrace(handles,images,timesec,Amplitude,I)
 %PLOTTHEINTENSITYTRACE  
 %    
-if get(handles.ShowRawIntensity ,'Value')
-    try
-        meanx = str2num(get(handles.CurrentPointXpos,'String'));
-        meany = str2num(get(handles.CurrentPointYpos,'String'));
-        
-        plot(handles.IntensityAxes,GetZprojectIntensityByXY(images.rawImagesStack,meanx,meany)); %plot the intensity trace we calculate by ourself
-        hold(handles.IntensityAxes,'on');
-    catch
-    end
+if get(handles.ShowRawIntensity ,'Value') && ~isempty(images)
+    meanx = str2num(get(handles.CurrentPointXpos,'String'));
+    meany = str2num(get(handles.CurrentPointYpos,'String'));
+
+    plot(handles.IntensityAxes,GetZprojectIntensityByXY(images.rawImagesStack,meanx,meany)); %plot the intensity trace we calculate by ourself
+    hold(handles.IntensityAxes,'on');
 end
 currentDisplayFrame = floor(get(handles.Slider_Stack_Index,'Value'));
 plot(handles.IntensityAxes,timesec,Amplitude,'g');%plot the amplitude generated from fiesta, which should be same with what we calculate.
+ 
 hold(handles.IntensityAxes,'on');
 plot(handles.IntensityAxes,timesec,Amplitude,'.k','markersize',1.2);
 

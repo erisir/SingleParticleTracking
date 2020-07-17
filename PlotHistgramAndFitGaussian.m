@@ -12,7 +12,7 @@ switch fitOption
         f = fit(x.',y.','gauss1');
         %f(x) =  a1*exp(-((x-b1)/c1)^2)
         yfit = f.a1*exp(-((x-f.b1)/f.c1).^2);
-        str = ['y=',num2str(f.a1,'%.2f'),'*exp(-((x-    ',num2str(f.b1,'%.2f'),'   )/',num2str(f.c1,'%.2f'),')^2)'];
+        str = ['y=',num2str(f.a1,'%.2f'),'*exp(-((x-    ',num2str(f.b1,'%.2f'),'   )/',num2str(f.c1,'%.2f'),')^2)   N = ',num2str(moleculeNums)];
         text(plotAxes,floor(f.b1),floor(f.a1),num2str(f.b1,'%.2f'),'Color','r');
 
     case "gauss2"

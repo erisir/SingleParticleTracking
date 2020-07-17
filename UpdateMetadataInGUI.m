@@ -1,11 +1,7 @@
 function [] = UpdateMetadataInGUI(handles,setCatalog,plotFalg,I,P,D)
 %UPDATEMETADATAINGUI 此处显示有关此函数的摘要
 %   此处显示详细说明 
-    if plotFalg == 0
-        set(handles.Slider_Stack_Index,'Value',str2num(I(1)));%go to the beginning of the trace when first call
-        set(handles.Current_Frame_Id,'String',I(1));%go to the beginning of the trace when first call
-    end
-    
+   
     set(handles.Intensity_Section_List,'String',I);
     set(handles.PathLength_Section_List,'String',P);
     set(handles.Distance_Section_List,'String',D);

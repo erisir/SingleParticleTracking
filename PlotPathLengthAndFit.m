@@ -25,15 +25,16 @@ fitStart2 = find(frameIndicator==metadata(3));
 fitEnd2 = find(frameIndicator==metadata(4));
 
 try
-P1 = polyfit(frameIndicator(fitStart:fitEnd),smPathLength(fitStart:fitEnd),1);
-P2 = polyfit(frameIndicator(fitStart2:fitEnd2),smPathLength(fitStart2:fitEnd2),1);
-pltP1 = plot(handles.PathLengthAxes,frameIndicator(fitStart:fitEnd),P1(1)*frameIndicator(fitStart:fitEnd)+P1(2),'r','LineWidth',2);
-pltP2 = plot(handles.PathLengthAxes,frameIndicator(fitStart2:fitEnd2),P2(1)*frameIndicator(fitStart2:fitEnd2)+P2(2),'r','LineWidth',2);
-slopes(1) = P1(1);
-slopes(2) = P2(1);
-pltP1.Color(4) = 0.5;
-pltP2.Color(4) = 0.5;
-catch
+    P1 = polyfit(frameIndicator(fitStart:fitEnd),smPathLength(fitStart:fitEnd),1);
+    P2 = polyfit(frameIndicator(fitStart2:fitEnd2),smPathLength(fitStart2:fitEnd2),1);
+    pltP1 = plot(handles.PathLengthAxes,frameIndicator(fitStart:fitEnd),P1(1)*frameIndicator(fitStart:fitEnd)+P1(2),'r','LineWidth',2);
+    pltP2 = plot(handles.PathLengthAxes,frameIndicator(fitStart2:fitEnd2),P2(1)*frameIndicator(fitStart2:fitEnd2)+P2(2),'r','LineWidth',2);
+    slopes(1) = P1(1);
+    slopes(2) = P2(1);
+    pltP1.Color(4) = 0.5;
+    pltP2.Color(4) = 0.5;
+catch ME
+    LogMsg(handles,ME.identifier);
 end
 hold(handles.PathLengthAxes, 'off');
 grid(handles.PathLengthAxes, 'on');

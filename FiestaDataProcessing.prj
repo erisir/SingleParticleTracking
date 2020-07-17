@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
-  <configuration build-checksum="746772764" file="E:\DevSoftware\Matlab\Toolbox\FiestaDataProcessing\FiestaDataProcessing.prj" location="E:\DevSoftware\Matlab\Toolbox\FiestaDataProcessing" name="FiestaDataProcessing" preferred-package-location="E:\DevSoftware\Matlab\Toolbox\FiestaDataProcessing\FiestaDataProcessing\for_redistribution" preferred-package-type="package.type.exe" target="target.ezdeploy.standalone" target-name="Application Compiler">
+  <configuration build-checksum="1811058764" file="E:\DevSoftware\Matlab\Toolbox\FiestaDataProcessing\FiestaDataProcessing.prj" location="E:\DevSoftware\Matlab\Toolbox\FiestaDataProcessing" name="FiestaDataProcessing" preferred-package-location="E:\Build\Matlab\FiestaDataProcessing\for_redistribution" preferred-package-type="package.type.exe" target="target.ezdeploy.standalone" target-name="Application Compiler">
     <param.appname>Main</param.appname>
     <param.icon />
     <param.icons />
@@ -16,18 +16,18 @@
     <param.logo />
     <param.install.notes />
     <param.target.install.notes />
-    <param.intermediate>${PROJECT_ROOT}\FiestaDataProcessing\for_testing</param.intermediate>
-    <param.files.only>${PROJECT_ROOT}\FiestaDataProcessing\for_redistribution_files_only</param.files.only>
-    <param.output>${PROJECT_ROOT}\FiestaDataProcessing\for_redistribution</param.output>
-    <param.logdir>${PROJECT_ROOT}\FiestaDataProcessing</param.logdir>
+    <param.intermediate>E:\Build\Matlab\FiestaDataProcessing\for_testing</param.intermediate>
+    <param.files.only>E:\Build\Matlab\FiestaDataProcessing\for_redistribution_files_only</param.files.only>
+    <param.output>E:\Build\Matlab\FiestaDataProcessing\for_redistribution</param.output>
+    <param.logdir>E:\Build\Matlab\FiestaDataProcessing\log</param.logdir>
     <param.enable.clean.build>false</param.enable.clean.build>
     <param.user.defined.mcr.options />
     <param.target.type>subtarget.standalone</param.target.type>
     <param.support.packages />
-    <param.web.mcr>false</param.web.mcr>
-    <param.package.mcr>true</param.package.mcr>
+    <param.web.mcr>true</param.web.mcr>
+    <param.package.mcr>false</param.package.mcr>
     <param.no.mcr>false</param.no.mcr>
-    <param.web.mcr.name>MyAppInstaller_web</param.web.mcr.name>
+    <param.web.mcr.name>FiestaDataProcessing</param.web.mcr.name>
     <param.package.mcr.name>FiestaDataProcessing</param.package.mcr.name>
     <param.no.mcr.name>MyAppInstaller_app</param.no.mcr.name>
     <param.windows.command.prompt>true</param.windows.command.prompt>
@@ -57,16 +57,13 @@
       <param.logo />
       <param.install.notes />
       <param.target.install.notes />
-      <param.intermediate />
-      <param.files.only />
-      <param.output />
-      <param.logdir />
       <param.enable.clean.build />
       <param.user.defined.mcr.options />
       <param.target.type />
       <param.support.packages />
+      <param.web.mcr />
+      <param.package.mcr />
       <param.no.mcr />
-      <param.web.mcr.name />
       <param.no.mcr.name />
       <param.windows.command.prompt />
       <param.create.log />
@@ -96,7 +93,7 @@
       <file>${PROJECT_ROOT}\Main.fig</file>
       <file>${PROJECT_ROOT}\PlotDistanceAndFit.m</file>
       <file>${PROJECT_ROOT}\PlotHistgram.m</file>
-      <file>${PROJECT_ROOT}\PlotHistgramAndFitGaussian2.m</file>
+      <file>${PROJECT_ROOT}\PlotHistgramAndFitGaussian.m</file>
       <file>${PROJECT_ROOT}\PlotPathLengthAndFit.m</file>
       <file>${PROJECT_ROOT}\PlotScatterAxes.m</file>
       <file>${PROJECT_ROOT}\PlotTheIntensityTrace.m</file>
@@ -107,9 +104,9 @@
       <file>${PROJECT_ROOT}\UpdateMetadataInGUI.m</file>
     </fileset.depfun>
     <build-deliverables>
-      <file location="${PROJECT_ROOT}\FiestaDataProcessing\for_testing" name="Main.exe" optional="false">E:\DevSoftware\Matlab\Toolbox\FiestaDataProcessing\FiestaDataProcessing\for_testing\Main.exe</file>
-      <file location="${PROJECT_ROOT}\FiestaDataProcessing\for_testing" name="splash.png" optional="false">E:\DevSoftware\Matlab\Toolbox\FiestaDataProcessing\FiestaDataProcessing\for_testing\splash.png</file>
-      <file location="${PROJECT_ROOT}\FiestaDataProcessing\for_testing" name="readme.txt" optional="true">E:\DevSoftware\Matlab\Toolbox\FiestaDataProcessing\FiestaDataProcessing\for_testing\readme.txt</file>
+      <file location="E:\Build\Matlab\FiestaDataProcessing\for_testing" name="splash.png" optional="false">E:\Build\Matlab\FiestaDataProcessing\for_testing\splash.png</file>
+      <file location="E:\Build\Matlab\FiestaDataProcessing\for_testing" name="readme.txt" optional="true">E:\Build\Matlab\FiestaDataProcessing\for_testing\readme.txt</file>
+      <file location="E:\Build\Matlab\FiestaDataProcessing\for_testing" name="Main.exe" optional="false">E:\Build\Matlab\FiestaDataProcessing\for_testing\Main.exe</file>
     </build-deliverables>
     <workflow />
     <matlab>
@@ -121,7 +118,6 @@
         <toolbox name="fixedpoint" />
         <toolbox name="matlabhdlcoder" />
         <toolbox name="neuralnetwork" />
-        <toolbox name="polyspacebugfinder" />
       </toolboxes>
       <toolbox>
         <matlabcoder>
@@ -152,11 +148,6 @@
         <neuralnetwork>
           <enabled>true</enabled>
         </neuralnetwork>
-      </toolbox>
-      <toolbox>
-        <polyspacebugfinder>
-          <enabled>true</enabled>
-        </polyspacebugfinder>
       </toolbox>
     </matlab>
     <platform>
