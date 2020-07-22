@@ -24,9 +24,9 @@ plot(handles.IntensityAxes,str2num(I(2))*x,y,'r');
 plot(handles.IntensityAxes,str2num(I(3))*x,y,'.b','LineWidth',1.1);
 plot(handles.IntensityAxes,str2num(I(4))*x,y,'.r','LineWidth',1.1);
 
- 
-plot(handles.IntensityAxes,currentDisplayFrame*x,y,'-k');
-       
+if currentDisplayFrame ~=0
+    plot(handles.IntensityAxes,currentDisplayFrame*x,y,'-k');
+end       
         
 hold(handles.IntensityAxes,'off');
 grid(handles.IntensityAxes,'on');

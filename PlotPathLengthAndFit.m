@@ -16,8 +16,9 @@ plot(handles.PathLengthAxes,str2num(P(3))*x,y,'b','LineWidth',1.1);
 plot(handles.PathLengthAxes,str2num(P(4))*x,y,'r','LineWidth',1.1);
 
 currentDisplayFrame = floor(get(handles.Slider_Stack_Index,'Value'));
-plot(handles.PathLengthAxes,currentDisplayFrame*x,y,'k');
-
+if currentDisplayFrame ~=0
+    plot(handles.PathLengthAxes,currentDisplayFrame*x,y,'k');
+end
 metadata = traces.Metadata(TracesId).PathLength;
 fitStart = find(frameIndicator==metadata(1));
 fitEnd = find(frameIndicator==metadata(2));
@@ -31,14 +32,15 @@ try
     pltP2 = plot(handles.PathLengthAxes,frameIndicator(fitStart2:fitEnd2),P2(1)*frameIndicator(fitStart2:fitEnd2)+P2(2),'r','LineWidth',2);
     slopes(1) = P1(1);
     slopes(2) = P2(1);
-    pltP1.Color(4) = 0.5;
-    pltP2.Color(4) = 0.5;
+    pltP1.Color(4) = 0.1;
+    pltP2.Color(4) = 0.1;
 catch ME
     LogMsg(handles,ME.identifier);
 end
+
 hold(handles.PathLengthAxes, 'off');
 grid(handles.PathLengthAxes, 'on');
-drawnow
+%drawnow
 set(pltPathLength.Edge, 'ColorBinding','interpolated', 'ColorData',cd);
 title(handles.PathLengthAxes,'path length  = sum(¡÷d)')
 xlabel(handles.PathLengthAxes,'frame') 

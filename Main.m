@@ -144,9 +144,9 @@ function LoadTraces_Callback(hObject, eventdata, handles)
 global gTraces;
 global gImages;
 LogMsg(handles,"Start to Load Traces Data");
-
+defaultPath = 'F:\Box\DOE SCATTIRSTORM\3 Results\Experiment\Daguan\DataProcessing';
 if ~get(handles.System_Debug,'value')
-    [file,path] = uigetfile('*.mat');
+    [file,path] = uigetfile(defaultPath,'*.mat');
     filefullpath = [path,file];
 
     if path ==0
@@ -157,6 +157,7 @@ if ~get(handles.System_Debug,'value')
     rawdata = load(filefullpath);
     gTraces.molecules = rawdata.Molecule;
     InitializeTracesMetadata();%prepare for adding new info[dwell,start,end,slope,etc.] to the traces
+    gTraces.TracesPath = path;
 end 
 
 gTraces.fiducialMarkerIndex =FindFiducialIndex(gTraces,0);%auto find fiducial,dont plot it
@@ -172,6 +173,7 @@ PlotTrace(gImages,gTraces,1,handles,0);%plot all
 set(handles.Current_Trace_Id,'String',int2str(1));
 set(handles.TotalParticleNum,'String',int2str(gTraces.moleculenum));
 LogMsg(handles,["Finish Loading Traces Data  ",file]);
+set(handles.figure1,'Name',['FIESTA Data Processing-----------------       ', file]);
 
 % --- Executes on button press in LoadMetadata.
 function LoadMetadata_Callback(hObject, eventdata, handles)
@@ -179,7 +181,12 @@ function LoadMetadata_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 global gTraces;
-[file,path] = uigetfile('*.mat');
+defaultPath = 'F:\Box\DOE SCATTIRSTORM\3 Results\Experiment\Daguan\DataProcessing';
+if isempty(gTraces.TracesPath)
+    [file,path] = uigetfile(defaultPath,'*.mat');
+else
+    [file,path] = uigetfile(gTraces.TracesPath,'*.mat');
+end
 if file ==0
     return;
 end
@@ -228,8 +235,13 @@ formatedSaveDataFormat.PathLengthAxesBinEnd = str2num(get(handles.PathLengthAxes
 
 formatedSaveDataFormat.IntensityAxesBinSize = str2num(get(handles.IntensityAxes_BinSize,'String'));
 formatedSaveDataFormat.IntensityAxesBinEnd = str2num(get(handles.IntensityAxes_BinEnd,'String'));
- 
-[file,path] = uiputfile('*.mat');
+
+defaultPath = 'F:\Box\DOE SCATTIRSTORM\3 Results\Experiment\Daguan\DataProcessing'; 
+if isempty(gTraces.TracesPath)
+    [file,path] = uiputfile(defaultPath,'*.mat');
+else
+    [file,path] = uiputfile(gTraces.TracesPath,'*.mat');
+end
 if path ==0
     return
 end
@@ -413,11 +425,9 @@ if index >gTraces.CurrentShowNums
     index =gTraces.CurrentShowNums;
 end
 set(handles.Current_Trace_Id,'String',int2str(index));
-try
-    PlotTrace(gImages,gTraces,gTraces.CurrentShowIndex(index),handles,0);
-catch ME
-    LogMsg(handles,ME.message);
-end
+
+PlotTrace(gImages,gTraces,gTraces.CurrentShowIndex(index),handles,0);
+
 
 % --- Executes on button press in ShowHistgram. 
 function ShowHistgram_Callback(hObject, eventdata, handles)

@@ -31,15 +31,18 @@ gTraces.fiducialFrameIndicator = framecolumn;%save the start frame of the ficuci
 
 colNums = ceil(size(fiducialIndex,2)/2);
 hold(handle, 'off');
-plot(handle,gTraces.smoothDriftx,gTraces.smoothDrifty,'r');
+plot(handle,0,0,'o');
 hold(handle, 'on');
-str = ["smooth"];
+str = ["o"];
 for i = 1:size(fiducialIndex,2)
     x = gTraces.molecules(fiducialIndex(i)).Results(:,3);
     y = gTraces.molecules(fiducialIndex(i)).Results(:,4);
     str = [str,string(fiducialIndex(i))];
     plot(handle,x-x(1),y-y(1));
 end
+str = [str,"smooth"];
+plot(handle,gTraces.smoothDriftx,gTraces.smoothDrifty,'k*','markersize',10);
+plot(handle,gTraces.smoothDriftx,gTraces.smoothDrifty,'k','markersize',10);
 legend(handle,str);
     
 end

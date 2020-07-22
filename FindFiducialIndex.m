@@ -7,6 +7,8 @@ for i = 1:traces.moleculenum
     dwellTime(i) = size(traces.molecules(i).Results(:,1),1);%get the size of framecolumn
 end
 Index = find(dwellTime ==max(dwellTime) );
+%Index = [73,92,116,125,359,208,406,582];
+%Index = [73,89,132,156,140,138,146,163,174,168,184,187,191,195,200,210,225,233,238];
 %Index = [17  38  75 ];%20200711_180521_2nMCel7aNaOH
 %Index = [2,3,4,6,7,8,9,13];%10mw1000ms
 %Index = [2,3,4,6,7,8,10,11,12,13,14];20mw250ms
@@ -20,23 +22,27 @@ Index = find(dwellTime ==max(dwellTime) );
 %20200707_191303_100pM-1-1400--[121,146]
 %
 %
-
+%Index = Index(1:10); 
 if plotFlag ==1
     global gTraces;
     gTraces.fiducialMarkerIndex = Index;
     figure;
     handle = subplot(1,1,1);
+    plot(handle,0,0,'o');
     [driftx,drifty,smoothDriftx,smoothDrifty] = SmoothDriftTraces(traces,Index);
-    plot(handle,smoothDriftx,smoothDrifty,'r');
-    hold on;
-    str = ["smooth"];
+  
+    hold(handle,'on');
+    str = ["o"];
     for i = 1:size(Index,2)
         x = traces.molecules(Index(i)).Results(:,3);
         y = traces.molecules(Index(i)).Results(:,4);
         str = [str,string(Index(i))];
         plot(handle,x-x(1),y-y(1));
     end
-    legend(str);
+    str = [str,"smooth"];
+    plot(handle,smoothDriftx,smoothDrifty,'k*','markersize',10);
+    plot(handle,smoothDriftx,smoothDrifty,'k','markersize',10);
+    legend(handle,str);
     
     figure;
     colNums = ceil(size(Index,2)/2);

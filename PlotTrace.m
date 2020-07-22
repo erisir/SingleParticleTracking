@@ -62,13 +62,18 @@ function [slopes] = PlotTrace(images,traces,TracesId,handles,plotFalg)
      
     % cd use to plot the rainbow plot, define the color dictionary
     cd = [uint8(jet(datalength)*255) uint8(ones(datalength,1))].';%rainbow plot
+
     switch plotFalg
         case 0 % next or previou button hit
+ 
             PlotTheZoomImage(handles,images,frameIndicator,absXposition,absYposition,pixelSize,Amplitude);  
-            
-            PlotTheIntensityTrace(handles,images,frameIndicator,Amplitude,I);        
+    
+            PlotTheIntensityTrace(handles,images,frameIndicator,Amplitude,I);   
+   
             sl = PlotPathLengthAndFit(handles,pathlenght,frameIndicator,P,traces,TracesId,cd);
+     
             s2 = PlotDistanceAndFit(handles,displacement,frameIndicator,D,traces,TracesId,cd,fitError);
+       
             PlotScatterAxes(handles,datalength,relativePositionX,relativePositionY,smoothRelativePosX,smoothRelativePosY,cd);
  
             slopes(1) =  sl(1);
@@ -80,7 +85,7 @@ function [slopes] = PlotTrace(images,traces,TracesId,handles,plotFalg)
             PlotTheIntensityTrace(handles,images,frameIndicator,Amplitude,I);           
         case 2
             sl = PlotPathLengthAndFit(handles,pathlenght,frameIndicator,P,traces,TracesId,cd);
-            slopes(1) = sl(1);
+            slopes(1) = sl(1); 
             slopes(2) = sl(2);
         case 3
             sl = PlotDistanceAndFit(handles,displacement,frameIndicator,D,traces,TracesId,cd,fitError);
@@ -102,6 +107,7 @@ function [slopes] = PlotTrace(images,traces,TracesId,handles,plotFalg)
             disp('err');
             
     end
-    %slopes = slopes/time_per_frames;
+    slopes = slopes/time_per_frames;
+
 end
 

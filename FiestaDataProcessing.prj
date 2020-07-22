@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
-  <configuration build-checksum="1811058764" file="E:\DevSoftware\Matlab\Toolbox\FiestaDataProcessing\FiestaDataProcessing.prj" location="E:\DevSoftware\Matlab\Toolbox\FiestaDataProcessing" name="FiestaDataProcessing" preferred-package-location="E:\Build\Matlab\FiestaDataProcessing\for_redistribution" preferred-package-type="package.type.exe" target="target.ezdeploy.standalone" target-name="Application Compiler">
+  <configuration build-checksum="3723518068" file="E:\DevSoftware\Matlab\Toolbox\FiestaDataProcessing\FiestaDataProcessing.prj" location="E:\DevSoftware\Matlab\Toolbox\FiestaDataProcessing" name="FiestaDataProcessing" preferred-package-location="E:\Build\Matlab\FiestaDataProcessing\for_redistribution" preferred-package-type="package.type.exe" target="target.ezdeploy.standalone" target-name="Application Compiler">
     <param.appname>Main</param.appname>
     <param.icon />
     <param.icons />
@@ -24,13 +24,13 @@
     <param.user.defined.mcr.options />
     <param.target.type>subtarget.standalone</param.target.type>
     <param.support.packages />
-    <param.web.mcr>true</param.web.mcr>
-    <param.package.mcr>false</param.package.mcr>
+    <param.web.mcr>false</param.web.mcr>
+    <param.package.mcr>true</param.package.mcr>
     <param.no.mcr>false</param.no.mcr>
     <param.web.mcr.name>FiestaDataProcessing</param.web.mcr.name>
     <param.package.mcr.name>FiestaDataProcessing</param.package.mcr.name>
     <param.no.mcr.name>MyAppInstaller_app</param.no.mcr.name>
-    <param.windows.command.prompt>true</param.windows.command.prompt>
+    <param.windows.command.prompt>false</param.windows.command.prompt>
     <param.create.log>false</param.create.log>
     <param.log.file />
     <param.native.matlab>false</param.native.matlab>
@@ -61,11 +61,8 @@
       <param.user.defined.mcr.options />
       <param.target.type />
       <param.support.packages />
-      <param.web.mcr />
-      <param.package.mcr />
       <param.no.mcr />
       <param.no.mcr.name />
-      <param.windows.command.prompt />
       <param.create.log />
       <param.log.file />
       <param.native.matlab />
@@ -78,6 +75,8 @@
     <fileset.resources />
     <fileset.package />
     <fileset.depfun>
+      <file>${MATLAB_ROOT}\toolbox\local\restoredefaultpath.m</file>
+      <file>${MATLAB_ROOT}\toolbox\local\userpath.m</file>
       <file>${PROJECT_ROOT}\CalculateDisplacement.m</file>
       <file>${PROJECT_ROOT}\CalculatePathLengh.m</file>
       <file>${PROJECT_ROOT}\CheckGpuSupported.m</file>
