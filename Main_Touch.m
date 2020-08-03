@@ -1,4 +1,4 @@
-function varargout = Main(varargin)
+function varargout = Main_Touch(varargin)
 % MAIN MATLAB code for Main.fig
 %      MAIN, by itself, creates a new MAIN or raises the existing
 %      singleton*.
@@ -22,7 +22,7 @@ function varargout = Main(varargin)
 
 % Edit the above text to modify the response to help Main
 
-% Last Modified by GUIDE v2.5 15-Jul-2020 11:38:18
+% Last Modified by GUIDE v2.5 22-Jul-2020 02:43:01
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -49,7 +49,7 @@ function Main_OpeningFcn(hObject, eventdata, handles, varargin)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to Main (see VARARGIN)
-global gTraces;
+
 % Choose default command line output for Main
 handles.output = hObject;
 
@@ -57,12 +57,6 @@ handles.output = hObject;
 guidata(hObject, handles);
 % UIWAIT makes Main wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
-catalogs = ["All";"Stuck_Go";"Go_Stuck";"Stuck_Go_Stuck";"Go_Stuck_Go";"NonLinear";"Stepping";"BackForward";"Perfect";"Temp"];
-gTraces.Catalogs = catalogs;
-set(handles.Traces_ShowType_List,'String',catalogs);
-set(handles.Traces_SetType_List,'String',catalogs);
-
-
 % --- Outputs from this function are returned to the command line.
 function varargout = Main_OutputFcn(hObject, eventdata, handles) 
 % varargout  cell array for returning output args (see VARARGOUT);
@@ -152,7 +146,7 @@ global gImages;
 LogMsg(handles,"Start to Load Traces Data");
 defaultPath = 'F:\Box\DOE SCATTIRSTORM\3 Results\Experiment\Daguan\DataProcessing';
 if ~get(handles.System_Debug,'value')
-    [file,path] = uigetfile('*.mat','load',defaultPath);
+    [file,path] = uigetfile(defaultPath,'*.mat');
     filefullpath = [path,file];
 
     if path ==0
@@ -189,9 +183,9 @@ function LoadMetadata_Callback(hObject, eventdata, handles)
 global gTraces;
 defaultPath = 'F:\Box\DOE SCATTIRSTORM\3 Results\Experiment\Daguan\DataProcessing';
 if isempty(gTraces.TracesPath)
-    [file,path] = uigetfile('*.mat','load',defaultPath);
+    [file,path] = uigetfile(defaultPath,'*.mat');
 else
-    [file,path] = uigetfile('*.mat','load',gTraces.TracesPath);
+    [file,path] = uigetfile(gTraces.TracesPath,'*.mat');
 end
 if file ==0
     return;
@@ -244,9 +238,9 @@ formatedSaveDataFormat.IntensityAxesBinEnd = str2num(get(handles.IntensityAxes_B
 
 defaultPath = 'F:\Box\DOE SCATTIRSTORM\3 Results\Experiment\Daguan\DataProcessing'; 
 if isempty(gTraces.TracesPath)
-    [file,path] = uiputfile('*.mat','load',defaultPath);
+    [file,path] = uiputfile(defaultPath,'*.mat');
 else
-    [file,path] = uiputfile('*.mat','load',gTraces.TracesPath);
+    [file,path] = uiputfile(gTraces.TracesPath,'*.mat');
 end
 if path ==0
     return
