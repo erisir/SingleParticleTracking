@@ -532,7 +532,7 @@ res= xlim(handles.IntensityAxes);
 set(handles.Slider_Section_Select,'min',res(1));
 set(handles.Slider_Section_Select,'max',res(2));
 set(handles.Slider_Section_Select,'Value',value);
-set(handles.Slider_Section_Select,'SliderStep',[1/(res(2)-res(1)),1/res(2)]);
+set(handles.Slider_Section_Select,'SliderStep',[1/(res(2)-res(1)),5/(res(2)-res(1))]);
 
 % --- Executes on selection change in PathLength_Section_List.
 function PathLength_Section_List_Callback(hObject, eventdata, handles)
@@ -551,7 +551,7 @@ set(handles.Slider_Section_Select,'min',res(1));
 set(handles.Slider_Section_Select,'max',res(2));
 
 set(handles.Slider_Section_Select,'Value',value);
-set(handles.Slider_Section_Select,'SliderStep',[1/(res(2)-res(1)),1/res(2)]);
+set(handles.Slider_Section_Select,'SliderStep',[1/(res(2)-res(1)),5/(res(2)-res(1))]);
 
 % --- Executes on selection change in Distance_Section_List.
 function Distance_Section_List_Callback(hObject, eventdata, handles)
@@ -569,7 +569,7 @@ res= xlim(handles.DistanceAxes);
 set(handles.Slider_Section_Select,'min',res(1));
 set(handles.Slider_Section_Select,'max',res(2));
 set(handles.Slider_Section_Select,'Value',value);
-set(handles.Slider_Section_Select,'SliderStep',[1/(res(2)-res(1)),1/(res(2)-res(1))]);
+set(handles.Slider_Section_Select,'SliderStep',[1/(res(2)-res(1)),10/(res(2)-res(1))]);
 
 % --- Executes on selection change in Traces_SetType_List.
 function Traces_SetType_List_Callback(hObject, eventdata, handles)

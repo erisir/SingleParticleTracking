@@ -65,21 +65,26 @@ function [slopes] = PlotTrace(images,traces,TracesId,handles,plotFalg)
 
     switch plotFalg
         case 0 % next or previou button hit
- 
-            PlotTheZoomImage(handles,images,frameIndicator,absXposition,absYposition,pixelSize,Amplitude);  
-    
-            PlotTheIntensityTrace(handles,images,frameIndicator,Amplitude,I);   
-   
-            sl = PlotPathLengthAndFit(handles,pathlenght,frameIndicator,P,traces,TracesId,cd);
-     
-            s2 = PlotDistanceAndFit(handles,displacement,frameIndicator,D,traces,TracesId,cd,fitError);
-       
-            PlotScatterAxes(handles,datalength,relativePositionX,relativePositionY,smoothRelativePosX,smoothRelativePosY,cd);
- 
-            slopes(1) =  sl(1);
-            slopes(2) =  sl(2);          
-            slopes(2) =  s2(1);
-            slopes(4) =  s2(2);            
+            if ~get(handles.System_Debug,'value')
+                PlotTheZoomImage(handles,images,frameIndicator,absXposition,absYposition,pixelSize,Amplitude);  
+
+                PlotTheIntensityTrace(handles,images,frameIndicator,Amplitude,I);   
+
+                sl = PlotPathLengthAndFit(handles,pathlenght,frameIndicator,P,traces,TracesId,cd);
+
+                s2 = PlotDistanceAndFit(handles,displacement,frameIndicator,D,traces,TracesId,cd,fitError);
+
+                PlotScatterAxes(handles,datalength,relativePositionX,relativePositionY,smoothRelativePosX,smoothRelativePosY,cd);
+
+                slopes(1) =  sl(1);
+                slopes(2) =  sl(2);          
+                slopes(2) =  s2(1);
+                slopes(4) =  s2(2);  
+            else
+                PlotDistance(handles,displacement,frameIndicator,D,traces,TracesId,cd,fitError);
+                PlotScatterAxes(handles,datalength,relativePositionX,relativePositionY,smoothRelativePosX,smoothRelativePosY,cd);
+                slopes = [1,1,1,1];
+            end
         case 1
             PlotTheZoomImage(handles,images,frameIndicator,absXposition,absYposition,pixelSize,Amplitude);  
             PlotTheIntensityTrace(handles,images,frameIndicator,Amplitude,I);           
