@@ -1,6 +1,6 @@
 % plot the trace we want to show [when click on the Pre/Next button on the UI, it changes the TracesId that pass here]
 function [slopes] = PlotTrace(images,traces,TracesId,handles,plotFalg)
-    
+    warning off;
     fiducialFrameIndicator =  traces.fiducialFrameIndicator;
     smoothWindowSize =  traces.smoothWindowSize;
     pixelSize = traces.pixelSize;

@@ -49,7 +49,7 @@ function Main_OpeningFcn(hObject, eventdata, handles, varargin)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to Main (see VARARGIN)
-global gTraces;
+
 % Choose default command line output for Main
 handles.output = hObject;
 
@@ -58,7 +58,7 @@ guidata(hObject, handles);
 % UIWAIT makes Main wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 catalogs = ["All";"Stuck_Go";"Go_Stuck";"Stuck_Go_Stuck";"Go_Stuck_Go";"NonLinear";"Stepping";"BackForward";"Perfect";"Temp"];
-gTraces.Catalogs = catalogs;
+ 
 set(handles.Traces_ShowType_List,'String',catalogs);
 set(handles.Traces_SetType_List,'String',catalogs);
 
@@ -81,8 +81,9 @@ function LoadImageStack_Callback(hObject, eventdata, handles)
 warning off; 
 global gImages;
 LogMsg(handles,"Start to Load Stack");
+defaultPath = [getuserdir,'\Box\DOE SCATTIRSTORM\3 Results\Experiment\Daguan\'];
 if ~get(handles.System_Debug,'value')
-    [file,path] = uigetfile('*.tif');
+    [file,path] = uigetfile('*.tif','open',defaultPath);
     gImages.filefullpath = [path,file];
     if path ==0
         return
@@ -123,7 +124,8 @@ function LoadIRMImage_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 global gImages;
 warning off;
-[file,path] = uigetfile('*.tif');
+defaultPath = [getuserdir,'\Box\DOE SCATTIRSTORM\3 Results\Experiment\Daguan\'];
+[file,path] = uigetfile('*.tif','open',defaultPath);
 filefullpath = [path,file];
 if path ==0
     return
@@ -150,7 +152,7 @@ function LoadTraces_Callback(hObject, eventdata, handles)
 global gTraces;
 global gImages;
 LogMsg(handles,"Start to Load Traces Data");
-defaultPath = 'F:\Box\DOE SCATTIRSTORM\3 Results\Experiment\Daguan\DataProcessing';
+defaultPath = [getuserdir,'\Box\DOE SCATTIRSTORM\3 Results\Experiment\Daguan\DataProcessing'];
 if ~get(handles.System_Debug,'value')
     [file,path] = uigetfile('*.mat','load',defaultPath);
     filefullpath = [path,file];
@@ -162,6 +164,7 @@ if ~get(handles.System_Debug,'value')
     gTraces = [];
     rawdata = load(filefullpath);
     gTraces.molecules = rawdata.Molecule;
+    gTraces.Catalogs = string(get(handles.Traces_ShowType_List,'String'));
     InitializeTracesMetadata();%prepare for adding new info[dwell,start,end,slope,etc.] to the traces
     gTraces.TracesPath = path;
 end 
@@ -187,7 +190,7 @@ function LoadMetadata_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 global gTraces;
-defaultPath = 'F:\Box\DOE SCATTIRSTORM\3 Results\Experiment\Daguan\DataProcessing';
+defaultPath = [getuserdir,'\Box\DOE SCATTIRSTORM\3 Results\Experiment\Daguan\DataProcessing'];
 if isempty(gTraces.TracesPath)
     [file,path] = uigetfile('*.mat','load',defaultPath);
 else
@@ -597,35 +600,15 @@ selectedType = contents{get(hObject,'Value')};
 global gTraces;
 SetupCatalogByMetadata();
 gTraces.CurrentShowTpye = selectedType;
-switch selectedType
-    case 'All'       
-        gTraces.CurrentShowNums = gTraces.moleculenum ;
-        gTraces.CurrentShowIndex = 1:gTraces.moleculenum;
-    case 'Stuck_Go'
-         gTraces.CurrentShowNums = size(gTraces.Stuck_Go,2);
-         gTraces.CurrentShowIndex = gTraces.Stuck_Go;
-    case 'Go_Stuck'
-         gTraces.CurrentShowNums = size(gTraces.Go_Stuck,2);
-         gTraces.CurrentShowIndex = gTraces.Go_Stuck;
-    case 'Stuck_Go_Stuck'
-         gTraces.CurrentShowNums = size(gTraces.Stuck_Go_Stuck,2);
-         gTraces.CurrentShowIndex = gTraces.Stuck_Go_Stuck;
-    case 'Go_Stuck_Go'
-         gTraces.CurrentShowNums = size(gTraces.Go_Stuck_Go,2);
-         gTraces.CurrentShowIndex = gTraces.Go_Stuck_Go;
-    case 'NonLinear'      
-         gTraces.CurrentShowNums = size(gTraces.NonLinear,2);
-         gTraces.CurrentShowIndex = gTraces.NonLinear;
-    case 'Stepping'      
-         gTraces.CurrentShowNums = size(gTraces.Stepping,2);
-         gTraces.CurrentShowIndex = gTraces.Stepping;
-    case 'Perfect'      
-         gTraces.CurrentShowNums = size(gTraces.Perfect,2);
-         gTraces.CurrentShowIndex = gTraces.Perfect;
-    case 'Temp'      
-         gTraces.CurrentShowNums = size(gTraces.Temp,2);
-         gTraces.CurrentShowIndex = gTraces.Temp;
+index = find(gTraces.Catalogs==selectedType);
+if index ==1%all
+    gTraces.CurrentShowNums = gTraces.moleculenum ;
+    gTraces.CurrentShowIndex = 1:gTraces.moleculenum;
+else
+    gTraces.CurrentShowIndex = gTraces.CatalogsContainor{index};
+    gTraces.CurrentShowNums = size(gTraces.CatalogsContainor{index},2);
 end
+ 
 set(handles.Current_Trace_Id,'String',num2str(1)); %go to the first
 set(handles.TotalParticleNum,'String',int2str(gTraces.CurrentShowNums));
 

@@ -6,15 +6,8 @@ global gTraces;
 gTraces.smoothWindowSize = 10;
 gTraces.pixelSize = 65.98;
     
-    
-gTraces.Stuck_Go = [];
-gTraces.Go_Stuck = [];
-gTraces.Stuck_Go_Stuck = [];
-gTraces.Go_Stuck_Go = [];
-gTraces.NonLinear = [];
-gTraces.Stepping = [];
-gTraces.Perfect = [];
-gTraces.Temp = [];
+nums = size(gTraces.Catalogs,1);
+gTraces.CatalogsContainor = cell(1,nums);
 
 gTraces.showCatalog = 1:size(gTraces.molecules,2);
 gTraces.moleculenum = max(gTraces.showCatalog);

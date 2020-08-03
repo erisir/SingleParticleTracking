@@ -2,6 +2,7 @@ function [] = PlotHistgram(handles,gTraces)
 %PLOTHISTGRAM 此处显示有关此函数的摘要
 %   此处显示详细说明
 global gTraces;
+ 
 intensity_dwell = [];
 pathlength_base_slopediffer = [];
 pathlength_base_slope_noise = [];
@@ -14,28 +15,16 @@ contents = cellstr(get(handles.Traces_ShowType_List,'String'));
 selectedType = contents{get(handles.Traces_ShowType_List,'Value')};
 SetupCatalogByMetadata();%get the real index of each catalog and save it to
 %gTraces.Stuck_Go/Go_Stuck  etc.
-Indexs = [];
-switch selectedType
-    case 'All'
-       Indexs = [gTraces.Stuck_Go,gTraces.Go_Stuck,gTraces.Stuck_Go_Stuck,gTraces.Go_Stuck_Go,gTraces.NonLinear,gTraces.Stepping,gTraces.Perfect];
-    case 'Stuck_Go'
-       Indexs = gTraces.Stuck_Go;
-    case 'Go_Stuck'
-       Indexs = gTraces.Go_Stuck;
-    case 'Stuck_Go_Stuck'
-       Indexs = gTraces.Stuck_Go_Stuck;
-    case 'Go_Stuck_Go'
-       Indexs = gTraces.Go_Stuck_Go;
-    case 'NonLinear'      
-       Indexs = gTraces.NonLinear;
-    case 'Stepping'
-       Indexs = gTraces.Stepping;
-    case 'Perfect'      
-       Indexs = gTraces.Perfect;  
-    case 'Temp'      
-       Indexs = gTraces.Temp;  
+index = find(gTraces.Catalogs==selectedType);
+if index ==1%all
+    nums = size(gTraces.Catalogs,2);
+    for i =1:nums
+        Indexs  = [Indexs,gTraces.CatalogsContainor{i}];
+    end
+else
+    Indexs = gTraces.CatalogsContainor{index};
 end
-
+ 
 moleculeNums = size(Indexs,2);
 % prepare the hist data
 for i = 1:moleculeNums
