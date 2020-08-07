@@ -16,16 +16,19 @@ selectedType = contents{get(handles.Traces_ShowType_List,'Value')};
 SetupCatalogByMetadata();%get the real index of each catalog and save it to
 %gTraces.Stuck_Go/Go_Stuck  etc.
 index = find(gTraces.Catalogs==selectedType);
+Indexs =[];
+
 if index ==1%all
-    nums = size(gTraces.Catalogs,2);
-    for i =1:nums
+    nums = size(gTraces.Catalogs,1)
+    for i =2:nums%skip the first, all
         Indexs  = [Indexs,gTraces.CatalogsContainor{i}];
     end
 else
     Indexs = gTraces.CatalogsContainor{index};
 end
- 
-moleculeNums = size(Indexs,2);
+%Indexs = gTraces.CatalogsContainor{1};%plot the stuck qdot
+%Indexs = 1:size(gTraces.Metadata,2);%plot all the qdots
+moleculeNums = size(Indexs,2)
 % prepare the hist data
 for i = 1:moleculeNums
     traceId = Indexs(i);
