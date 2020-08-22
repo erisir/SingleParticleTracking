@@ -21,7 +21,7 @@ metadata.PathLengthSlope = [0,0];
 metadata.Distance = [0,0,0,0];
 metadata.DistanceSlope = [0,0];
 metadata.SetCatalog = 'All';
-
+metadata.DataQuality= 'All';
 
 for i = 1:gTraces.moleculenum
     results = gTraces.molecules(i).Results;

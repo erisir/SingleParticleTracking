@@ -13,27 +13,33 @@ plot_both = 0;
  
 contents = cellstr(get(handles.Traces_ShowType_List,'String'));
 selectedType = contents{get(handles.Traces_ShowType_List,'Value')};
+time_per_framems = str2num(get(handles.Frame_Expusure_Timems,'String'))+str2num(get(handles.Frame_Transfer_Timems,'String'));
+time_per_frames = time_per_framems/1000;
+    
 SetupCatalogByMetadata();%get the real index of each catalog and save it to
 %gTraces.Stuck_Go/Go_Stuck  etc.
 index = find(gTraces.Catalogs==selectedType);
 Indexs =[];
 
 if index ==1%all
-    nums = size(gTraces.Catalogs,1)
-    for i =2:nums%skip the first, all
-        Indexs  = [Indexs,gTraces.CatalogsContainor{i}];
+    nums = size(gTraces.Catalogs,1);
+    for i =1:nums%skip the first, all,step,temp
+        if i~=1% && i ~=7 && i ~=10
+            Indexs  = [Indexs,gTraces.CatalogsContainor{i}];
+        end
     end
 else
     Indexs = gTraces.CatalogsContainor{index};
 end
+max(Indexs)
 %Indexs = gTraces.CatalogsContainor{1};%plot the stuck qdot
-%Indexs = 1:size(gTraces.Metadata,2);%plot all the qdots
-moleculeNums = size(Indexs,2)
+Indexs = 1:size(gTraces.Metadata,2);%plot all the qdots
+moleculeNums = size(Indexs,2);
 % prepare the hist data
 for i = 1:moleculeNums
     traceId = Indexs(i);
     metadata=gTraces.Metadata(traceId) ; % Indexs(i) is the real index
-    intensity_dwell(i) = metadata.IntensityDwell(1);
+    intensity_dwell(i) = metadata.IntensityDwell(1)*time_per_frames;
     if metadata.PathLengthSlope(2) ~=0
         pathlength_base_slopediffer(i) = metadata.PathLengthSlope(2)-metadata.PathLengthSlope(1);
         pathlength_base_slope_noise(i) = metadata.PathLengthSlope(1);
@@ -64,7 +70,7 @@ totalNum_pathlength_base_slopediffer = size(pathlength_base_slopediffer,2);
 fitOption = handles.Histgram_Fit_Option.SelectedObject.String;
 binsize = str2double(get(handles.DistanceAxes_BinSize,'String'));
 xAxesEnd = str2double(get(handles.DistanceAxes_BinEnd,'String'));
-PlotHistgramAndFitGaussian(handles.DistanceAxes,distance_base_slope,binsize,xAxesEnd,fitOption,totalNum_distance_base_slope,'Velosity (nm/s)');
+PlotHistgramAndFitGaussian(handles.DistanceAxes,distance_base_slope,binsize,xAxesEnd,fitOption,totalNum_distance_base_slope,'Velocity (nm/s)');
 
 binsize = str2double(get(handles.PathLengthAxes_BinSize,'String'));
 xAxesEnd = str2double(get(handles.PathLengthAxes_BinEnd,'String'));

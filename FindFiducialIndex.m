@@ -7,6 +7,19 @@ for i = 1:traces.moleculenum
     dwellTime(i) = size(traces.molecules(i).Results(:,1),1);%get the size of framecolumn
 end
 Index = find(dwellTime ==max(dwellTime) );
+bigFitErrorIndex = [];
+for i =1:size(Index,2)
+    moleculeIndex = Index(i);
+    results = traces.molecules(moleculeIndex).Results;
+    fitError = results(:,9);
+    if mean(fitError)>5
+        bigFitErrorIndex = [bigFitErrorIndex,i];
+    end
+end
+Index(bigFitErrorIndex) = [];
+if(size(Index,2)> 20)
+    Index = Index(1:20);
+end
 %Index = [73,92,116,125,359,208,406,582];
 %Index = [73,89,132,156,140,138,146,163,174,168,184,187,191,195,200,210,225,233,238];
 %Index = [17  38  75 ];%20200711_180521_2nMCel7aNaOH
@@ -51,9 +64,9 @@ if plotFlag ==1
         y = traces.molecules(Index(i)).Results(:,4);
         subplot(2,colNums,i);
         plot(x,y);
-        legend('¡Ì');
+        legend('X');
         set(gca,'ButtonDownFcn', {@GcaMouseDownFcn,handle,Index(i)});
-        title(int2str(Index(i)));
+        title(['\color{red}' int2str(Index(i))]);
     end
 end
 

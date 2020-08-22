@@ -52,7 +52,7 @@ grid(handles.DistanceAxes, 'on');
 drawnow
 set(pltDisplacement.Edge, 'ColorBinding','interpolated', 'ColorData',cd);
 
-title(handles.DistanceAxes,'displacement  = sqrt[(X(i)-X(0))^2+(Y(i)-Y(0))^2]')
+title(handles.DistanceAxes,['displacement  = sqrt[(X(i)-X(0))^2+(Y(i)-Y(0))^2]  STD=',num2str(std(displacement)),'Err=',num2str(mean(fitError))]);
 xlabel(handles.DistanceAxes,'frame') 
 ylabel(handles.DistanceAxes,'distance (nm) or nm/sec') 
  

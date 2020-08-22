@@ -7,9 +7,11 @@ button = eventdata.Button;
  
 if button == 1%add if not exist
     id = find(fiducialIndex==index);
+    
     if isempty(id)
         fiducialIndex = [fiducialIndex,index];%if not there ,add one
-        legend(object,'¡Ì');
+        legend(object,'X');
+        title(object,['\color{red}' num2str(index)]);
     end
 end
 
@@ -18,7 +20,8 @@ if button ==3%remove if exist
     if ~isempty(id)
         if(size(fiducialIndex,2)>1)
             fiducialIndex(id) = [];%if it is there ,remove
-            legend(object,'¡Á');
+            legend(object,'o');
+            title(object,['\color{black}' num2str(index)]);
         end
     end
 end

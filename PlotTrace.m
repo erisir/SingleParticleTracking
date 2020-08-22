@@ -1,5 +1,6 @@
 % plot the trace we want to show [when click on the Pre/Next button on the UI, it changes the TracesId that pass here]
 function [slopes] = PlotTrace(images,traces,TracesId,handles,plotFalg)
+    selected =1;
     warning off;
     fiducialFrameIndicator =  traces.fiducialFrameIndicator;
     smoothWindowSize =  traces.smoothWindowSize;
@@ -9,7 +10,8 @@ function [slopes] = PlotTrace(images,traces,TracesId,handles,plotFalg)
     slopes = [0,0,0,0];
     [I,P,D] = GetMetadataByTracesId(traces,TracesId); %gets the start and end frames of each trace from metadata
     setCatalog = traces.Metadata(TracesId).SetCatalog;
-    UpdateMetadataInGUI(handles,setCatalog,plotFalg,I,P,D);%sets the start and end frames in gui
+    DataQuality = traces.Metadata(TracesId).DataQuality;
+    UpdateMetadataInGUI(handles,setCatalog,DataQuality,plotFalg,I,P,D);%sets the start and end frames in gui
     if plotFalg == 0
         if ~isempty(images)
             set(handles.Slider_Stack_Index,'Value',str2num(I(1)));%go to the beginning of the trace when first call
@@ -62,57 +64,63 @@ function [slopes] = PlotTrace(images,traces,TracesId,handles,plotFalg)
      
     % cd use to plot the rainbow plot, define the color dictionary
     cd = [uint8(jet(datalength)*255) uint8(ones(datalength,1))].';%rainbow plot
+    contents = cellstr(get(handles.Traces_ShowType_List,'String'));
+    selectedType = contents{get(handles.Traces_ShowType_List,'Value')};
+    if selectedType=="All" && false==MovementDetection(displacement,fitError) && get(handles.System_Debug,'value')
+       set(handles.Current_Trace_Id,'String',num2str(TracesId+1));
+       PlotTrace(images,traces,TracesId+1,handles,plotFalg);
+    else
+        switch plotFalg
+            case 0 % next or previou button hit
+                if ~get(handles.System_Debug,'value')
+                    PlotTheZoomImage(handles,images,frameIndicator,absXposition,absYposition,pixelSize,Amplitude);  
 
-    switch plotFalg
-        case 0 % next or previou button hit
-            if ~get(handles.System_Debug,'value')
+                    PlotTheIntensityTrace(handles,images,frameIndicator,Amplitude,I);   
+
+                    sl = PlotPathLengthAndFit(handles,pathlenght,frameIndicator,P,traces,TracesId,cd);
+
+                    s2 = PlotDistanceAndFit(handles,displacement,frameIndicator,D,traces,TracesId,cd,fitError);
+
+                    PlotScatterAxes(handles,datalength,relativePositionX,relativePositionY,smoothRelativePosX,smoothRelativePosY,cd);
+
+                    slopes(1) =  sl(1);
+                    slopes(2) =  sl(2);          
+                    slopes(2) =  s2(1);
+                    slopes(4) =  s2(2);  
+                else
+                    PlotDistance(handles,displacement,frameIndicator,D,traces,TracesId,cd,fitError);
+                    PlotScatterAxes(handles,datalength,relativePositionX,relativePositionY,smoothRelativePosX,smoothRelativePosY,cd);
+                    slopes = [1,1,1,1];
+                end
+            case 1
                 PlotTheZoomImage(handles,images,frameIndicator,absXposition,absYposition,pixelSize,Amplitude);  
-
-                PlotTheIntensityTrace(handles,images,frameIndicator,Amplitude,I);   
-
+                PlotTheIntensityTrace(handles,images,frameIndicator,Amplitude,I);           
+            case 2
                 sl = PlotPathLengthAndFit(handles,pathlenght,frameIndicator,P,traces,TracesId,cd);
-
+                slopes(1) = sl(1); 
+                slopes(2) = sl(2);
+            case 3
+                sl = PlotDistanceAndFit(handles,displacement,frameIndicator,D,traces,TracesId,cd,fitError);
+                slopes(3) = sl(1);
+                slopes(4) = sl(2);
+            case 4
+                 PlotScatterAxes(handles,datalength,relativePositionX,relativePositionY,smoothRelativePosX,smoothRelativePosY,cd);
+           case 5 % next or previou button hit
+                PlotTheZoomImage(handles,images,frameIndicator,absXposition,absYposition,pixelSize,Amplitude);  
+                PlotTheIntensityTrace(handles,images,frameIndicator,Amplitude,I);        
+                sl = PlotPathLengthAndFit(handles,pathlenght,frameIndicator,P,traces,TracesId,cd);
                 s2 = PlotDistanceAndFit(handles,displacement,frameIndicator,D,traces,TracesId,cd,fitError);
-
                 PlotScatterAxes(handles,datalength,relativePositionX,relativePositionY,smoothRelativePosX,smoothRelativePosY,cd);
+                slopes(1) = sl(1);
+                slopes(2) = sl(2);          
+                slopes(2) = s2(1);
+                slopes(4) = s2(2);
+           otherwise
+                disp('err');
 
-                slopes(1) =  sl(1);
-                slopes(2) =  sl(2);          
-                slopes(2) =  s2(1);
-                slopes(4) =  s2(2);  
-            else
-                PlotDistance(handles,displacement,frameIndicator,D,traces,TracesId,cd,fitError);
-                PlotScatterAxes(handles,datalength,relativePositionX,relativePositionY,smoothRelativePosX,smoothRelativePosY,cd);
-                slopes = [1,1,1,1];
-            end
-        case 1
-            PlotTheZoomImage(handles,images,frameIndicator,absXposition,absYposition,pixelSize,Amplitude);  
-            PlotTheIntensityTrace(handles,images,frameIndicator,Amplitude,I);           
-        case 2
-            sl = PlotPathLengthAndFit(handles,pathlenght,frameIndicator,P,traces,TracesId,cd);
-            slopes(1) = sl(1); 
-            slopes(2) = sl(2);
-        case 3
-            sl = PlotDistanceAndFit(handles,displacement,frameIndicator,D,traces,TracesId,cd,fitError);
-            slopes(3) = sl(1);
-            slopes(4) = sl(2);
-        case 4
-             PlotScatterAxes(handles,datalength,relativePositionX,relativePositionY,smoothRelativePosX,smoothRelativePosY,cd);
-       case 5 % next or previou button hit
-            PlotTheZoomImage(handles,images,frameIndicator,absXposition,absYposition,pixelSize,Amplitude);  
-            PlotTheIntensityTrace(handles,images,frameIndicator,Amplitude,I);        
-            sl = PlotPathLengthAndFit(handles,pathlenght,frameIndicator,P,traces,TracesId,cd);
-            s2 = PlotDistanceAndFit(handles,displacement,frameIndicator,D,traces,TracesId,cd,fitError);
-            PlotScatterAxes(handles,datalength,relativePositionX,relativePositionY,smoothRelativePosX,smoothRelativePosY,cd);
-            slopes(1) = sl(1);
-            slopes(2) = sl(2);          
-            slopes(2) = s2(1);
-            slopes(4) = s2(2);
-       otherwise
-            disp('err');
-            
+        end
+        slopes = slopes/time_per_frames;
     end
-    slopes = slopes/time_per_frames;
 
 end
 

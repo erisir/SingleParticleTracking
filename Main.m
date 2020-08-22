@@ -22,7 +22,7 @@ function varargout = Main(varargin)
 
 % Edit the above text to modify the response to help Main
 
-% Last Modified by GUIDE v2.5 15-Jul-2020 11:38:18
+% Last Modified by GUIDE v2.5 22-Aug-2020 17:28:24
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -223,6 +223,17 @@ try
 catch
     LogMsg(handles,'Finish Loading Metatata,you need to set the binsize for histgram');
 end
+nums = size(gTraces.Catalogs,1);
+gTraces.CatalogsContainor = cell(1,nums);
+lastUpdateIndex = 1;
+for i = 1:size(gTraces.Metadata,2)
+    setType = gTraces.Metadata(i).SetCatalog;
+    res = find(gTraces.Catalogs==setType);
+    if res ~=1
+        lastUpdateIndex = i;
+    end
+end
+set(handles.Current_Trace_Id,'String',num2str(lastUpdateIndex));
 
 % --- Executes on button press in SaveMetadata.
 function SaveMetadata_Callback(hObject, eventdata, handles)
@@ -586,6 +597,16 @@ CurrentDisplayIndex= str2num(get(handles.Current_Trace_Id,'String'));
 traceId = gTraces.CurrentShowIndex(CurrentDisplayIndex);
 gTraces.Metadata(traceId).SetCatalog = selectedType;
 
+% --- Executes when selected object is changed in Data_Quality_Set_Group.
+function Data_Quality_Set_Group_SelectionChangedFcn(hObject, eventdata, handles)
+% hObject    handle to the selected object in Data_Quality_Set_Group 
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+dataQuality = handles.Data_Quality_Set_Group.SelectedObject.String;
+global gTraces;
+CurrentDisplayIndex= str2num(get(handles.Current_Trace_Id,'String'));
+traceId = gTraces.CurrentShowIndex(CurrentDisplayIndex);
+gTraces.Metadata(traceId).DataQuality = dataQuality;
 
 % --- Executes on selection change in Traces_ShowType_List.
 function Traces_ShowType_List_Callback(hObject, eventdata, handles)
@@ -598,7 +619,7 @@ function Traces_ShowType_List_Callback(hObject, eventdata, handles)
 contents = cellstr(get(hObject,'String'));
 selectedType = contents{get(hObject,'Value')};
 global gTraces;
-SetupCatalogByMetadata();
+SetupCatalogByMetadata(handles);
 gTraces.CurrentShowTpye = selectedType;
 index = find(gTraces.Catalogs==selectedType);
 if index ==1%all
@@ -611,6 +632,7 @@ end
  
 set(handles.Current_Trace_Id,'String',num2str(1)); %go to the first
 set(handles.TotalParticleNum,'String',int2str(gTraces.CurrentShowNums));
+
 
 % --- Executes on button press in DistanceAxes_Show_Both_Slope.
 function DistanceAxes_Show_Both_Slope_Callback(hObject, eventdata, handles)
@@ -699,3 +721,7 @@ function IntensityAxes_BinSize_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of IntensityAxes_BinSize as a double
 global gTraces;
 PlotHistgram(handles,gTraces);
+
+ 
+
+
