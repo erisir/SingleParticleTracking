@@ -63,9 +63,9 @@ if plotFlag ==1
         x = traces.molecules(Index(i)).Results(:,3);
         y = traces.molecules(Index(i)).Results(:,4);
         subplot(2,colNums,i);
-        plot(x,y);
+        p=plot(x,y);
         legend('X');
-        set(gca,'ButtonDownFcn', {@GcaMouseDownFcn,handle,Index(i)});
+        set(p,'ButtonDownFcn', {@GcaMouseDownFcnFindFiducial,handle,Index(i)});
         title(['\color{red}' int2str(Index(i))]);
     end
 end

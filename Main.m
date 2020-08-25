@@ -22,7 +22,7 @@ function varargout = Main(varargin)
 
 % Edit the above text to modify the response to help Main
 
-% Last Modified by GUIDE v2.5 22-Aug-2020 17:28:24
+% Last Modified by GUIDE v2.5 24-Aug-2020 18:07:24
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -57,12 +57,10 @@ handles.output = hObject;
 guidata(hObject, handles);
 % UIWAIT makes Main wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
-catalogs = ["All";"Stuck_Go";"Go_Stuck";"Stuck_Go_Stuck";"Go_Stuck_Go";"NonLinear";"Stepping";"BackForward";"Perfect";"Temp"];
+catalogs = ["All";"Stuck_Go";"Go_Stuck";"Stuck_Go_Stuck";"Go_Stuck_Go";"NonLinear";"Stepping";"BackForward";"Stuck";"Temp"];
  
 set(handles.Traces_ShowType_List,'String',catalogs);
 set(handles.Traces_SetType_List,'String',catalogs);
-
-
 % --- Outputs from this function are returned to the command line.
 function varargout = Main_OutputFcn(hObject, eventdata, handles) 
 % varargout  cell array for returning output args (see VARARGOUT);
@@ -72,7 +70,6 @@ function varargout = Main_OutputFcn(hObject, eventdata, handles)
 
 % Get default command line output from handles structure
 varargout{1} = handles.output;
-
 % --- Executes on button press in LoadImageStack.
 function LoadImageStack_Callback(hObject, eventdata, handles)
 % hObject    handle to LoadImageStack (see GCBO)
@@ -116,7 +113,6 @@ set(handles.Slider_Threadhold_Low,'SliderStep',[2/intensity_high,0.01]);
 set(handles.Slider_Threadhold_High,'SliderStep',[2/intensity_high,0.01]);
 
 LogMsg(handles,["Finish Loading Stack   ",file]);
-
 % --- Executes on button press in LoadIRMImage.
 function LoadIRMImage_Callback(hObject, eventdata, handles)
 % hObject    handle to LoadIRMImage (see GCBO)
@@ -142,7 +138,6 @@ set(handles.Slider_Threadhold_High,'Value',intensity_high);
   
 imshow(gImages.IRMImage,[intensity_low,intensity_high] ,'Parent',handles.ImageWindowAxes);
 LogMsg(handles,["Finish Loading IRM image  ",file]);
-
 % --- Executes on button press in LoadTraces.
 function LoadTraces_Callback(hObject, eventdata, handles)
 % hObject    handle to LoadTraces (see GCBO)
@@ -183,7 +178,6 @@ set(handles.Current_Trace_Id,'String',int2str(1));
 set(handles.TotalParticleNum,'String',int2str(gTraces.moleculenum));
 LogMsg(handles,["Finish Loading Traces Data  ",file]);
 set(handles.figure1,'Name',['FIESTA Data Processing-----------------       ', file]);
-
 % --- Executes on button press in LoadMetadata.
 function LoadMetadata_Callback(hObject, eventdata, handles)
 % hObject    handle to LoadMetadata (see GCBO)
@@ -205,25 +199,37 @@ LogMsg(handles,'start to Load Metadata');
 %gTraces.Metadata = matData.metadata;%old save version
 
 temp = matData.formatedSaveDataFormat;
+version = "default";
+try
+    version = temp.Version;
+catch
+    for i = 1:size(temp.metadata,2)
+        temp.metadata(i).DataQuality = "All";
+        if temp.metadata(i).SetCatalog == "Perfect";
+           temp.metadata(i).SetCatalog = "Stuck";
+        end
+    end
+    gTraces.Version = "1.8.24";
+end
+
 gTraces.Metadata = temp.metadata;
 gTraces.fiducialMarkerIndex = temp.fiducialMarkerIndex;
 [gTraces.driftx,gTraces.drifty,gTraces.smoothDriftx,gTraces.smoothDrifty] = SmoothDriftTraces(gTraces,gTraces.fiducialMarkerIndex);
 framecolumn = gTraces.molecules(gTraces.fiducialMarkerIndex(1)).Results(:,1);
 gTraces.fiducialFrameIndicator = framecolumn;%save the start frame of the ficucial for substrate
+
 set(handles.Frame_Expusure_Timems,'String',num2str(temp.ExpusureTimems));
 set(handles.Frame_Transfer_Timems,'String',num2str(temp.FrameTrasferTimems));
-try
-    set(handles.DistanceAxes_BinSize,'String',num2str(temp.DistanceAxesBinSize));
-    set(handles.DistanceAxes_BinEnd,'String',num2str(temp.DistanceAxesBinEnd));
-    set(handles.PathLengthAxes_BinSize,'String',num2str(temp.PathLengthAxesBinSize));
-    set(handles.PathLengthAxes_BinEnd,'String',num2str(temp.PathLengthAxesBinEnd));
-    set(handles.IntensityAxes_BinSize,'String',num2str(temp.IntensityAxesBinSize));
-    set(handles.IntensityAxes_BinEnd,'String',num2str(temp.IntensityAxesBinEnd));
-    LogMsg(handles,"Finish Loading Metatata "+file);
-catch
-    LogMsg(handles,'Finish Loading Metatata,you need to set the binsize for histgram');
-end
-nums = size(gTraces.Catalogs,1);
+set(handles.DistanceAxes_BinSize,'String',num2str(temp.DistanceAxesBinSize));
+set(handles.DistanceAxes_BinEnd,'String',num2str(temp.DistanceAxesBinEnd));
+set(handles.PathLengthAxes_BinSize,'String',num2str(temp.PathLengthAxesBinSize));
+set(handles.PathLengthAxes_BinEnd,'String',num2str(temp.PathLengthAxesBinEnd));
+set(handles.IntensityAxes_BinSize,'String',num2str(temp.IntensityAxesBinSize));
+set(handles.IntensityAxes_BinEnd,'String',num2str(temp.IntensityAxesBinEnd));
+   
+LogMsg(handles,"Finish Loading Metatata "+file+"Version:  | "+version);
+
+nums = size(gTraces.Catalogs,1);%find last save data index
 gTraces.CatalogsContainor = cell(1,nums);
 lastUpdateIndex = 1;
 for i = 1:size(gTraces.Metadata,2)
@@ -234,7 +240,6 @@ for i = 1:size(gTraces.Metadata,2)
     end
 end
 set(handles.Current_Trace_Id,'String',num2str(lastUpdateIndex));
-
 % --- Executes on button press in SaveMetadata.
 function SaveMetadata_Callback(hObject, eventdata, handles)
 % hObject    handle to SaveMetadata (see GCBO)
@@ -243,6 +248,7 @@ function SaveMetadata_Callback(hObject, eventdata, handles)
 global gTraces;
 formatedSaveDataFormat.metadata = gTraces.Metadata;
 formatedSaveDataFormat.fiducialMarkerIndex = gTraces.fiducialMarkerIndex;
+formatedSaveDataFormat.Version = gTraces.Version;
 
 formatedSaveDataFormat.ExpusureTimems = str2num(get(handles.Frame_Expusure_Timems,'String'));
 formatedSaveDataFormat.FrameTrasferTimems = str2num(get(handles.Frame_Transfer_Timems,'String'));
@@ -277,14 +283,13 @@ global gImages;
  
 fiducialIndex = gTraces.fiducialMarkerIndex;
 FindFiducialIndex(gTraces,1);
-
 % --- Executes on button press in ShowFiducialMarker.
 function ShowFiducialMarker_Callback(hObject, eventdata, handles)
 % hObject    handle to ShowFiducialMarker (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 global gTraces;
- 
+
 figure;
 handle = subplot(1,1,1);
 fiducialIndex = gTraces.fiducialMarkerIndex ;
@@ -299,7 +304,6 @@ for i = 1:size(fiducialIndex,2)
     plot(handle,x-x(1),y-y(1));
 end
 legend(str);
-
 % --- Executes on slider movement.
 function Slider_Threadhold_Low_Callback(hObject, eventdata, handles)
 % hObject    handle to Slider_Threadhold_Low (see GCBO)
@@ -332,7 +336,6 @@ end
 catch
     LogMsg(handles,'Show Image Error');
 end
-
 % --- Executes on slider movement.
 function Slider_Threadhold_High_Callback(hObject, eventdata, handles)
 % hObject    handle to Slider_Threadhold_High (see GCBO)
@@ -365,7 +368,6 @@ try
 catch
     LogMsg(handles,'Show Image Error');
 end
-
 % --- Executes on slider movement.
 function Slider_Stack_Index_Callback(hObject, eventdata, handles)
 % hObject    handle to Slider_Stack_Index (see GCBO)
@@ -397,7 +399,6 @@ end
 catch
     LogMsg(handles,'Show Image Error');
 end
-
 function Current_Frame_Id_Callback(hObject, eventdata, handles)
 % hObject    handle to Current_Frame_Id (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -411,7 +412,6 @@ value = str2double(get(hObject,'String'));
 set(handles.Slider_Stack_Index,'Value',value);
 tracesId = gTraces.CurrentShowIndex(str2num(get(handles.Current_Trace_Id,'String')));
 PlotTrace(gImages,gTraces,tracesId,handles,5);
-
 % --- Executes on button press in ShowPreviouTrace.
 function ShowPreviouTrace_Callback(hObject, eventdata, handles)
 % hObject    handle to ShowPreviouTrace (see GCBO)
@@ -428,7 +428,6 @@ if index >gTraces.CurrentShowNums
 end
 set(handles.Current_Trace_Id,'String',int2str(index));
 PlotTrace(gImages,gTraces,gTraces.CurrentShowIndex(index),handles,0);
-
 % --- Executes on button press in ShowNextTrace.
 function ShowNextTrace_Callback(hObject, eventdata, handles)
 % hObject    handle to ShowNextTrace (see GCBO)
@@ -445,10 +444,49 @@ if index >gTraces.CurrentShowNums
     index =gTraces.CurrentShowNums;
 end
 set(handles.Current_Trace_Id,'String',int2str(index));
-
 PlotTrace(gImages,gTraces,gTraces.CurrentShowIndex(index),handles,0);
-
-
+% --- Executes on button press in ShowNext20Traces.
+function ShowNext20Traces_Callback(hObject, eventdata, handles)
+% hObject    handle to ShowNext20Traces (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+index = str2double(get(handles.Current_Trace_Id,'String'));
+global gTraces;
+global gImages;
+    
+if index<1
+    index = 1;
+end
+if index >gTraces.CurrentShowNums
+    index =gTraces.CurrentShowNums;
+end
+axies = [];
+try  
+    axies = gTraces.ax;
+    plot(axies(1),0,0);  
+catch
+    figure;
+    for i=1:20
+        axies(i) = subplot(5,4,i);        
+    end
+    gTraces.ax = axies;
+end
+showNums = 20;   
+if index >gTraces.CurrentShowNums -showNums
+    showNums = gTraces.CurrentShowNums - index;
+end
+for i=0:showNums-1
+    [distance,ismove] = GetDisplacementById(gTraces,gTraces.CurrentShowIndex(i+index));
+    if ismove
+        p=plot(axies(i+1),distance);
+        set(p,'ButtonDownFcn', {@GcaMouseDownFcnSelectTraces,i+index});    
+        set(axies(i+1),'ButtonDownFcn', {@GcaMouseDownFcnSelectTraces,handles,i+index});    
+    else
+        plot(axies(i+1),0,0);         
+    end   
+    title(axies(i+1),num2str(i+index));
+end
+set(handles.Current_Trace_Id,'String',int2str(index+showNums));
 % --- Executes on button press in ShowHistgram. 
 function ShowHistgram_Callback(hObject, eventdata, handles)
 % hObject    handle to ShowHistgram (see GCBO)
@@ -456,7 +494,6 @@ function ShowHistgram_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 global gTraces;
 PlotHistgram(handles,gTraces);
-
 % --- Executes on button press in ShowNextTrace.
 function Current_Trace_Id_Callback(hObject, eventdata, handles)
 % hObject    handle to Current_Trace_Id (see GCBO)
@@ -477,7 +514,6 @@ if index >gTraces.CurrentShowNums
 end
 set(handles.Current_Trace_Id,'String',int2str(index));
 PlotTrace(gImages,gTraces,gTraces.CurrentShowIndex(index),handles,0);
- 
 % --- Executes on slider movement.
 function Slider_Section_Select_Callback(hObject, eventdata, handles)
 % hObject    handle to Slider_Section_Select (see GCBO)
@@ -526,7 +562,6 @@ end%switch
 set(handles.Intensity_Section_List,'String',I);
 set(handles.PathLength_Section_List,'String',P);
 set(handles.Distance_Section_List,'String',D);
-
 % --- Executes on selection change in Intensity_Section_List.
 function Intensity_Section_List_Callback(hObject, eventdata, handles)
 % hObject    handle to Intensity_Section_List (see GCBO)
@@ -544,7 +579,6 @@ set(handles.Slider_Section_Select,'min',res(1));
 set(handles.Slider_Section_Select,'max',res(2));
 set(handles.Slider_Section_Select,'Value',value);
 set(handles.Slider_Section_Select,'SliderStep',[1/(res(2)-res(1)),5/(res(2)-res(1))]);
-
 % --- Executes on selection change in PathLength_Section_List.
 function PathLength_Section_List_Callback(hObject, eventdata, handles)
 % hObject    handle to PathLength_Section_List (see GCBO)
@@ -563,7 +597,6 @@ set(handles.Slider_Section_Select,'max',res(2));
 
 set(handles.Slider_Section_Select,'Value',value);
 set(handles.Slider_Section_Select,'SliderStep',[1/(res(2)-res(1)),5/(res(2)-res(1))]);
-
 % --- Executes on selection change in Distance_Section_List.
 function Distance_Section_List_Callback(hObject, eventdata, handles)
 % hObject    handle to Distance_Section_List (see GCBO)
@@ -581,7 +614,6 @@ set(handles.Slider_Section_Select,'min',res(1));
 set(handles.Slider_Section_Select,'max',res(2));
 set(handles.Slider_Section_Select,'Value',value);
 set(handles.Slider_Section_Select,'SliderStep',[1/(res(2)-res(1)),10/(res(2)-res(1))]);
-
 % --- Executes on selection change in Traces_SetType_List.
 function Traces_SetType_List_Callback(hObject, eventdata, handles)
 % hObject    handle to Traces_SetType_List (see GCBO)
@@ -596,7 +628,6 @@ global gTraces;
 CurrentDisplayIndex= str2num(get(handles.Current_Trace_Id,'String'));
 traceId = gTraces.CurrentShowIndex(CurrentDisplayIndex);
 gTraces.Metadata(traceId).SetCatalog = selectedType;
-
 % --- Executes when selected object is changed in Data_Quality_Set_Group.
 function Data_Quality_Set_Group_SelectionChangedFcn(hObject, eventdata, handles)
 % hObject    handle to the selected object in Data_Quality_Set_Group 
@@ -607,7 +638,6 @@ global gTraces;
 CurrentDisplayIndex= str2num(get(handles.Current_Trace_Id,'String'));
 traceId = gTraces.CurrentShowIndex(CurrentDisplayIndex);
 gTraces.Metadata(traceId).DataQuality = dataQuality;
-
 % --- Executes on selection change in Traces_ShowType_List.
 function Traces_ShowType_List_Callback(hObject, eventdata, handles)
 % hObject    handle to Traces_ShowType_List (see GCBO)
@@ -632,8 +662,27 @@ end
  
 set(handles.Current_Trace_Id,'String',num2str(1)); %go to the first
 set(handles.TotalParticleNum,'String',int2str(gTraces.CurrentShowNums));
-
-
+% --- Executes when selected object is changed in Data_Quality_Show_Group.
+function Data_Quality_Show_Group_SelectionChangedFcn(hObject, eventdata, handles)
+% hObject    handle to the selected object in Data_Quality_Show_Group 
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+contents = cellstr(get(handles.Traces_ShowType_List,'String'));
+selectedType = contents{get(handles.Traces_ShowType_List,'Value')};
+global gTraces;
+SetupCatalogByMetadata(handles);
+gTraces.CurrentShowTpye = selectedType;
+index = find(gTraces.Catalogs==selectedType);
+if index ==1%all
+    gTraces.CurrentShowNums = gTraces.moleculenum ;
+    gTraces.CurrentShowIndex = 1:gTraces.moleculenum;
+else
+    gTraces.CurrentShowIndex = gTraces.CatalogsContainor{index};
+    gTraces.CurrentShowNums = size(gTraces.CatalogsContainor{index},2);
+end
+ 
+set(handles.Current_Trace_Id,'String',num2str(1)); %go to the first
+set(handles.TotalParticleNum,'String',int2str(gTraces.CurrentShowNums));
 % --- Executes on button press in DistanceAxes_Show_Both_Slope.
 function DistanceAxes_Show_Both_Slope_Callback(hObject, eventdata, handles)
 % hObject    handle to DistanceAxes_Show_Both_Slope (see GCBO)
@@ -647,7 +696,6 @@ value = str2double(get(hObject,'String'));
 set(handles.Slider_Stack_Index,'Value',value);
 tracesId = gTraces.CurrentShowIndex(str2num(get(handles.Current_Trace_Id,'String')));
 PlotTrace(gImages,gTraces,tracesId,handles,5);
-
 % --- Executes on button press in ShowRawIntensity.
 function ShowRawIntensity_Callback(hObject, eventdata, handles)
 % hObject    handle to ShowRawIntensity (see GCBO)
@@ -661,7 +709,6 @@ value = str2double(get(hObject,'String'));
 set(handles.Slider_Stack_Index,'Value',value);
 tracesId = gTraces.CurrentShowIndex(str2num(get(handles.Current_Trace_Id,'String')));
 PlotTrace(gImages,gTraces,tracesId,handles,5);
-
 function DistanceAxes_BinEnd_Callback(hObject, eventdata, handles)
 % hObject    handle to DistanceAxes_BinEnd (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -671,7 +718,6 @@ function DistanceAxes_BinEnd_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of DistanceAxes_BinEnd as a double
 global gTraces;
 PlotHistgram(handles,gTraces);
-
 function DistanceAxes_BinSize_Callback(hObject, eventdata, handles)
 % hObject    handle to DistanceAxes_BinSize (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -681,7 +727,6 @@ function DistanceAxes_BinSize_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of DistanceAxes_BinSize as a double
 global gTraces;
 PlotHistgram(handles,gTraces);
-
 function PathLengthAxes_BinEnd_Callback(hObject, eventdata, handles)
 % hObject    handle to PathLengthAxes_BinEnd (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -691,7 +736,6 @@ function PathLengthAxes_BinEnd_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of PathLengthAxes_BinEnd as a double
 global gTraces;
 PlotHistgram(handles,gTraces);
-
 function PathLengthAxes_BinSize_Callback(hObject, eventdata, handles)
 % hObject    handle to PathLengthAxes_BinSize (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -701,7 +745,6 @@ function PathLengthAxes_BinSize_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of PathLengthAxes_BinSize as a double
 global gTraces;
 PlotHistgram(handles,gTraces);
-
 function IntensityAxes_BinEnd_Callback(hObject, eventdata, handles)
 % hObject    handle to IntensityAxes_BinEnd (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -711,7 +754,6 @@ function IntensityAxes_BinEnd_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of IntensityAxes_BinEnd as a double
 global gTraces;
 PlotHistgram(handles,gTraces);
-
 function IntensityAxes_BinSize_Callback(hObject, eventdata, handles)
 % hObject    handle to IntensityAxes_BinSize (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -721,7 +763,3 @@ function IntensityAxes_BinSize_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of IntensityAxes_BinSize as a double
 global gTraces;
 PlotHistgram(handles,gTraces);
-
- 
-
-

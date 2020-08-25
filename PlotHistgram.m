@@ -16,7 +16,7 @@ selectedType = contents{get(handles.Traces_ShowType_List,'Value')};
 time_per_framems = str2num(get(handles.Frame_Expusure_Timems,'String'))+str2num(get(handles.Frame_Transfer_Timems,'String'));
 time_per_frames = time_per_framems/1000;
     
-SetupCatalogByMetadata();%get the real index of each catalog and save it to
+SetupCatalogByMetadata(handles);%get the real index of each catalog and save it to
 %gTraces.Stuck_Go/Go_Stuck  etc.
 index = find(gTraces.Catalogs==selectedType);
 Indexs =[];
