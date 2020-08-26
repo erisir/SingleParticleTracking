@@ -1,5 +1,5 @@
 % plot the trace we want to show [when click on the Pre/Next button on the UI, it changes the TracesId that pass here]
-function [frameIndicator,displacement,isMove] = GetDisplacementById(traces,TracesId)
+function [frameIndicator,displacement,LastTracesId] = GetNextMoveTrace(traces,TracesId)
         
     % get detail info by id,prepare necessary data for processing
     results = traces.molecules(TracesId).Results;
@@ -17,5 +17,9 @@ function [frameIndicator,displacement,isMove] = GetDisplacementById(traces,Trace
    
     displacement = CalculateDisplacement(relativePositionX,relativePositionY);
     isMove = MovementDetection(displacement,fitError);
+    LastTracesId = TracesId;
+    if ~isMove
+        [frameIndicator,displacement,LastTracesId] = GetNextMoveTrace(traces,TracesId+1);
+    end
 end
 

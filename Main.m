@@ -57,7 +57,7 @@ handles.output = hObject;
 guidata(hObject, handles);
 % UIWAIT makes Main wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
-catalogs = ["All";"Stuck_Go";"Go_Stuck";"Stuck_Go_Stuck";"Go_Stuck_Go";"NonLinear";"Stepping";"BackForward";"Stuck";"Temp"];
+catalogs = ["All";"Stuck_Go";"Go_Stuck";"Stuck_Go_Stuck";"Go_Stuck_Go";"NonLinear";"Stepping";"BackForward";"Diffusion";"Temp"];
  
 set(handles.Traces_ShowType_List,'String',catalogs);
 set(handles.Traces_SetType_List,'String',catalogs);
@@ -205,8 +205,8 @@ try
 catch
     for i = 1:size(temp.metadata,2)
         temp.metadata(i).DataQuality = "All";
-        if temp.metadata(i).SetCatalog == "Perfect";
-           temp.metadata(i).SetCatalog = "Stuck";
+        if temp.metadata(i).SetCatalog == "Perfect"
+           temp.metadata(i).SetCatalog = "Diffusion";
         end
     end
     gTraces.Version = "1.8.24";
@@ -248,7 +248,7 @@ function SaveMetadata_Callback(hObject, eventdata, handles)
 global gTraces;
 formatedSaveDataFormat.metadata = gTraces.Metadata;
 formatedSaveDataFormat.fiducialMarkerIndex = gTraces.fiducialMarkerIndex;
-formatedSaveDataFormat.Version = gTraces.Version;
+formatedSaveDataFormat.Version = "1.8.24"%gTraces.Version;
 
 formatedSaveDataFormat.ExpusureTimems = str2num(get(handles.Frame_Expusure_Timems,'String'));
 formatedSaveDataFormat.FrameTrasferTimems = str2num(get(handles.Frame_Transfer_Timems,'String'));
@@ -444,6 +444,7 @@ if index >gTraces.CurrentShowNums
     index =gTraces.CurrentShowNums;
 end
 set(handles.Current_Trace_Id,'String',int2str(index));
+gTraces.Metadata(gTraces.CurrentShowIndex(index)).DataQuality = "Good";%old
 PlotTrace(gImages,gTraces,gTraces.CurrentShowIndex(index),handles,0);
 % --- Executes on button press in ShowNext20Traces.
 function ShowNext20Traces_Callback(hObject, eventdata, handles)
@@ -475,18 +476,20 @@ showNums = 20;
 if index >gTraces.CurrentShowNums -showNums
     showNums = gTraces.CurrentShowNums - index;
 end
+ 
 for i=0:showNums-1
-    [distance,ismove] = GetDisplacementById(gTraces,gTraces.CurrentShowIndex(i+index));
-    if ismove
-        p=plot(axies(i+1),distance);
-        set(p,'ButtonDownFcn', {@GcaMouseDownFcnSelectTraces,i+index});    
-        set(axies(i+1),'ButtonDownFcn', {@GcaMouseDownFcnSelectTraces,handles,i+index});    
-    else
-        plot(axies(i+1),0,0);         
-    end   
-    title(axies(i+1),num2str(i+index));
+    [frameIndicator,distance,index] = GetNextMoveTrace(gTraces,gTraces.CurrentShowIndex(index));
+    plot(axies(i+1),frameIndicator,distance,'k.');
+    hold(axies(i+1),'on');
+    p=plot(axies(i+1),frameIndicator,distance,'b-');
+    hold(axies(i+1),'off');
+    set(p,'ButtonDownFcn', {@GcaMouseDownFcnSelectTraces,index});    
+    set(axies(i+1),'ButtonDownFcn', {@GcaMouseDownFcnSelectTraces,handles,index});    
+  
+    title(axies(i+1),num2str(index));
+    index = index+1;
 end
-set(handles.Current_Trace_Id,'String',int2str(index+showNums));
+set(handles.Current_Trace_Id,'String',int2str(index));
 % --- Executes on button press in ShowHistgram. 
 function ShowHistgram_Callback(hObject, eventdata, handles)
 % hObject    handle to ShowHistgram (see GCBO)

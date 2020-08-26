@@ -2,7 +2,7 @@ function [] = PlotHistgram(handles,gTraces)
 %PLOTHISTGRAM 此处显示有关此函数的摘要
 %   此处显示详细说明
 global gTraces;
- 
+%ReFitTraces();
 intensity_dwell = [];
 pathlength_base_slopediffer = [];
 pathlength_base_slope_noise = [];
@@ -23,17 +23,17 @@ Indexs =[];
 
 if index ==1%all
     nums = size(gTraces.Catalogs,1);
-    for i =1:nums%skip the first, all,step,temp
-        if i~=1% && i ~=7 && i ~=10
+    for i =1:nums%skip the first, all,step,diffusion,temp
+        if i~=1 && i ~=7 && i ~=9&& i ~=10
             Indexs  = [Indexs,gTraces.CatalogsContainor{i}];
         end
     end
 else
     Indexs = gTraces.CatalogsContainor{index};
 end
-max(Indexs)
+
 %Indexs = gTraces.CatalogsContainor{1};%plot the stuck qdot
-Indexs = 1:size(gTraces.Metadata,2);%plot all the qdots
+%Indexs = 1:size(gTraces.Metadata,2);%plot all the qdots
 moleculeNums = size(Indexs,2);
 % prepare the hist data
 for i = 1:moleculeNums
@@ -43,7 +43,7 @@ for i = 1:moleculeNums
     if metadata.PathLengthSlope(2) ~=0
         pathlength_base_slopediffer(i) = metadata.PathLengthSlope(2)-metadata.PathLengthSlope(1);
         pathlength_base_slope_noise(i) = metadata.PathLengthSlope(1);
-        pathlength_base_slope_move(i)= metadata.PathLengthSlope(2);
+        pathlength_base_slope_move(i)=      metadata.PathLengthSlope(2);
     end
     if metadata.DistanceSlope(1) ~=0
         distance_base_slope(i) = metadata.DistanceSlope(1);   

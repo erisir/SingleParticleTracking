@@ -11,7 +11,7 @@ function [slopes] = PlotTrace(images,traces,TracesId,handles,plotFalg)
     [I,P,D] = GetMetadataByTracesId(traces,TracesId); %gets the start and end frames of each trace from metadata
     setCatalog = traces.Metadata(TracesId).SetCatalog;
     try
-    DataQuality = traces.Metadata(TracesId).DataQuality;
+    DataQuality = traces.Metadata(TracesId). DataQuality;
     catch
         DataQuality = "All";
     end

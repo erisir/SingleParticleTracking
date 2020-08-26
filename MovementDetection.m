@@ -1,7 +1,7 @@
 function [isMove] = MovementDetection(displacement,fitError)
 %MOVEMENTDETECTION Summary of this function goes here
 %   Detailed explanation goes here
-if mean(fitError)>6
+if mean(fitError)>7
     isMove = false;
     return;
 end
@@ -13,14 +13,8 @@ if maxv - minv <15
     isMove = false;
     return;
 end
-if maxv - meanv <10
-    isMove = false;
-    return;
-end
-if size(displacement,1)==1400
-    isMove = false;
-    return;
-end
+
+
 isMove = true;
 end
 
