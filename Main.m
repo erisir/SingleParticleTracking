@@ -220,24 +220,26 @@ gTraces.CatalogsContainor = cell(1,catalognums);% to save different type of trac
 gTraces.showCatalog = 1:size(gTraces.molecules,2);%current show catalog(when use click the showtype list)
 gTraces.moleculenum = max(gTraces.showCatalog);% show in the total tag
 
+ 
+SetupCatalogByMetadata(handles);
+gTraces.CurrentShowTpye = "Temp";
+set(handles.Traces_ShowType_List,'Value',10);
+index = find(gTraces.Config.Catalogs==gTraces.CurrentShowTpye);
+gTraces.CurrentShowIndex = gTraces.CatalogsContainor{index};
+gTraces.CurrentShowNums = size(gTraces.CatalogsContainor{index},2);    
+set(handles.TotalParticleNum,'String',int2str(gTraces.CurrentShowNums));
 
 lastUpdateIndex = 1;
-for i = 1:size(gTraces.Metadata,2)
-    setType = gTraces.Metadata(i).SetCatalog;  
-    res = find(gTraces.Config.Catalogs==setType);
-    if res ~=1
+for i = 1:gTraces.CurrentShowNums
+    dataQuality = gTraces.Metadata(gTraces.CurrentShowIndex(i)).DataQuality;  
+    if dataQuality ~= "All"
         lastUpdateIndex = i;
     end
 end
 set(handles.Current_Trace_Id,'String',num2str(lastUpdateIndex));
+set(handles.TotalParticleNum,'String',int2str(gTraces.CurrentShowNums));
 
-gTraces.CurrentShowTpye = 'All';
-gTraces.CurrentShowNums = gTraces.moleculenum ;
-gTraces.CurrentShowIndex = 1:gTraces.moleculenum;
-set(handles.Current_Trace_Id,'String',int2str(1));
-set(handles.TotalParticleNum,'String',int2str(gTraces.moleculenum));
-
-PlotTrace(gImages,gTraces,1,handles,0);%plot all
+PlotTrace(gImages,gTraces,gTraces.CurrentShowIndex(lastUpdateIndex),handles,0);%plot all
 
 LogMsg(handles,"Finish Loading Metatata "+file+"Version:  | "+version);
 
