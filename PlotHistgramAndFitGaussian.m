@@ -1,5 +1,5 @@
 function [] = PlotHistgramAndFitGaussian(plotAxes,data,binsize,xAxesEnd,fitOption,moleculeNums,ylabelName)
-%PLOTHISTGRAMANDFITGUSSAIN2  
+%PLOTHISTGRAMANDFITGUSSAIN2  do the real plot here
 %    
 h1 = histogram(plotAxes,data,0:binsize:xAxesEnd);
 y = h1.Values;

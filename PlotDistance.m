@@ -1,4 +1,4 @@
-function [slopes] = PlotDistanceAndFit(handles,displacement,frameIndicator,D,traces,TracesId,cd,fitError)
+function [slopes] = PlotDistance(handles,displacement,frameIndicator,D,traces,TracesId,cd,fitError)
 %PLOTDISTANCEANDFIT  
 %    
  

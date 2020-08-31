@@ -2,9 +2,10 @@
 function [slopes] = PlotTrace(images,traces,TracesId,handles,plotFalg)
     selected =1;
     warning off;
+    LogMsg(handles,['plot trace[id][',int2str(TracesId),']']);
     fiducialFrameIndicator =  traces.fiducialFrameIndicator;
-    smoothWindowSize =  traces.smoothWindowSize;
-    pixelSize = traces.pixelSize;
+    smoothWindowSize =  traces.Config.smoothWindowSize;
+    pixelSize = traces.Config.pixelSize;
     time_per_framems = str2num(get(handles.Frame_Expusure_Timems,'String'))+str2num(get(handles.Frame_Transfer_Timems,'String'));
     time_per_frames = time_per_framems/1000;
     slopes = [0,0,0,0];
@@ -70,7 +71,7 @@ function [slopes] = PlotTrace(images,traces,TracesId,handles,plotFalg)
     cd = [uint8(jet(datalength)*255) uint8(ones(datalength,1))].';%rainbow plot
     contents = cellstr(get(handles.Traces_ShowType_List,'String'));
     selectedType = contents{get(handles.Traces_ShowType_List,'Value')};
-    if selectedType=="All" && false==MovementDetection(displacement,fitError) && get(handles.System_Debug,'value')
+    if selectedType=="All" && false==MovementDetectionByTraceId(traces,TracesId) && get(handles.System_Debug,'value')
        set(handles.Current_Trace_Id,'String',num2str(TracesId+1));
        PlotTrace(images,traces,TracesId+1,handles,plotFalg);
     else

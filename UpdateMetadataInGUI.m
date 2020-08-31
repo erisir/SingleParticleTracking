@@ -5,7 +5,7 @@ function [] = UpdateMetadataInGUI(handles,setCatalog,DataQuality,plotFalg,I,P,D)
     set(handles.Intensity_Section_List,'String',I);
     set(handles.PathLength_Section_List,'String',P);
     set(handles.Distance_Section_List,'String',D);
-    index = find(gTraces.Catalogs==setCatalog);
+    index = find(gTraces.Config.Catalogs==setCatalog);
     set(handles.Traces_SetType_List,'Value',index);
     switch DataQuality
         case "All"

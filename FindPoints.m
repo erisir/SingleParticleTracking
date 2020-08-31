@@ -1,5 +1,5 @@
 function [pos] = FindPoints(img,threadhold)
-%FINDPOINTS find points base on the intensity
+%NOT USE !! FINDPOINTS find points base on the intensity
 %   return list of pos 2D array, with xi = pos(i,1) , yi=pos(i,2);
 [height,width] = size(img);
 img(find(img<threadhold)) = 0;

@@ -22,7 +22,7 @@ currentDisplayFrame = floor(get(handles.Slider_Stack_Index,'Value'));
 if currentDisplayFrame ~= 0
     plot(handles.DistanceAxes,currentDisplayFrame*x,y,'k');
 end
-metadata = traces.Metadata(TracesId).Distance;
+metadata = traces.Metadata(TracesId).DistanceStartEndTimePoint;
 fitStart = find(frameIndicator==metadata(1));
 fitEnd = find(frameIndicator==metadata(2));
 fitStart2 = find(frameIndicator==metadata(3));

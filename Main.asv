@@ -213,14 +213,8 @@ set(handles.IntensityAxes_BinEnd,'String',num2str(gTraces.Config.IntensityAxesBi
 framecolumn = gTraces.molecules(gTraces.Config.fiducialMarkerIndex(1)).Results(:,1);
 gTraces.fiducialFrameIndicator = framecolumn;%save the start frame of the ficucial for substrate
 
-catalognums = size(gTraces.Config.Catalogs,1);%find last save data index
- 
-%run time parametter, no need to save to Config
-gTraces.CatalogsContainor = cell(1,catalognums);% to save different type of trace here, only the index will save
-gTraces.showCatalog = 1:size(gTraces.molecules,2);%current show catalog(when use click the showtype list)
-gTraces.moleculenum = max(gTraces.showCatalog);% show in the total tag
-
-
+nums = size(gTraces.Config.Catalogs,1);%find last save data index
+gTraces.CatalogsContainor = cell(1,nums);
 lastUpdateIndex = 1;
 for i = 1:size(gTraces.Metadata,2)
     setType = gTraces.Metadata(i).SetCatalog;  
@@ -631,17 +625,6 @@ global gTraces;
 CurrentDisplayIndex= str2num(get(handles.Current_Trace_Id,'String'));
 traceId = gTraces.CurrentShowIndex(CurrentDisplayIndex);
 gTraces.Metadata(traceId).SetCatalog = selectedType;
-
-%default action
-gTraces.LastSelectedList = 'DistanceList';
-contents = cellstr(get(handles.Distance_Section_List,'String'));
-value = str2num(contents{get(handles.Distance_Section_List,'Value')});
-res= xlim(handles.DistanceAxes);
-set(handles.Slider_Section_Select,'min',res(1));
-set(handles.Slider_Section_Select,'max',res(2));
-set(handles.Slider_Section_Select,'Value',value);
-set(handles.Slider_Section_Select,'SliderStep',[1/(res(2)-res(1)),10/(res(2)-res(1))]);
-
 % --- Executes when selected object is changed in Data_Quality_Set_Group.
 function Data_Quality_Set_Group_SelectionChangedFcn(hObject, eventdata, handles)
 % hObject    handle to the selected object in Data_Quality_Set_Group 

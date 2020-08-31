@@ -1,6 +1,6 @@
 function [] = PlotHistgram(handles,gTraces)
-%PLOTHISTGRAM 此处显示有关此函数的摘要
-%   此处显示详细说明
+%PLOTHISTGRAM  prepare data to plot the histgram
+%   
 global gTraces;
 %ReFitTraces();
 intensity_dwell = [];
@@ -18,11 +18,11 @@ time_per_frames = time_per_framems/1000;
     
 SetupCatalogByMetadata(handles);%get the real index of each catalog and save it to
 %gTraces.Stuck_Go/Go_Stuck  etc.
-index = find(gTraces.Catalogs==selectedType);
+index = find(gTraces.Config.Catalogs==selectedType);
 Indexs =[];
 
 if index ==1%all
-    nums = size(gTraces.Catalogs,1);
+    nums = size(gTraces.Config.Catalogs,1);
     for i =1:nums%skip the first, all,step,diffusion,temp
         if i~=1 && i ~=7 && i ~=9&& i ~=10
             Indexs  = [Indexs,gTraces.CatalogsContainor{i}];
@@ -40,15 +40,15 @@ for i = 1:moleculeNums
     traceId = Indexs(i);
     metadata=gTraces.Metadata(traceId) ; % Indexs(i) is the real index
     intensity_dwell(i) = metadata.IntensityDwell(1)*time_per_frames;
+    %intensity_dwell(i) = ( metadata.IntensityDwell(1) - metadata.IntensityStartEndTimePoint(1))*time_per_frames;
     if metadata.PathLengthSlope(2) ~=0
         pathlength_base_slopediffer(i) = metadata.PathLengthSlope(2)-metadata.PathLengthSlope(1);
         pathlength_base_slope_noise(i) = metadata.PathLengthSlope(1);
-        pathlength_base_slope_move(i)=      metadata.PathLengthSlope(2);
+        pathlength_base_slope_move(i)  =  metadata.PathLengthSlope(2);
     end
     if metadata.DistanceSlope(1) ~=0
         distance_base_slope(i) = metadata.DistanceSlope(1);   
-        distance_base_runLength(i) = metadata.DistanceSlope(1)*(metadata.Distance(2)-metadata.Distance(1));
-        distance_base_slope(i) = distance_base_slope(i);   
+        distance_base_runLength(i) = metadata.DistanceSlope(1)*(metadata.DistanceStartEndTimePoint(2)-metadata.DistanceStartEndTimePoint(1));
     end
 end
 %trim zero
@@ -77,14 +77,14 @@ xAxesEnd = str2double(get(handles.PathLengthAxes_BinEnd,'String'));
 PlotHistgramAndFitGaussian(handles.PathLengthAxes,distance_base_runLength,binsize,xAxesEnd,fitOption,totalNum_distance_base_runLength,'Run Length (nm)');
 
 selected = handles.Intensity_Axes_Plot_Option.SelectedObject.String;
-if selected =='DwellTime'
+if selected =="DwellTime"
     binsize = str2double(get(handles.IntensityAxes_BinSize,'String'));
     xAxesEnd = str2double(get(handles.IntensityAxes_BinEnd,'String'));
     PlotHistgramAndFitGaussian(handles.IntensityAxes,intensity_dwell,binsize,xAxesEnd,fitOption,totalNum_intensity_dwell,'Binding duration (s)');
 else
     binsize = str2double(get(handles.IntensityAxes_BinSize,'String'));
     xAxesEnd = str2double(get(handles.IntensityAxes_BinEnd,'String'));
-    intensity = GetTracesIntensity(gTraces);
+    intensity = GetTracesMeanIntensity(gTraces);
     PlotHistgramAndFitGaussian(handles.IntensityAxes,intensity,binsize,xAxesEnd,fitOption,gTraces.moleculenum,'Intensity (a.u.)');
 end
 end

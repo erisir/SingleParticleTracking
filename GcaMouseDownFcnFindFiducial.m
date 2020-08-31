@@ -1,8 +1,8 @@
 function [] = GcaMouseDownFcnFindFiducial(object, eventdata,handle,index)
-%GCAWINDOWMOUSEDOWNFCN 此处显示有关此函数的摘要
-%   此处显示详细说明
+%mouse down function, to select trace and show it on main window
+%    
 global gTraces;
-fiducialIndex = gTraces.fiducialMarkerIndex;
+fiducialIndex = gTraces.Config.fiducialMarkerIndex;
 button = eventdata.Button;
  
 if button == 1%add if not exist
@@ -26,10 +26,10 @@ if button ==3%remove if exist
     end
 end
 
-gTraces.fiducialMarkerIndex = fiducialIndex;
+gTraces.Config.fiducialMarkerIndex = fiducialIndex;
 
 [gTraces.driftx,gTraces.drifty,gTraces.smoothDriftx,gTraces.smoothDrifty] = SmoothDriftTraces(gTraces,fiducialIndex);
-framecolumn = gTraces.molecules(gTraces.fiducialMarkerIndex(1)).Results(:,1);
+framecolumn = gTraces.molecules(gTraces.Config.fiducialMarkerIndex(1)).Results(:,1);
 gTraces.fiducialFrameIndicator = framecolumn;%save the start frame of the ficucial for substrate
 
 colNums = ceil(size(fiducialIndex,2)/2);

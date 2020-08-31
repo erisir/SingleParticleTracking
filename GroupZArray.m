@@ -1,5 +1,5 @@
 function [returnArray] = GroupZArray(inputArray,groupSize,method)
-%GROUPZARRAY GroupZArray of a 1D array
+% NOT USE GROUPZARRAY GroupZArray of a 1D array
 %   defaut method is sum 
 %   inputArray = [1,1,2,2,3,3,4,4],
 %   GroupZArray(inputArray,2) returns [2,4,6,8]

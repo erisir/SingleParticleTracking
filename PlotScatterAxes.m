@@ -11,7 +11,7 @@ hold(handles.XYScatterAxes, 'off');
 grid(handles.XYScatterAxes, 'on');
 drawnow
 set(pltXYscatter.Edge, 'ColorBinding','interpolated', 'ColorData',cd);
-title(handles.XYScatterAxes,'Drift-correctedXY,from Blue to Red')
+title(handles.XYScatterAxes,'Drift-correctedXY')
 xlabel(handles.XYScatterAxes,'x (nm)') 
 ylabel(handles.XYScatterAxes,'y (nm)') 
 end
