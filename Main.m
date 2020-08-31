@@ -187,9 +187,7 @@ end
 filefullpath = [path,file];
 matData = load(filefullpath);
 LogMsg(handles,'start to Load Metadata');
-%gTraces.Metadata = matData.metadata;%old save version
 
-%temp = matData.formatedSaveDataFormat;
 try
     temp = matData.formatedData;
     gTraces.Metadata = temp.metadata;
@@ -454,7 +452,6 @@ function ShowNext20Traces_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 index = str2double(get(handles.Current_Trace_Id,'String'));
 global gTraces;
-global gImages;
     
 if index<1
     index = 1;
@@ -467,7 +464,7 @@ try
     axies = gTraces.ax;
     plot(axies(1),0,0);  
 catch
-    figure;
+    fig = figure('KeyPressFcn',{@GcaKeyDownFcnSelectTraces,handles});
     for i=1:20
         axies(i) = subplot(5,4,i);        
     end
@@ -491,6 +488,7 @@ for i=0:showNums-1
     index = index+1;
 end
 set(handles.Current_Trace_Id,'String',int2str(index));
+
 % --- Executes on button press in ShowHistgram. 
 function ShowHistgram_Callback(hObject, eventdata, handles)
 % hObject    handle to ShowHistgram (see GCBO)
