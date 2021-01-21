@@ -3,7 +3,7 @@ function [slopes] = PlotTrace(images,traces,TracesId,handles,plotFalg)
     selected =1;
     warning off;
     LogMsg(handles,['plot trace[id][',int2str(TracesId),']']);
-    fiducialFrameIndicator =  traces.fiducialFrameIndicator;
+    fiducialFrameIndicator =  traces.fiducialFrameIndicator;%use in drift correcting
     smoothWindowSize =  traces.Config.smoothWindowSize;
     pixelSize = traces.Config.pixelSize;
     time_per_framems = str2num(get(handles.Frame_Expusure_Timems,'String'))+str2num(get(handles.Frame_Transfer_Timems,'String'));
@@ -11,7 +11,7 @@ function [slopes] = PlotTrace(images,traces,TracesId,handles,plotFalg)
     slopes = [0,0,0,0];
     [I,P,D] = GetMetadataByTracesId(traces,TracesId); %gets the start and end frames of each trace from metadata
     setCatalog = traces.Metadata(TracesId).SetCatalog;
-    try
+    try%old version control
     DataQuality = traces.Metadata(TracesId). DataQuality;
     catch
         DataQuality = "All";
@@ -47,9 +47,9 @@ function [slopes] = PlotTrace(images,traces,TracesId,handles,plotFalg)
     %the frame is continue in cases of fiducial marker, directly substraction
     %will cause mismatch
     %*****************************************************************
-    driftCorrectIndex = FindDriftCorrentIndex(fiducialFrameIndicator,frameIndicator);
-    relativePositionX = absXposition  - traces.smoothDriftx(driftCorrectIndex); 
-    relativePositionY = absYposition  - traces.smoothDrifty(driftCorrectIndex); 
+    driftCorrectIndex = FindDriftCorrentIndex(fiducialFrameIndicator,frameIndicator);%
+    relativePositionX = absXposition    - traces.smoothDriftx(driftCorrectIndex);% 
+    relativePositionY = absYposition    - traces.smoothDrifty(driftCorrectIndex); %
     %substarced by the first[oringal position] so every traces go from
     %(0,0)
     relativePositionX = relativePositionX-relativePositionX(1);
@@ -66,12 +66,13 @@ function [slopes] = PlotTrace(images,traces,TracesId,handles,plotFalg)
     %the displacement is a vector point from the original position to the
     %current position.regardless of where the spot has been.     
     displacement = CalculateDisplacement(relativePositionX,relativePositionY);
-     
+    assignin('base','displacement',displacement);
+    
     % cd use to plot the rainbow plot, define the color dictionary
     cd = [uint8(jet(datalength)*255) uint8(ones(datalength,1))].';%rainbow plot
     contents = cellstr(get(handles.Traces_ShowType_List,'String'));
     selectedType = contents{get(handles.Traces_ShowType_List,'Value')};
-    if selectedType=="All" && false==MovementDetectionByTraceId(traces,TracesId) && get(handles.System_Debug,'value')
+    if selectedType=="All" && false==MovementDetectionByTraceId(traces,TracesId) && get(handles.System_Debug,'value')%sikp the high error
        set(handles.Current_Trace_Id,'String',num2str(TracesId+1));
        PlotTrace(images,traces,TracesId+1,handles,plotFalg);
     else
@@ -94,6 +95,7 @@ function [slopes] = PlotTrace(images,traces,TracesId,handles,plotFalg)
                     slopes(4) =  s2(2);  
                 else
                     PlotDistance(handles,displacement,frameIndicator,D,traces,TracesId,cd,fitError);
+                    %PlotToIllustrator(handles,displacement,frameIndicator,D,traces,TracesId,cd,fitError);
                     PlotScatterAxes(handles,datalength,relativePositionX,relativePositionY,smoothRelativePosX,smoothRelativePosY,cd);
                     slopes = [1,1,1,1];
                 end

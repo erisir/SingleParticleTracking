@@ -1,7 +1,7 @@
 function [slopes] = PlotDistance(handles,displacement,frameIndicator,D,traces,TracesId,cd,fitError)
 %PLOTDISTANCEANDFIT  
 %    
- 
+
 smDisplacement = smooth(displacement,3);
 pltDisplacement = plot(handles.DistanceAxes,frameIndicator,smDisplacement,'LineWidth',1);  %plot the smooth distance
 

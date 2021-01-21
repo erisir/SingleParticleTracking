@@ -4,10 +4,9 @@ function [] = SysConfigAndInitializeTracesMetadata(handles)
 global gTraces;
 global gImages;
 gTraces.Config.smoothWindowSize = 10;%frame
-gTraces.Config.pixelSize = 65.98;%nm/pixel
 gTraces.Config.maxFitError = 7;%nm
 gTraces.Config.MinimumMoveDistance = 10;%nm
-gTraces.Config.ExpusureTimems = 250;
+gTraces.Config.MaximumMoveDistance = 400;%nm
 gTraces.Config.FrameTrasferTimems = 37.5 ;
 gTraces.Config.DistanceAxesBinSize = 0.3 ;
 gTraces.Config.DistanceAxesBinEnd =  25;
@@ -32,8 +31,8 @@ gTraces.moleculenum = max(gTraces.showCatalog);% show in the total tag
 gTraces.Config.fiducialMarkerIndex =FindFiducialIndex(gTraces);%auto find fiducial,dont plot it
 
 [gTraces.driftx,gTraces.drifty,gTraces.smoothDriftx,gTraces.smoothDrifty]=SmoothDriftTraces(gTraces,gTraces.Config.fiducialMarkerIndex);%save the result to Traces struct
-framecolumn = gTraces.molecules(gTraces.Config.fiducialMarkerIndex(1)).Results(:,1);
-gTraces.fiducialFrameIndicator = framecolumn;%save the start frame of the ficucial for substrate
+
+gTraces.fiducialFrameIndicator = gTraces.Config.FirstFrame:gTraces.Config.LastFrame;%save the start frame of the ficucial for substrate
 
 
 %initial metadata
@@ -52,13 +51,14 @@ for i = 1:gTraces.moleculenum
     results = gTraces.molecules(i).Results;
     framecloumn = results(:,1);
     fitError = results(:,9);
+ 
     
     startFrame = min(framecloumn);
     endFrame = max(framecloumn);
     temp = [startFrame,endFrame,startFrame,endFrame];
-    metadata.Intensity = temp;
-    metadata.PathLength = temp;
-    metadata.Distance = temp;
+    metadata.IntensityStartEndTimePoint = temp;
+    metadata.PathLengthStartEndTimePoint = temp;
+    metadata.DistanceStartEndTimePoint = temp;
     metadata.IntensityDwell = [endFrame-startFrame,endFrame-startFrame];
     
     if mean(fitError)>gTraces.Config.maxFitError 
@@ -72,7 +72,7 @@ for i = 1:gTraces.moleculenum
     end
     gTraces.Metadata(i) = metadata;    
 end
- 
+
 gTraces.CurrentShowTpye = 'All';
 gTraces.CurrentShowNums = gTraces.moleculenum ;
 gTraces.CurrentShowIndex = 1:gTraces.moleculenum;

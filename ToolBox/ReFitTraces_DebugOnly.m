@@ -1,4 +1,5 @@
 function [] = ReFitTraces()
+%re fit velocity if use wrong time interval in the UI
     global gTraces;   
     
     fiducialFrameIndicator =  gTraces.fiducialFrameIndicator;

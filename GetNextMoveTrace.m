@@ -5,6 +5,7 @@ function [frameIndicator,displacement,LastDispId] = GetNextMoveTrace(traces,inde
     TracesId = traces.CurrentShowIndex(index);
     results = traces.molecules(TracesId).Results;
     fiducialFrameIndicator =  traces.fiducialFrameIndicator;
+  
     frameIndicator = results(:,1);    %time = results(:,2); fps is 1 so time is equal to frame
     absXposition = results(:,3);
     absYposition = results(:,4);   
@@ -19,8 +20,8 @@ function [frameIndicator,displacement,LastDispId] = GetNextMoveTrace(traces,inde
     displacement = CalculateDisplacement(relativePositionX,relativePositionY);
     isMove = MovementDetectionByTraceId(traces,TracesId);
     LastDispId = index;
-    if ~isMove
+    if ~isMove  
         [frameIndicator,displacement,LastDispId] = GetNextMoveTrace(traces,index+1);
-    end
+    end 
 end
 

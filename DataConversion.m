@@ -8,16 +8,21 @@ gTraces.Config.pixelSize = 65.98;%nm/pixel
 gTraces.Config.maxFitError = 7;%nm
 gTraces.Config.MinimumMoveDistance = 10;%nm
 
+try
 gTraces.Config.ExpusureTimems = matData.ExpusureTimems;
 gTraces.Config.FrameTrasferTimems =matData.FrameTrasferTimems;
+gTraces.Config.fiducialMarkerIndex = matData.fiducialMarkerIndex;
+
 gTraces.Config.DistanceAxesBinSize = matData.DistanceAxesBinSize ;
 gTraces.Config.DistanceAxesBinEnd =  matData.DistanceAxesBinEnd;
 gTraces.Config.PathLengthAxesBinSize = matData.PathLengthAxesBinSize ;
 gTraces.Config.PathLengthAxesBinEnd =  matData.PathLengthAxesBinEnd;
 gTraces.Config.IntensityAxesBinSize =  matData.IntensityAxesBinSize;
 gTraces.Config.IntensityAxesBinEnd =  matData.IntensityAxesBinEnd;
-gTraces.Config.fiducialMarkerIndex = matData.fiducialMarkerIndex;
 
+catch
+    
+end
 gTraces.Config.Version =  "08.30.1";
 gTraces.Config.Catalogs = ["All";"Stuck_Go";"Go_Stuck";"Stuck_Go_Stuck";"Go_Stuck_Go";"NonLinear";"Stepping";"BackForward";"Diffusion";"Temp"];
 

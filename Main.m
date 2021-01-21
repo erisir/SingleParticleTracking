@@ -22,7 +22,7 @@ function varargout = Main(varargin)
 
 % Edit the above text to modify the response to help Main
 
-% Last Modified by GUIDE v2.5 29-Aug-2020 16:18:35
+% Last Modified by GUIDE v2.5 05-Oct-2020 08:11:18
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -57,7 +57,6 @@ handles.output = hObject;
 guidata(hObject, handles);
 % UIWAIT makes Main wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
-
 % --- Outputs from this function are returned to the command line.
 function varargout = Main_OutputFcn(hObject, eventdata, handles) 
 % varargout  cell array for returning output args (see VARARGOUT);
@@ -149,14 +148,15 @@ defaultPath = [getuserdir,'\Box\DOE SCATTIRSTORM\3 Results\Experiment\Daguan\Dat
 filefullpath = [path,file];
 
 if path ==0
-    LogMsg(handles,"Load Traces false,use cancel");
+    LogMsg(handles,"Load Traces false,user cancel");
     return
 end
 
-rawdata = load(filefullpath);
+[molecule,config] = LoadFiestaMatData(filefullpath);
 gTraces = [];
 gTraces.TracesPath = path;
-gTraces.molecules = rawdata.Molecule;
+gTraces.molecules = molecule;
+gTraces.Config = config;
 
 LogMsg(handles,["Finish Loading Traces Data  ",file]);
 set(handles.figure1,'Name',['FIESTA Data Processing-----------------       ', file]);
@@ -192,6 +192,11 @@ try
     temp = matData.formatedData;
     gTraces.Metadata = temp.metadata;
     gTraces.Config = temp.Config;
+ 
+    gTraces.Config.Threshold =200;
+    gTraces.Config.FirstFrame = 36;
+    gTraces.Config.LastFrame = 1000; 
+    
 catch
     DataConversion(handles,matData);
 end
@@ -208,8 +213,8 @@ set(handles.IntensityAxes_BinSize,'String',num2str(gTraces.Config.IntensityAxesB
 set(handles.IntensityAxes_BinEnd,'String',num2str(gTraces.Config.IntensityAxesBinEnd));
    
 [gTraces.driftx,gTraces.drifty,gTraces.smoothDriftx,gTraces.smoothDrifty] = SmoothDriftTraces(gTraces,gTraces.Config.fiducialMarkerIndex);
-framecolumn = gTraces.molecules(gTraces.Config.fiducialMarkerIndex(1)).Results(:,1);
-gTraces.fiducialFrameIndicator = framecolumn;%save the start frame of the ficucial for substrate
+ 
+gTraces.fiducialFrameIndicator =  gTraces.Config.FirstFrame:gTraces.Config.LastFrame;%save the start frame of the ficucial for substrate
 
 catalognums = size(gTraces.Config.Catalogs,1);%find last save data index
  
@@ -228,16 +233,17 @@ gTraces.CurrentShowNums = size(gTraces.CatalogsContainor{index},2);
 set(handles.TotalParticleNum,'String',int2str(gTraces.CurrentShowNums));
 
 lastUpdateIndex = 1;
-for i = 1:gTraces.CurrentShowNums
-    dataQuality = gTraces.Metadata(gTraces.CurrentShowIndex(i)).DataQuality;  
-    if dataQuality ~= "All"
+for i = 1:gTraces.moleculenum
+    dataQuality = gTraces.Metadata(i).DataQuality ;
+    if dataQuality ~= "All" && dataQuality ~= "Error"
         lastUpdateIndex = i;
     end
 end
-set(handles.Current_Trace_Id,'String',num2str(lastUpdateIndex));
+res = min(find(gTraces.CurrentShowIndex>lastUpdateIndex));
+set(handles.Current_Trace_Id,'String',num2str(res));
 set(handles.TotalParticleNum,'String',int2str(gTraces.CurrentShowNums));
-
-PlotTrace(gImages,gTraces,gTraces.CurrentShowIndex(lastUpdateIndex),handles,0);%plot all
+ 
+PlotTrace(gImages,gTraces,gTraces.CurrentShowIndex(res),handles,0);%plot all
 
 LogMsg(handles,"Finish Loading Metatata "+file+"Version:  | "+version);
 
@@ -291,17 +297,20 @@ global gTraces;
 
 figure;
 handle = subplot(1,1,1);
-fiducialIndex = gTraces.Config.fiducialMarkerIndex 
+fiducialIndex = gTraces.Config.fiducialMarkerIndex ;
 colNums = ceil(size(fiducialIndex,2)/2);
-plot(handle,gTraces.smoothDriftx,gTraces.smoothDrifty,'r');
+plot(handle,gTraces.smoothDriftx,gTraces.smoothDrifty,'k ');
 hold on;
+plot(handle,gTraces.smoothDriftx,gTraces.smoothDrifty,'k*','markersize',10);
 str = ["smooth"];
 for i = 1:size(fiducialIndex,2)
     x = gTraces.molecules(fiducialIndex(i)).Results(:,3);
     y = gTraces.molecules(fiducialIndex(i)).Results(:,4);
     str = [str,string(fiducialIndex(i))];
     plot(handle,x-x(1),y-y(1));
+    hold(handle,'on'); 
 end
+gTraces.molecules(fiducialIndex(1)).Results(:,1)
 legend(str);
 % --- Executes on slider movement.
 function Slider_Threadhold_Low_Callback(hObject, eventdata, handles)
@@ -444,7 +453,9 @@ if index >gTraces.CurrentShowNums
 end
 set(handles.Current_Trace_Id,'String',int2str(index));
 gTraces.Metadata(gTraces.CurrentShowIndex(index)).DataQuality = "Good";%old
+
 PlotTrace(gImages,gTraces,gTraces.CurrentShowIndex(index),handles,0);
+
 % --- Executes on button press in ShowNext20Traces.
 function ShowNext20Traces_Callback(hObject, eventdata, handles)
 % hObject    handle to ShowNext20Traces (see GCBO)
@@ -460,6 +471,7 @@ if index >gTraces.CurrentShowNums
     index =gTraces.CurrentShowNums;
 end
 axies = [];
+ gTraces.ax = [];
 try  
     axies = gTraces.ax;
     plot(axies(1),0,0);  
@@ -481,10 +493,19 @@ for i=0:showNums-1
     hold(axies(i+1),'on');
     p=plot(axies(i+1),frameIndicator,distance,'b-');
     hold(axies(i+1),'off');
-    set(p,'ButtonDownFcn', {@GcaMouseDownFcnSelectTraces,index});    
+    %set(p,'ButtonDownFcn', {@GcaMouseDownFcnSelectTraces,handles,index});    
     set(axies(i+1),'ButtonDownFcn', {@GcaMouseDownFcnSelectTraces,handles,index});    
-  
-    title(axies(i+1),num2str(index));
+           
+    TracesId = gTraces.CurrentShowIndex(index);% prepare display title
+    dataQuality =  gTraces.Metadata(TracesId).DataQuality;
+    setCatalog =  gTraces.Metadata(TracesId).SetCatalog;
+    if strcmp(class(dataQuality), 'string')
+        dataQuality = dataQuality.char;
+    end
+    str = [num2str(index),'-',setCatalog,'.',dataQuality];
+    str = lower(strrep(str,'_','.'));        
+    title(axies(i+1),str);% prepare display title
+            
     index = index+1;
 end
 set(handles.Current_Trace_Id,'String',int2str(index));
@@ -552,7 +573,7 @@ switch gTraces.LastSelectedList
              
       case 'DistanceList'        
          selected  =floor(get(handles.Distance_Section_List,'Value'));
-          gTraces.Metadata(traceID).DistanceStartEndTimePoint(selected) = slideBarValue;
+          gTraces.Metadata(traceID).DistanceStartEndTimePoint(selected) = slideBarValue;%4 elemene[]
                    
           slopes =PlotTrace(gImages,gTraces,traceID,handles,3);
           gTraces.Metadata(traceID).DistanceSlope(1) = slopes(3);
@@ -632,9 +653,17 @@ CurrentDisplayIndex= str2num(get(handles.Current_Trace_Id,'String'));
 traceId = gTraces.CurrentShowIndex(CurrentDisplayIndex);
 gTraces.Metadata(traceId).SetCatalog = selectedType;
 
-%default action
+%default action,select the start/end time point
 gTraces.LastSelectedList = 'DistanceList';
 contents = cellstr(get(handles.Distance_Section_List,'String'));
+%"Stuck_Go","Stuck_Go_Stuck","NonLinear","Stepping","BackForward" set
+%default select time point to start
+res = find(["Go_Stuck","Go_Stuck_Go","Diffusion","BackForward"]==selectedType);
+if ~isempty(res)
+    set(handles.Distance_Section_List,'Value',2);
+else
+    set(handles.Distance_Section_List,'Value',1);
+end
 value = str2num(contents{get(handles.Distance_Section_List,'Value')});
 res= xlim(handles.DistanceAxes);
 set(handles.Slider_Section_Select,'min',res(1));
@@ -669,7 +698,7 @@ index = find(gTraces.Config.Catalogs==selectedType);
 if index ==1%all
     gTraces.CurrentShowNums = gTraces.moleculenum ;
     gTraces.CurrentShowIndex = 1:gTraces.moleculenum;
-    set(handles.TotalParticleNum,'String',[int2str(gTraces.CurrentShowNums),'/',int2str(fitErrorNums)]);
+    set(handles.TotalParticleNum,'String',[int2str(gTraces.CurrentShowNums-fitErrorNums),'/E',int2str(fitErrorNums)]);
 else
     gTraces.CurrentShowIndex = gTraces.CatalogsContainor{index};
     gTraces.CurrentShowNums = size(gTraces.CatalogsContainor{index},2);    
@@ -692,7 +721,7 @@ if index ==1%all
     gTraces.CurrentShowNums = gTraces.moleculenum ;
     gTraces.CurrentShowIndex = 1:gTraces.moleculenum;
 else
-    gTraces.CurrentShowIndex = gTraces.CatalogsContainor{index};
+    gTraces.CurrentShowIndex = gTraces.CatalogsContainor{index};%cell
     gTraces.CurrentShowNums = size(gTraces.CatalogsContainor{index},2);
 end
  
@@ -778,5 +807,3 @@ function IntensityAxes_BinSize_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of IntensityAxes_BinSize as a double
 global gTraces;
 PlotHistgram(handles,gTraces);
-
-
