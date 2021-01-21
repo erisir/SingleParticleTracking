@@ -22,7 +22,7 @@ function varargout = Main(varargin)
 
 % Edit the above text to modify the response to help Main
 
-% Last Modified by GUIDE v2.5 05-Oct-2020 08:11:18
+% Last Modified by GUIDE v2.5 21-Jan-2021 10:43:10
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -212,10 +212,6 @@ set(handles.PathLengthAxes_BinEnd,'String',num2str(gTraces.Config.PathLengthAxes
 set(handles.IntensityAxes_BinSize,'String',num2str(gTraces.Config.IntensityAxesBinSize));
 set(handles.IntensityAxes_BinEnd,'String',num2str(gTraces.Config.IntensityAxesBinEnd));
    
-[gTraces.driftx,gTraces.drifty,gTraces.smoothDriftx,gTraces.smoothDrifty] = SmoothDriftTraces(gTraces,gTraces.Config.fiducialMarkerIndex);
- 
-gTraces.fiducialFrameIndicator =  gTraces.Config.FirstFrame:gTraces.Config.LastFrame;%save the start frame of the ficucial for substrate
-
 catalognums = size(gTraces.Config.Catalogs,1);%find last save data index
  
 %run time parametter, no need to save to Config
@@ -223,7 +219,6 @@ gTraces.CatalogsContainor = cell(1,catalognums);% to save different type of trac
 gTraces.showCatalog = 1:size(gTraces.molecules,2);%current show catalog(when use click the showtype list)
 gTraces.moleculenum = max(gTraces.showCatalog);% show in the total tag
 
- 
 SetupCatalogByMetadata(handles);
 gTraces.CurrentShowTpye = "Temp";
 set(handles.Traces_ShowType_List,'Value',10);
@@ -281,37 +276,6 @@ formatedData.Config = gTraces.Config;
 save([path,file],'formatedData'); 
 LogMsg(handles,'Finish saving Metadata');
 
-% --- Executes on button press in FindFiducialMarker.
-function FindFiducialMarker_Callback(hObject, eventdata, handles)
-% hObject    handle to FindFiducialMarker (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-global gTraces;
-FindFiducialIndex(gTraces);
-% --- Executes on button press in ShowFiducialMarker.
-function ShowFiducialMarker_Callback(hObject, eventdata, handles)
-% hObject    handle to ShowFiducialMarker (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-global gTraces;
-
-figure;
-handle = subplot(1,1,1);
-fiducialIndex = gTraces.Config.fiducialMarkerIndex ;
-colNums = ceil(size(fiducialIndex,2)/2);
-plot(handle,gTraces.smoothDriftx,gTraces.smoothDrifty,'k ');
-hold on;
-plot(handle,gTraces.smoothDriftx,gTraces.smoothDrifty,'k*','markersize',10);
-str = ["smooth"];
-for i = 1:size(fiducialIndex,2)
-    x = gTraces.molecules(fiducialIndex(i)).Results(:,3);
-    y = gTraces.molecules(fiducialIndex(i)).Results(:,4);
-    str = [str,string(fiducialIndex(i))];
-    plot(handle,x-x(1),y-y(1));
-    hold(handle,'on'); 
-end
-gTraces.molecules(fiducialIndex(1)).Results(:,1)
-legend(str);
 % --- Executes on slider movement.
 function Slider_Threadhold_Low_Callback(hObject, eventdata, handles)
 % hObject    handle to Slider_Threadhold_Low (see GCBO)
@@ -807,3 +771,17 @@ function IntensityAxes_BinSize_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of IntensityAxes_BinSize as a double
 global gTraces;
 PlotHistgram(handles,gTraces);
+
+
+% --- Executes on button press in Debug1.
+function Debug1_Callback(hObject, eventdata, handles)
+% hObject    handle to Debug1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in Debug2.
+function Debug2_Callback(hObject, eventdata, handles)
+% hObject    handle to Debug2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)

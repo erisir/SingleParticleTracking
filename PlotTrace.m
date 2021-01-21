@@ -3,7 +3,6 @@ function [slopes] = PlotTrace(images,traces,TracesId,handles,plotFalg)
     selected =1;
     warning off;
     LogMsg(handles,['plot trace[id][',int2str(TracesId),']']);
-    fiducialFrameIndicator =  traces.fiducialFrameIndicator;%use in drift correcting
     smoothWindowSize =  traces.Config.smoothWindowSize;
     pixelSize = traces.Config.pixelSize;
     time_per_framems = str2num(get(handles.Frame_Expusure_Timems,'String'))+str2num(get(handles.Frame_Transfer_Timems,'String'));
@@ -47,9 +46,9 @@ function [slopes] = PlotTrace(images,traces,TracesId,handles,plotFalg)
     %the frame is continue in cases of fiducial marker, directly substraction
     %will cause mismatch
     %*****************************************************************
-    driftCorrectIndex = FindDriftCorrentIndex(fiducialFrameIndicator,frameIndicator);%
-    relativePositionX = absXposition    - traces.smoothDriftx(driftCorrectIndex);% 
-    relativePositionY = absYposition    - traces.smoothDrifty(driftCorrectIndex); %
+   
+    relativePositionX = absXposition    - absXposition(1);% 
+    relativePositionY = absYposition    - absYposition(1); %
     %substarced by the first[oringal position] so every traces go from
     %(0,0)
     relativePositionX = relativePositionX-relativePositionX(1);
