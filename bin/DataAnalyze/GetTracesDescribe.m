@@ -14,13 +14,26 @@ function describe= GetTracesDescribe(traceIds,time_per_frames)
     movingVelocity2 = zeros(1,size(traceIds,2));
     runLength1 = zeros(1,size(traceIds,2));
     runLength2 = zeros(1,size(traceIds,2));
-    
+    refit =1;
     for id = 1:size(traceIds,2)
         traceId = traceIds(id);
         results = gTraces.molecules(traceId).Results;  
         metadata=gTraces.Metadata(traceId);
         width(id) =  mean(results(:,7));
         intensity(id) =  mean(results(:,8));
+        %%%%%%%%%%%%%%%%reset slope to time independent 
+        if refit ==1
+        series = GetTimeSeriesByTraceId(TracesId);
+        frameIndicator = series.frameIndicator;
+        displacement = series.displacement;  
+        smDisplacement = smooth(displacement,3);
+        timePoint = metadata.DistanceStartEndTimePoint;
+        fitStart = find(frameIndicator==timePoint(1));
+        fitEnd = find(frameIndicator==timePoint(2));
+        P1 = polyfit(frameIndicator(fitStart:fitEnd),smDisplacement(fitStart:fitEnd),1);
+        metadata.DistanceSlope(1) = P1(1);
+        end
+        %%%%%%%%%%%%%%%%%%%
         totalBindDuration(id) =       ( metadata.IntensityStartEndTimePoint(2) - metadata.IntensityStartEndTimePoint(1))*time_per_frames;
         dwellTimeBeforeMovement(id) = ( metadata.DistanceStartEndTimePoint(1) - metadata.IntensityStartEndTimePoint(1))*time_per_frames;
         dwellTimeAfterMovement(id) =  ( metadata.IntensityStartEndTimePoint(2)-metadata.DistanceStartEndTimePoint(2) )*time_per_frames;
@@ -42,6 +55,7 @@ function describe= GetTracesDescribe(traceIds,time_per_frames)
     describe.movingVelocity1 = movingVelocity1;
     describe.movingVelocity2 = movingVelocity2;
     describe.runLength1 = runLength1;
-    describe.runLength2 = runLength2;       
+    describe.runLength2 = runLength2;     
+    describe.metadata = metadata;
 end
 

@@ -94,7 +94,6 @@ function [slopes] = PlotTrace(handles,index,updateAxes)
             slopes(2) =  s2(1);
             slopes(4) =  s2(2); 
     end
-    slopes = slopes/time_per_frames;
 end
 
  

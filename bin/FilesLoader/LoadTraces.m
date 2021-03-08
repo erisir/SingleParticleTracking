@@ -20,7 +20,8 @@ function  LoadTraces(handles)
     gTraces.TracesPath = path;
     gTraces.molecules = molecule;
     gTraces.Config = config;
-
+    gTraces.Config.Version =  "21.3.8";
+    
     LogMsg(handles,["Finish Loading Traces Data  ",file]);
     set(handles.figure1,'Name',['FIESTA Data Processing-----------------       ', file]);
 end

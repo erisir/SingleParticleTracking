@@ -5,17 +5,23 @@ function series = GetTimeSeriesByTraceId(TracesId)
     global gTraces;
     % = traces.CurrentShowIndex(index);
     results = gTraces.molecules(TracesId).Results;
-  
+    drift = gTraces.molecules(TracesId).Drift;
     frameIndicator = results(:,1);    %time = results(:,2); fps is 1 so time is equal to frame
+    
     time = results(:,2); %fps is 1 so time is equal to frame
     absXposition = results(:,3);
     absYposition = results(:,4);   
     Amplitude =  results(:,8);
     fitError = results(:,9);
-    
+    if drift == 1
     relativePositionX = absXposition  - absXposition(1); 
     relativePositionY = absYposition  - absYposition(1); 
- 
+    else
+        correctIndex = FindDriftCorrentIndex( gTraces.Config.fiducialFrameIndicator,frameIndicator);
+        relativePositionX = absXposition  - gTraces.Config.DriftX(correctIndex);
+        relativePositionY = absYposition  - gTraces.Config.DriftY(correctIndex); 
+    end
+  
     relativePositionX = relativePositionX-relativePositionX(1);
     relativePositionY = relativePositionY-relativePositionY(1);
     

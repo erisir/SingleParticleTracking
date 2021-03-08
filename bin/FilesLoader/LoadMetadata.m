@@ -16,65 +16,84 @@ function   LoadMetadata(handles)
     matData = load(filefullpath);
     LogMsg(handles,'start to Load Metadata');
 
-    try
-        temp = matData.formatedData;
-        if ~isfield(temp,'Config')
-            temp.Config.smoothWindowSize = 10;%frame
-            temp.Config.maxFitError = 7;%nm
-            temp.Config.MinimumMoveDistance = 10;%nm
-            temp.Config.MaximumMoveDistance = 1000;%nm
-            temp.Config.FrameTrasferTimems = 37.5 ;
-            temp.Config.DistanceAxesBinSize = 0.3 ;
-            temp.Config.DistanceAxesBinEnd =  25;
-            temp.Config.PathLengthAxesBinSize = 1 ;
-            temp.Config.PathLengthAxesBinEnd =  100;
-            temp.Config.IntensityAxesBinSize =  1;
-            temp.Config.IntensityAxesBinEnd =  500;
-            temp.Config.Version =  "08.30.1";
-            temp.Config.Catalogs = ["All";"Stuck_Go";"Go_Stuck";"Stuck_Go_Stuck";"Go_Stuck_Go";"NonLinear";"Stepping";"BackForward";"Diffusion";"Temp"];
-        else
-            Config = temp.Config;
-            if ~isfield(Config,'smoothWindowSize')
-                temp.Config.smoothWindowSize = 10;%frame
+    temp = matData.formatedData;
+    if ~isfield(temp,'Config')
+        temp.Config.smoothWindowSize = 10;%frame
+        temp.Config.maxFitError = 7;%nm
+        temp.Config.MinimumMoveDistance = 10;%nm
+        temp.Config.MaximumMoveDistance = 1000;%nm
+        temp.Config.FrameTrasferTimems = 37.5 ;
+        temp.Config.DistanceAxesBinSize = 0.3 ;
+        temp.Config.DistanceAxesBinEnd =  25;
+        temp.Config.PathLengthAxesBinSize = 1 ;
+        temp.Config.PathLengthAxesBinEnd =  100;
+        temp.Config.IntensityAxesBinSize =  1;
+        temp.Config.IntensityAxesBinEnd =  500;
+        temp.Config.Version =  "21.3.8";
+        temp.Config.Catalogs = ["All";"Stuck_Go";"Go_Stuck";"Stuck_Go_Stuck";"Go_Stuck_Go";"NonLinear";"Stepping";"BackForward";"Diffusion";"Temp"];
+    else
+        Config = temp.Config;
+        if isfield(Config,'fiducialMarkerIndex')%%data don't have drift correct, correct it manually
+            driftx = [];
+            drifty = [];
+            markerNums = numel(Config.fiducialMarkerIndex);
+            for i = 1:markerNums
+                  results = gTraces.molecules(Config.fiducialMarkerIndex(i)).Results;
+                  driftx = [driftx,results(:,3)];
+                  drifty = [drifty,results(:,4)]; 
+                  fiducialFrameIndicator = results(:,1);
             end
-            if ~isfield(Config,'maxFitError')
-                temp.Config.maxFitError = 7;%nm
-            end
-            if ~isfield(Config,'MinimumMoveDistance')
-                 temp.Config.MinimumMoveDistance = 10;%nm
-            end
-            if ~isfield(Config,'MaximumMoveDistance')
-                temp.Config.MaximumMoveDistance = 1000;%nm
-            end
-            if ~isfield(Config,'FrameTrasferTimems')
-                 temp.Config.FrameTrasferTimems = 37.5 ;
-            end
-            if ~isfield(Config,'DistanceAxesBinSize')
-                 temp.Config.DistanceAxesBinSize = 0.3 ;
-            end
-            if ~isfield(Config,'DistanceAxesBinEnd')
-                temp.Config.DistanceAxesBinEnd =  25;
-            end
-            if ~isfield(Config,'PathLengthAxesBinSize')
-                 temp.Config.PathLengthAxesBinSize = 1 ;
-            end
-            if ~isfield(Config,'PathLengthAxesBinEnd')
-                temp.Config.PathLengthAxesBinEnd =  100;
-            end
-            if ~isfield(Config,'IntensityAxesBinSize')
-                temp.Config.IntensityAxesBinSize =  1;
-            end
-            if ~isfield(Config,'IntensityAxesBinEnd')
-                temp.Config.IntensityAxesBinEnd =  500;
-            end
-        end
        
-        gTraces.Metadata = temp.metadata;
-        gTraces.Config = temp.Config;
-    catch
-        LogMsg("data conversion");
-        DataConversion(handles,matData);
+            temp.Config.DriftX = smooth(mean(driftx,2),10);
+            temp.Config.DriftY = smooth(mean(drifty,2),10);
+            temp.Config.fiducialFrameIndicator = fiducialFrameIndicator;
+        end
+        if ~isfield(Config,'smoothWindowSize')
+            temp.Config.smoothWindowSize = 10;%frame
+        end
+        if ~isfield(Config,'maxFitError')
+            temp.Config.maxFitError = 7;%nm
+        end
+        if ~isfield(Config,'MinimumMoveDistance')
+             temp.Config.MinimumMoveDistance = 10;%nm
+        end
+        if ~isfield(Config,'MaximumMoveDistance')
+            temp.Config.MaximumMoveDistance = 1000;%nm
+        end
+        if ~isfield(Config,'FrameTrasferTimems')
+             temp.Config.FrameTrasferTimems = 37.5 ;
+        end
+        if ~isfield(Config,'DistanceAxesBinSize')
+             temp.Config.DistanceAxesBinSize = 0.3 ;
+        end
+        if ~isfield(Config,'DistanceAxesBinEnd')
+            temp.Config.DistanceAxesBinEnd =  25;
+        end
+        if ~isfield(Config,'PathLengthAxesBinSize')
+             temp.Config.PathLengthAxesBinSize = 1 ;
+        end
+        if ~isfield(Config,'PathLengthAxesBinEnd')
+            temp.Config.PathLengthAxesBinEnd =  100;
+        end
+        if ~isfield(Config,'IntensityAxesBinSize')
+            temp.Config.IntensityAxesBinSize =  1;
+        end
+        if ~isfield(Config,'IntensityAxesBinEnd')
+            temp.Config.IntensityAxesBinEnd =  500;
+        end
     end
+
+    
+    if strcmp(temp.Config.Version,gTraces.Config.Version)   
+        gTraces.Config = temp.Config;
+        gTraces.Metadata = temp.metadata;
+    else
+        gTraces.Config = temp.Config;
+        gTraces.Metadata = temp.metadata;%DataConversion(temp.metadata);
+        %LogMsg(handles,"data conversion finish, save?");
+    end
+    
+    
 
     set(handles.Traces_ShowType_List,'String',gTraces.Config.Catalogs);
     set(handles.Traces_SetType_List,'String',gTraces.Config.Catalogs); 
@@ -112,6 +131,6 @@ function   LoadMetadata(handles)
 
     PlotTrace(handles,1,0);%plot all
 
-    LogMsg(handles,"Finish Loading Metatata "+file+"Version:  | "+version);
+    LogMsg(handles,"Finish Loading Metatata "+file);
 end
 

@@ -2,7 +2,7 @@ function PlotMultipleTraces(handles,index,number)
 %PLOTMULTIPLETRACES  
 %    
     global gTraces;
-    rows = 2;
+    rows = 4;
     cloumn = ceil(number/rows);
  
     if index<1
