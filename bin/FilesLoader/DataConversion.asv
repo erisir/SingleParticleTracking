@@ -10,7 +10,7 @@ for traceId = 1:size(metadataList,2)
     if strcmp(type,'Stuck_Go') || strcmp(type,'Stuck_Go_Stuck') || strcmp(type,'Go_Stuck') || strcmp(type,'Go_Stuck_Go') || strcmp(type,'NonLinear') || strcmp(type,'BackForward')   % stuck-move
         if (metadata.IntensityStartEndTimePoint(1) ~= metadata.DistanceStartEndTimePoint(1)) || (metadata.IntensityStartEndTimePoint(2) ~= metadata.DistanceStartEndTimePoint(2))
             refit = 1;
-            discribe = GetTracesDescribe(traceId,1,refit); 
+            discribe = GetTracesDescribe(traceId,1,1); 
             metadataList(traceId) = discribe.metadata;
             
         end

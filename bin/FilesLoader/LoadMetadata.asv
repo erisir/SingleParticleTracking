@@ -83,16 +83,13 @@ function   LoadMetadata(handles)
         end
     end
     versionMatch = strcmp(temp.Config.Version,gTraces.Config.Version);
-    tempVersionStr = gTraces.Config.Version;
     gTraces.Config = temp.Config;
-    gTraces.Config.Version = tempVersionStr;
     gTraces.Metadata = temp.metadata;
-    versionCoverStr = "";
     if ~versionMatch
          warning off;
         gTraces.Metadata = DataConversion(temp.metadata);
         warning on;
-        versionCoverStr = "cover data to ["+gTraces.Config.Version+"]";
+        
     end
     
     
@@ -133,6 +130,6 @@ function   LoadMetadata(handles)
 
     PlotTrace(handles,1,0);%plot all
 
-    LogMsg(handles,"Finish Loading Metatata "+file+" "+versionCoverStr);
+    LogMsg(handles,"Finish Loading Metatata "+file);
 end
 
