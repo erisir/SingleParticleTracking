@@ -40,7 +40,18 @@ function [] = PlotHistgram(handles)
     processiveParticleDescribe = GetTracesDescribe(processiveParticleId,time_per_frames);
     stuckAndMoveParticleDescribe = GetTracesDescribe(stuckAndMoveParticleId,time_per_frames);
     moveAndStuckParticleDescribe = GetTracesDescribe(moveAndStuckParticleId,time_per_frames);
+    %MyStructHere = evalin('base','MyStruct');
+    saveToWorkspace = 0;
+    if saveToWorkspace == 1
+    str = '20200117_16mM';
+    assignin('base',['staticParticleDescribe',str],staticParticleDescribe);
+    assignin('base',['processiveParticleDescribe',str],processiveParticleDescribe);
+    assignin('base',['stuckAndMoveParticleDescribe',str],stuckAndMoveParticleDescribe);
+    assignin('base',['moveAndStuckParticleDescribe',str],moveAndStuckParticleDescribe);
     
+    loadOk = 1
+    return;
+    end
     figure;
     subplot(2,4,1);
     HistAndFit(processiveParticleDescribe.movingVelocity1,'gauss1',[0,1,40],'Velocity(nm/s)')

@@ -19,6 +19,7 @@ function  LoadTraces(handles)
     gImages = [];
     gTraces.TracesPath = path;
     gTraces.molecules = molecule;
+    gTraces.moleculenum =  size(gTraces.molecules,2);% show in the total tag
     gTraces.Config = config;
     gTraces.Config.Version =  "21.3.8";
     

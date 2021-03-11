@@ -23,7 +23,7 @@ function [] = InitializeTraces(handles)
     
     catalognums = size(gTraces.Config.Catalogs,1);  
     gTraces.CatalogsContainor = cell(1,catalognums);% to save different type of trace here, only the index will save
-    gTraces.moleculenum =  size(gTraces.molecules,2);% show in the total tag
+   
     gTraces.showCatalog = 1:gTraces.moleculenum;%current show catalog(when use click the showtype list)
     
 
@@ -38,7 +38,7 @@ function [] = InitializeTraces(handles)
     metadata.SetCatalog = 'All';
     metadata.DataQuality= 'All';
 
-    for i = 1:gTraces.moleculenum
+    for traceId = 1:gTraces.moleculenum
        
         series = GetTimeSeriesByTraceId(traceId);        
         startFrame = min(series.frameIndicator);
@@ -59,7 +59,7 @@ function [] = InitializeTraces(handles)
                metadata.SetCatalog= 'Temp';
             end
         end
-        gTraces.Metadata(i) = metadata;    
+        gTraces.Metadata(traceId) = metadata;    
     end
 
     gTraces.CurrentShowTpye = 'All';

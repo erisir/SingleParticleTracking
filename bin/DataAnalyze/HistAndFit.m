@@ -1,4 +1,4 @@
-function [] = HistAndFit(data,fitOption,bin,xlabelStr)
+function [retData] = HistAndFit(data,fitOption,bin,xlabelStr)
 %PLOTHISTGRAMANDFITGUSSAIN2  do the real plot here
 %
 binstart = bin(1);
@@ -11,15 +11,21 @@ x = 1:size(y,2);
 x = x*binsize;
 yfit = y;
 titleStr = sprintf('N:%d, mean:%.2f, median:%.2f)',numel(data),mean(data), median(data));
+legendStr = "";
+retMean = mean(data);
+retMedian = median(data);
+retFit = -1;
+try%try fit bc sometimes data input is not fitable
 switch fitOption
     case "gauss1"
         f = fit(x.',y.','gauss1');%f(x) =  a1*exp(-((x-b1)/c1)^2)  
         yfit = f.a1*exp(-((x-f.b1)/f.c1).^2);
         legendStr = sprintf('gauss1: (u¡À¦Ò)=%0.2f ¡À %0.2f', f.b1, f.c1);
-
+        retFit = f.b1;
     case "gauss2"
         f = fit(x.',y.','gauss2'); %f(x) =  a1*exp(-((x-b1)/c1)^2) + a2*exp(-((x-b2)/c2)^2)
         yfit = f.a1*exp(-((x-f.b1)/f.c1).^2) + f.a2*exp(-((x-f.b2)/f.c2).^2);
+        retFit = f.b1;
         legendStr = sprintf('gauss2(%0.2f ¡À %0.2f)(%0.2f ¡À %0.2f)', f.b1, f.c1, f.b2, f.c2);
     case "poisson"
         f = fitdist(data,'poisson');
@@ -33,15 +39,26 @@ switch fitOption
     case "exp1"
         [f,r]  = fit(x.',y.','exp1');%f(x) =  a1*exp(-((x-b1)/c1)^2) 
         yfit = f.a*exp(f.b.*x);
+        retFit = abs(1/f.b);
         legendStr =  sprintf('exp1: abs(1/t)=%.2f,(RS = %.2f)',abs(1/f.b),r.rsquare);
     case "exp2"
         [f,r]  = fit(x.',y.','exp2');%f(x) =  a1*exp(-((x-b1)/c1)^2) + a2*exp(-((x-b2)/c2)^2)
         yfit = f.a*exp(f.b.*x)+f.c*exp(f.d.*x);
+        retFit = abs(1/f.b);
         legendStr =  sprintf('exp2: abs(1/t1)=%.2f, abs(1/t2)=%0.2f)(RS = %.2f)',abs(1/f.b),abs(1/f.d),r.rsquare);
 end
 
+
 plot(x,yfit,'r');
 hFit = plot(x,yfit,'r.');
+catch
+end
+
+retData.Mean = retMean;
+retData.Median=retMedian;
+retData.MedianStd = std(data);
+retData.Fit = retFit;
+
 plot(x,y,'.b');
 
 %axis([0,xAxesEnd,0,max(h1.Values)+5]);

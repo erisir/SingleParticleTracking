@@ -178,6 +178,12 @@ index = str2double(get(handles.Current_Trace_Id,'String'));
 updateAxes = 0;
 PlotTrace(handles,index+1,updateAxes);
 
+if handles.System_Debug.Value ==1
+    set(handles.Traces_SetType_List,'Value',3);
+    SetTraceCategory(handles,"Go_Stuck");%setdefault to go stuck
+end
+
+
 % --- Executes on button press in ShowNextNTraces.
 function ShowNextNTraces_Callback(hObject, eventdata, handles)
 % hObject    handle to ShowNextNTraces (see GCBO)
@@ -357,7 +363,8 @@ function Debug1_Callback(hObject, eventdata, handles)
 % hObject    handle to Debug1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-debug1();
+%debug1();
+PlotOnRate();
 
 % --- Executes on button press in Debug2.
 function Debug2_Callback(hObject, eventdata, handles)
