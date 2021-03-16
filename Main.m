@@ -22,7 +22,7 @@ function varargout = Main(varargin)
 
 % Edit the above text to modify the response to help Main
 
-% Last Modified by GUIDE v2.5 07-Mar-2021 15:33:32
+% Last Modified by GUIDE v2.5 15-Mar-2021 01:27:03
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -372,3 +372,20 @@ function Debug2_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 debug2();
+
+
+% --- Executes on mouse press over axes background.
+function DistanceAxes_ButtonDownFcn(hObject, eventdata, handles)
+% hObject    handle to DistanceAxes (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+button = eventdata.Button
+if button ==1
+    set(handles.Distance_Section_List,'Value',1);
+end
+if button ==3
+    set(handles.Distance_Section_List,'Value',2);
+end
+time = eventdata.IntersectionPoint;
+time(1)
+SetFittingsegment(handles,time(1));

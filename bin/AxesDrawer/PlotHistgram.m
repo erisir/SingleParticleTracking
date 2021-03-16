@@ -41,33 +41,42 @@ function [] = PlotHistgram(handles)
     stuckAndMoveParticleDescribe = GetTracesDescribe(stuckAndMoveParticleId,time_per_frames);
     moveAndStuckParticleDescribe = GetTracesDescribe(moveAndStuckParticleId,time_per_frames);
     %MyStructHere = evalin('base','MyStruct');
-    saveToWorkspace = 0;
-    if saveToWorkspace == 1
-    str = '20200117_16mM';
-    assignin('base',['staticParticleDescribe',str],staticParticleDescribe);
-    assignin('base',['processiveParticleDescribe',str],processiveParticleDescribe);
-    assignin('base',['stuckAndMoveParticleDescribe',str],stuckAndMoveParticleDescribe);
-    assignin('base',['moveAndStuckParticleDescribe',str],moveAndStuckParticleDescribe);
     
-    loadOk = 1
-    return;
+    saveToWorkspace = 0;
+    readFromWorkspace = 0;
+    str = '20200117_16mM';
+    
+    if  readFromWorkspace == 1
+        staticParticleDescribe = ReadFromWorkspace(staticParticleDescribe,['staticParticleDescribe',str]);
+        processiveParticleDescribe = ReadFromWorkspace(processiveParticleDescribe,['processiveParticleDescribe',str]);
+        stuckAndMoveParticleDescribe = ReadFromWorkspace(stuckAndMoveParticleDescribe,['stuckAndMoveParticleDescribe',str]);
+        moveAndStuckParticleDescribe = ReadFromWorkspace(moveAndStuckParticleDescribe,['moveAndStuckParticleDescribe',str]);
     end
+    
+    if saveToWorkspace == 1
+        assignin('base',['staticParticleDescribe',str],staticParticleDescribe);
+        assignin('base',['processiveParticleDescribe',str],processiveParticleDescribe);
+        assignin('base',['stuckAndMoveParticleDescribe',str],stuckAndMoveParticleDescribe);
+        assignin('base',['moveAndStuckParticleDescribe',str],moveAndStuckParticleDescribe);  
+    end
+
     figure;
     subplot(2,4,1);
-    HistAndFit(processiveParticleDescribe.movingVelocity1,'gauss1',[0,1,40],'Velocity(nm/s)')
+    HistAndFit(processiveParticleDescribe.movingVelocity1,'gauss1',[0,1,40],'Velocity(nm/s)');
     subplot(2,4,2);
-    HistAndFit(processiveParticleDescribe.runLength1,'gauss1',[0,3,100],'Runlength(nm)')
+    HistAndFit(processiveParticleDescribe.runLength1,'gauss1',[0,3,200],'Runlength(nm)');
     subplot(2,4,3);
-    HistAndFit(processiveParticleDescribe.movingDuration1,'exp1',[5,5,100],'Processive Moving Duration(s)')
+    HistAndFit(processiveParticleDescribe.movingDuration1,'exp1',[5,4,100],'Processive Moving Duration(s)');
 
     subplot(2,4,4);
-    HistAndFit(processiveParticleDescribe.totalBindDuration,'exp1',[10,10,500],'Processive Total BindDuration(s)')
+    HistAndFit(processiveParticleDescribe.totalBindDuration,'exp1',[10,10,500],'Processive Total BindDuration(s)');
     subplot(2,4,5);
-    HistAndFit(staticParticleDescribe.totalBindDuration,'exp1',[10,10,500],'Static Total BindDuration(s)')
+    HistAndFit(staticParticleDescribe.totalBindDuration,'exp2',[20,10,1000],'Static Total BindDuration(s)');
     subplot(2,4,6);
-    HistAndFit(stuckAndMoveParticleDescribe.dwellTimeBeforeMovement,'exp1',[10,10,500],'Processive Stuck Before Move Duration(s)')
+    HistAndFit(stuckAndMoveParticleDescribe.dwellTimeBeforeMovement,'exp1',[10,10,500],'Processive Stuck Before Move Duration(s)');
     subplot(2,4,7);
-    HistAndFit(moveAndStuckParticleDescribe.dwellTimeAfterMovement,'exp1',[10,10,500],'Processive Stuck After Move Duration(s)')
-    
+    HistAndFit(moveAndStuckParticleDescribe.dwellTimeAfterMovement,'exp1',[10,10,500],'Processive Stuck After Move Duration(s)');
+    subplot(2,4,8);
+    HistAndFit(staticParticleDescribe.meanfitError,'gauss1',[1,0.3,10],'Processive particle Fit Error(nm)');
 end
 

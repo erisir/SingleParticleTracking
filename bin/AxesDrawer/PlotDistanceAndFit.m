@@ -52,12 +52,12 @@ function [slopes] = PlotDistanceAndFit(handles,displacement,frameIndicator,dista
     grid(handles.DistanceAxes, 'on');
     drawnow
     set(pltDisplacement.Edge, 'ColorBinding','interpolated', 'ColorData',colorCode);
-
+    set(handles.DistanceAxes,'ButtonDownFcn', {@DistanceAxes_ButtonDownFcn,handles});  
     title(handles.DistanceAxes,['displacement  = sqrt[(X(i)-X(0))^2+(Y(i)-Y(0))^2]  STD=',num2str(std(displacement)),'Err=',num2str(mean(fitError))]);
     time_per_framems = str2num(get(handles.Frame_Expusure_Timems,'String'))+str2num(get(handles.Frame_Transfer_Timems,'String'));
     fps = 1000/time_per_framems;
     xlabel(handles.DistanceAxes,['frame ( fps=',num2str(fps,4),', ',num2str(1000/fps,4),'ms/frame)']); 
     ylabel(handles.DistanceAxes,'distance (nm)') ;
-
+  
 end
 

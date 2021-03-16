@@ -18,13 +18,15 @@ function describe= GetTracesDescribe(traceIds,time_per_frames,refit)
     movingVelocity2 = zeros(1,size(traceIds,2));
     runLength1 = zeros(1,size(traceIds,2));
     runLength2 = zeros(1,size(traceIds,2));
-
+    meanfitError = zeros(1,size(traceIds,2));
+    metadata = [];
     for id = 1:size(traceIds,2)
         traceId = traceIds(id);
         results = gTraces.molecules(traceId).Results;  
         metadata=gTraces.Metadata(traceId);
         width(id) =  mean(results(:,7));
         intensity(id) =  mean(results(:,8));
+        fitError = mean(results(:,9));
         %%%%%%%%%%%%%%%%reset slope to time independent 
         if refit ==1
         series = GetTimeSeriesByTraceId(traceId);
@@ -39,16 +41,27 @@ function describe= GetTracesDescribe(traceIds,time_per_frames,refit)
         metadata.DistanceSlope(1) = P1(1);
         end
         %%%%%%%%%%%%%%%%%%%
+        DataQuality = metadata.DataQuality;
         totalBindDuration(id) =       ( metadata.IntensityStartEndTimePoint(2) - metadata.IntensityStartEndTimePoint(1))*time_per_frames;
         dwellTimeBeforeMovement(id) = ( metadata.DistanceStartEndTimePoint(1) - metadata.IntensityStartEndTimePoint(1))*time_per_frames;
         dwellTimeAfterMovement(id) =  ( metadata.IntensityStartEndTimePoint(2)-metadata.DistanceStartEndTimePoint(2) )*time_per_frames;
         movingDuration1(id) =          ( metadata.DistanceStartEndTimePoint(2)-metadata.DistanceStartEndTimePoint(1) )*time_per_frames;
         movingDuration2(id) =          ( metadata.DistanceStartEndTimePoint(4)-metadata.DistanceStartEndTimePoint(3) )*time_per_frames;      
-        movingVelocity1(id) = metadata.DistanceSlope(1)/time_per_frames;  
-        movingVelocity2(id) = metadata.DistanceSlope(2)/time_per_frames;   
-        runLength1(id) = metadata.DistanceSlope(1)*(metadata.DistanceStartEndTimePoint(2)-metadata.DistanceStartEndTimePoint(1));
-        runLength2(id) = metadata.DistanceSlope(2)*(metadata.DistanceStartEndTimePoint(4)-metadata.DistanceStartEndTimePoint(3));
+        
+        if strcmp("Perfect",DataQuality)==1 || strcmp("Good",DataQuality)==1
+            movingVelocity1(id) = metadata.DistanceSlope(1)/time_per_frames;  
+            movingVelocity2(id) = metadata.DistanceSlope(2)/time_per_frames;   
+            runLength1(id) = metadata.DistanceSlope(1)*(metadata.DistanceStartEndTimePoint(2)-metadata.DistanceStartEndTimePoint(1));
+            runLength2(id) = metadata.DistanceSlope(2)*(metadata.DistanceStartEndTimePoint(4)-metadata.DistanceStartEndTimePoint(3));
+           
+        end
+         meanfitError(id) = fitError;
     end
+    movingVelocity1(find(movingVelocity1==0)) =[];
+    movingVelocity2(find(movingVelocity2==0)) =[];
+    runLength1(find(runLength1==0)) =[];
+    runLength2(find(runLength2==0)) =[];
+    meanfitError(find(meanfitError==0)) =[];
     
     describe.width = width;
     describe.intensity =  intensity;
@@ -62,5 +75,6 @@ function describe= GetTracesDescribe(traceIds,time_per_frames,refit)
     describe.runLength1 = runLength1;
     describe.runLength2 = runLength2;     
     describe.metadata = metadata;
+    describe.meanfitError = meanfitError;
 end
 

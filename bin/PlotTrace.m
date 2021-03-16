@@ -83,7 +83,8 @@ function [slopes] = PlotTrace(handles,index,updateAxes)
                 if isfield(gImages,'rawImagesStack')
                     PlotZoomInImages(handles,frameIndicator,absXposition,absYposition,pixelSize,Amplitude);  
                 end           
-            end                       
+            end          
+            set(handles.Slider_Stack_Index,'Value',round(str2num(intensityMd(1))));
             PlotIntensityAxes(handles,frameIndicator,Amplitude,intensityMd);   
             sl = PlotPathLengthAndFit(handles,pathlenght,frameIndicator,pathLengthMd,TracesId,colorCode);
             s2 = PlotDistanceAndFit(handles,displacement,frameIndicator,distanceMd,TracesId,colorCode,fitError);

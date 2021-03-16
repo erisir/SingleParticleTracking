@@ -89,7 +89,7 @@ function   LoadMetadata(handles)
     gTraces.Metadata = temp.metadata;
     versionCoverStr = "";
     if ~versionMatch
-         warning off;
+        warning off;
         gTraces.Metadata = DataConversion(temp.metadata);
         warning on;
         versionCoverStr = "cover data to ["+gTraces.Config.Version+"]";

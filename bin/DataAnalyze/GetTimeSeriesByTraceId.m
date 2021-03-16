@@ -1,8 +1,14 @@
 % plot the trace we want to show [when click on the Pre/Next button on the UI, it changes the TracesId that pass here]
-function series = GetTimeSeriesByTraceId(TracesId)
+function series = GetTimeSeriesByTraceId(TracesId,noDriftCorrection)
         
     % get detail info by id,prepare necessary data for processing
     global gTraces;
+    if nargin < 2
+       noDriftCorrection =1;
+    end
+    if isfield(gTraces.Config,'fiducialFrameIndicator')
+        noDriftCorrection =0;
+    end
     % = traces.CurrentShowIndex(index);
     results = gTraces.molecules(TracesId).Results;
     drift = gTraces.molecules(TracesId).Drift;
@@ -13,9 +19,9 @@ function series = GetTimeSeriesByTraceId(TracesId)
     absYposition = results(:,4);   
     Amplitude =  results(:,8);
     fitError = results(:,9);
-    if drift == 1
-    relativePositionX = absXposition  - absXposition(1); 
-    relativePositionY = absYposition  - absYposition(1); 
+    if (drift == 1) || noDriftCorrection ==1
+        relativePositionX = absXposition  - absXposition(1); 
+        relativePositionY = absYposition  - absYposition(1); 
     else
         correctIndex = FindDriftCorrentIndex( gTraces.Config.fiducialFrameIndicator,frameIndicator);
         relativePositionX = absXposition  - gTraces.Config.DriftX(correctIndex);
