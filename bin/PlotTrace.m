@@ -27,7 +27,13 @@ function [slopes] = PlotTrace(handles,index,updateAxes)
     slopes = [0,0,0,0];
     [intensityMd,pathLengthMd,distanceMd] = GetMetadataByTracesId(TracesId); %gets the start and end frames of each trace from metadata
     setCatalog = gTraces.Metadata(TracesId).SetCatalog;
-    
+   
+    if intensityMd(1) ~= distanceMd(3) || intensityMd(2) ~= distanceMd(4)
+        set(handles.DistanceAxes_Show_Both_Slope,'value',1);
+    else
+        set(handles.DistanceAxes_Show_Both_Slope,'value',0);
+    end
+
     if  isfield( gTraces.Metadata(TracesId), 'DataQuality' )
         DataQuality = gTraces.Metadata(TracesId).DataQuality;
     else
@@ -73,6 +79,7 @@ function [slopes] = PlotTrace(handles,index,updateAxes)
             slopes(1) = sl(1); 
             slopes(2) = sl(2);
         case 3% set segment slide move on distance axis, update distance axes
+
             s2 = PlotDistanceAndFit(handles,displacement,frameIndicator,distanceMd,TracesId,colorCode,fitError);
             slopes(3) = s2(1);
             slopes(4) = s2(2);
@@ -87,7 +94,7 @@ function [slopes] = PlotTrace(handles,index,updateAxes)
             set(handles.Slider_Stack_Index,'Value',round(str2num(intensityMd(1))));
             PlotIntensityAxes(handles,frameIndicator,Amplitude,intensityMd);   
             sl = PlotPathLengthAndFit(handles,pathlenght,frameIndicator,pathLengthMd,TracesId,colorCode);
-            s2 = PlotDistanceAndFit(handles,displacement,frameIndicator,distanceMd,TracesId,colorCode,fitError);
+            s2 = PlotDistanceAndFit(handles,displacement,frameIndicator,distanceMd,TracesId,colorCode,fitError,Amplitude);
             PlotScatterAxes(handles,datalength,relativePositionX,relativePositionY,smoothRelativePosX,smoothRelativePosY,colorCode);
 
             slopes(1) =  sl(1);

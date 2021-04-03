@@ -3,8 +3,9 @@ function [retData] = HistAndFit(data,fitOption,bin,xlabelStr)
 %
 
 %plot
+pMarksize = 8;
+pLineWidth =1.5;
 
-pLineW
 binstart = bin(1);
 binsize = bin(2);
 binend = bin(3);
@@ -15,7 +16,7 @@ y = h1.Values;
 x = binstart:binsize:(binend-binsize);
 
 yfit = y;
-titleStr = sprintf('N:%d, mean:%.2f, median:%.2f)',numel(data),mean(data), median(data));
+titleStr = sprintf('N:%d, mean:%.2f, median:%.2f',numel(data),mean(data), median(data));
 legendStr = "";
 retMean = mean(data);
 retMedian = median(data);
@@ -51,15 +52,15 @@ switch fitOption
         yfit = f.a*exp(f.b.*x)+f.c*exp(f.d.*x);
         yfit1 = f.a*exp(f.b.*x);
         yfit2 = f.c*exp(f.d.*x);
-        plot(x,yfit1,'b', 'LineWidth'   , 1);
-        plot(x,yfit2,'g', 'LineWidth'   , 1);
+        plot(x,yfit1,'b', 'LineWidth'   , pLineWidth);
+        plot(x,yfit2,'g', 'LineWidth'   , pLineWidth);
         retFit = abs(1/f.b);
         legendStr =  sprintf('exp2: abs(1/t1)=%.2f, abs(1/t2)=%0.2f)(RS = %.2f)',abs(1/f.b),abs(1/f.d),r.rsquare);
 end
 
 
-plot(x,yfit,'r', 'LineWidth'   , 1);
-hFit = plot(x,yfit,'r.');
+plot(x,yfit,'r', 'LineWidth'   , pLineWidth);
+hFit = plot(x,yfit,'r.','MarkerSize',pMarksize);
 catch
 end
 
@@ -68,7 +69,7 @@ retData.Median=retMedian;
 retData.MedianStd = std(data);
 retData.Fit = retFit;
 
-plot(x,y,'.b','markersize',5);
+plot(x,y,'.b','MarkerSize',pMarksize);
 
 %axis([0,xAxesEnd,0,max(h1.Values)+5]);
 xlabel(xlabelStr);
