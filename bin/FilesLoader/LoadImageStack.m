@@ -4,15 +4,13 @@ function  LoadImageStack(handles)
     global gImages;
     global Workspace;
     LogMsg(handles,"Start to Load Stack");
-    if ~get(handles.System_Debug,'value')
-        [file,path] = uigetfile('*.tif;*.tiff','open',Workspace);
-        gImages.filefullpath = [path,file];
-        if path ==0
-            return
-        end
-        gImages.rawImagesStack = FastReadTirf(gImages.filefullpath);
+    [file,path] = uigetfile('*.tif;*.tiff','open',Workspace);
+    gImages.filefullpath = [path,file];
+    if path ==0
+       return
     end
-
+    gImages.rawImagesStack = FastReadTirf(gImages.filefullpath);
+ 
     [gImages.imgHeight,gImages.imgWidth,gImages.stackSize]= size(gImages.rawImagesStack);
     gImages.ZprojectMean = mean(gImages.rawImagesStack,3);
     gImages.ZprojectMax = max(gImages.rawImagesStack,[],3);

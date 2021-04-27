@@ -1,7 +1,6 @@
 function  LoadTraces(handles)
 %LOADTRACES
     global gTraces;
-    global gImages;
     global Workspace;
 
     LogMsg(handles,"Start to Load Traces Data");
@@ -16,7 +15,6 @@ function  LoadTraces(handles)
 
     [molecule,config] = LoadFiestaMatData(filefullpath);
     gTraces = [];
-    gImages = [];
     gTraces.TracesPath = path;
     gTraces.molecules = molecule;
     gTraces.moleculenum =  size(gTraces.molecules,2);% show in the total tag

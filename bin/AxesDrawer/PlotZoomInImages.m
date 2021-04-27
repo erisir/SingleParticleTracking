@@ -57,8 +57,8 @@ function [] = PlotZoomInImages(handles,frameIndicator,absXposition,absYposition,
    
     hold(handles.IRMZoomAxes, 'on');         
     hold(handles.RawImageZoomAxes, 'on');     
-    plot(handles.IRMZoomAxes,width+1,width+1,'ro','markersize',10);%show a red circle around the current shown spot
-    plot(handles.RawImageZoomAxes,width+1,width+3,'ro','markersize',20);
+    plot(handles.IRMZoomAxes,width,width,'ro','markersize',10);%show a red circle around the current shown spot
+    plot(handles.RawImageZoomAxes,width+3,width,'ro','markersize',20);
     hold(handles.IRMZoomAxes, 'off');
     hold(handles.RawImageZoomAxes, 'off');
     

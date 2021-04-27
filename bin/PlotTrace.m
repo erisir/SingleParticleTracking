@@ -75,9 +75,9 @@ function [slopes] = PlotTrace(handles,index,updateAxes)
             SetSlideIndex(handles,intensityMd(1),false);%go to the beginning of the trace when first call
             PlotIntensityAxes(handles,frameIndicator,Amplitude,intensityMd);   
         case 2% set segment slide move on pathlength axis, update pathlength axes
-            sl = PlotPathLengthAndFit(handles,pathlenght,frameIndicator,pathLengthMd,TracesId,colorCode);
-            slopes(1) = sl(1); 
-            slopes(2) = sl(2);
+            %sl = PlotPathLengthAndFit(handles,pathlenght,frameIndicator,pathLengthMd,TracesId,colorCode);
+            %slopes(1) = sl(1); 
+            %slopes(2) = sl(2);
         case 3% set segment slide move on distance axis, update distance axes
 
             s2 = PlotDistanceAndFit(handles,displacement,frameIndicator,distanceMd,TracesId,colorCode,fitError);
@@ -87,18 +87,20 @@ function [slopes] = PlotTrace(handles,index,updateAxes)
         otherwise
             if updateAxes ==0
                 SetSlideIndex(handles,str2num(intensityMd(1)),false);%go to the beginning of the trace when first call
-                if isfield(gImages,'rawImagesStack')
-                    PlotZoomInImages(handles,frameIndicator,absXposition,absYposition,pixelSize,Amplitude);  
-                end           
-            end          
-            set(handles.Slider_Stack_Index,'Value',round(str2num(intensityMd(1))));
+            end
+            
+            if isfield(gImages,'rawImagesStack')
+                PlotZoomInImages(handles,frameIndicator,absXposition,absYposition,pixelSize,Amplitude);  
+            end           
+                     
+            %set(handles.Slider_Stack_Index,'Value',round(str2num(intensityMd(1))));
             PlotIntensityAxes(handles,frameIndicator,Amplitude,intensityMd);   
-            sl = PlotPathLengthAndFit(handles,pathlenght,frameIndicator,pathLengthMd,TracesId,colorCode);
+            %sl = PlotPathLengthAndFit(handles,pathlenght,frameIndicator,pathLengthMd,TracesId,colorCode);
             s2 = PlotDistanceAndFit(handles,displacement,frameIndicator,distanceMd,TracesId,colorCode,fitError,Amplitude);
             PlotScatterAxes(handles,datalength,relativePositionX,relativePositionY,smoothRelativePosX,smoothRelativePosY,colorCode);
 
-            slopes(1) =  sl(1);
-            slopes(2) =  sl(2);          
+            %slopes(1) =  sl(1);
+            %slopes(2) =  sl(2);          
             slopes(2) =  s2(1);
             slopes(4) =  s2(2); 
     end
