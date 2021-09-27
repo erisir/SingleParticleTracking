@@ -363,15 +363,15 @@ function Debug1_Callback(hObject, eventdata, handles)
 % hObject    handle to Debug1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-%debug1();
-PlotOnRate();
+debug1(handles);
+
 
 % --- Executes on button press in Debug2.
 function Debug2_Callback(hObject, eventdata, handles)
 % hObject    handle to Debug2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-debug2();
+debug2(handles);
 
 
 % --- Executes on mouse press over axes background.

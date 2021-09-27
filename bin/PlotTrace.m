@@ -80,7 +80,7 @@ function [slopes] = PlotTrace(handles,index,updateAxes)
             %slopes(2) = sl(2);
         case 3% set segment slide move on distance axis, update distance axes
 
-            s2 = PlotDistanceAndFit(handles,displacement,frameIndicator,distanceMd,TracesId,colorCode,fitError);
+            s2 = PlotDistanceAndFit(handles,displacement,frameIndicator,distanceMd,TracesId,colorCode,fitError,Amplitude);
             slopes(3) = s2(1);
             slopes(4) = s2(2);
 
@@ -89,9 +89,9 @@ function [slopes] = PlotTrace(handles,index,updateAxes)
                 SetSlideIndex(handles,str2num(intensityMd(1)),false);%go to the beginning of the trace when first call
             end
             
-            if isfield(gImages,'rawImagesStack')
-                PlotZoomInImages(handles,frameIndicator,absXposition,absYposition,pixelSize,Amplitude);  
-            end           
+            
+            PlotZoomInImages(handles,frameIndicator,absXposition,absYposition,pixelSize,Amplitude);  
+        
                      
             %set(handles.Slider_Stack_Index,'Value',round(str2num(intensityMd(1))));
             PlotIntensityAxes(handles,frameIndicator,Amplitude,intensityMd);   

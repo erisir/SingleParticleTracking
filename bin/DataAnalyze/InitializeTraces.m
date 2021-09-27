@@ -7,7 +7,7 @@ function [] = InitializeTraces(handles)
     gTraces.Config.MinimumMoveDistance = 10;%nm
     gTraces.Config.MaximumMoveDistance = 1000;%nm
   
-    gTraces.Config.FrameTrasferTimems = 37.5 ;
+    gTraces.Config.FrameTrasferTimems = 0 ;
     gTraces.Config.DistanceAxesBinSize = 0.3 ;
     gTraces.Config.DistanceAxesBinEnd =  25;
     gTraces.Config.PathLengthAxesBinSize = 1 ;

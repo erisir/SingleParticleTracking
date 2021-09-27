@@ -56,6 +56,10 @@ function PlotMultipleTraces(handles,index,number)
             otherwise
                 plot(axies(i),time,displacement,'k-');
         end
+        maxRunlength = max(displacement) - min(displacement);
+        if maxRunlength < 50
+            ylim(axies(i),[0,50]);
+        end
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%debug
         if 1==0
         mv = max(displacement);

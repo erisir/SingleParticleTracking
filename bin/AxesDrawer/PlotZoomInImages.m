@@ -29,51 +29,65 @@ function [] = PlotZoomInImages(handles,frameIndicator,absXposition,absYposition,
     %the images is composed of ROI from the Qdot images and the IRM images
     %we load in to workspace previously.
     width  =40;        
-    if ~isempty(gImages)
+    if isfield( gImages, 'rawImagesStack' )
         try   
-            width  =40;          
-            cropedIRM = gImages.IRMImage(meany-width:meany+width,meanx-width:meanx+width);
-            cropedRawImages=gImages.rawImagesStack(meany-width:meany+width,meanx-width:meanx+width,currentDisplayFrame); 
-            imshow(cropedIRM,[],'Parent',handles.IRMZoomAxes);
+            width  =40;                     
+            cropedRawImages=gImages.rawImagesStack(meany-width:meany+width,meanx-width:meanx+width,currentDisplayFrame);           
             imshow(cropedRawImages,[intensity_low,intensity_high],'Parent',handles.RawImageZoomAxes);   
         catch
             try
-                width  =5;          
-                cropedIRM = gImages.IRMImage(meany-width:meany+width,meanx-width:meanx+width);
-                cropedRawImages=gImages.rawImagesStack(meany-width:meany+width,meanx-width:meanx+width,currentDisplayFrame); 
-                imshow(cropedIRM,[],'Parent',handles.IRMZoomAxes);
+                width  =5;                        
+                cropedRawImages=gImages.rawImagesStack(meany-width:meany+width,meanx-width:meanx+width,currentDisplayFrame);             
                 imshow(cropedRawImages,[],'Parent',handles.RawImageZoomAxes);   
             catch ME
                 %disp('no images load or out of range');
                 imshow([0,0;0,0],[],'Parent',handles.RawImageZoomAxes);  
-                imshow([0,0;0,0],[],'Parent',handles.IRMZoomAxes);
                 rethrow(ME)
             end
         end
-    else
-         imshow([0,0;0,0],[],'Parent',handles.RawImageZoomAxes);  
-         imshow([0,0;0,0],[],'Parent',handles.IRMZoomAxes);
+    end
+    if isfield( gImages, 'IRMImage' ) 
+        try   
+            width  =40;          
+            cropedIRM = gImages.IRMImage(meany-width:meany+width,meanx-width:meanx+width);
+            imshow(cropedIRM,[],'Parent',handles.IRMZoomAxes);
+        catch
+            try
+                width  =5;          
+                cropedIRM = gImages.IRMImage(meany-width:meany+width,meanx-width:meanx+width);
+                imshow(cropedIRM,[],'Parent',handles.IRMZoomAxes);
+            catch ME
+                disp('out of range'); 
+                imshow([0,0;0,0],[],'Parent',handles.IRMZoomAxes);
+                %rethrow(ME)
+            end
+        end
     end
    
     hold(handles.IRMZoomAxes, 'on');         
     hold(handles.RawImageZoomAxes, 'on');     
     plot(handles.IRMZoomAxes,width,width,'ro','markersize',10);%show a red circle around the current shown spot
-    plot(handles.RawImageZoomAxes,width+3,width,'ro','markersize',20);
+    plot(handles.RawImageZoomAxes,width+3,width,'ro','markersize',10);
     hold(handles.IRMZoomAxes, 'off');
     hold(handles.RawImageZoomAxes, 'off');
     
-    if ~isempty(gImages)% not importance 
-        if currentDisplayFrame ==stackSize
-            imshow(gImages.IRMImage,[intensity_low,intensity_high] ,'Parent',handles.ImageWindowAxes);
-        else
-            imshow(gImages.rawImagesStack(:,:,currentDisplayFrame),[intensity_low,intensity_high] ,'Parent',handles.ImageWindowAxes); 
-        end
-            
+
+
+    if isfield( gImages, 'rawImagesStack' ) 
+        imshow(gImages.rawImagesStack(:,:,currentDisplayFrame),[intensity_low,intensity_high] ,'Parent',handles.ImageWindowAxes); 
     else
-        imshow([0,0;0,0],[],'Parent',handles.ImageWindowAxes); 
+        imshow([200,20;200,20],'Parent',handles.ImageWindowAxes); 
     end
+    
+    if isfield( gImages, 'rawImagesStack' ) && (currentDisplayFrame ==stackSize) && isfield( gImages, 'IRMImage' ) 
+        imshow(gImages.IRMImage,[intensity_low,intensity_high] ,'Parent',handles.ImageWindowAxes);
+    end  
+    if ~isfield( gImages, 'rawImagesStack' )  && isfield( gImages, 'IRMImage' ) 
+        imshow(gImages.IRMImage,[intensity_low,intensity_high] ,'Parent',handles.ImageWindowAxes);
+    end  
+
     hold(handles.ImageWindowAxes,'on');
-    plot(handles.ImageWindowAxes,meanx,meany,'ro','MarkerSize',10);
+    plot(handles.ImageWindowAxes,meanx,meany,'ro','MarkerSize',8);
     hold(handles.ImageWindowAxes,'off');
 end
 

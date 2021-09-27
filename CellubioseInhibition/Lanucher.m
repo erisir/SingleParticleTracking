@@ -1,3 +1,0 @@
-LoadData;
-PloyFitHistgram;
-PlotResult;

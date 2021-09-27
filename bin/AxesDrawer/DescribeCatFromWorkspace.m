@@ -1,4 +1,4 @@
-function describe = ReadFromWorkspace(describe,workspaceVar)
+function describe = DescribeCatFromWorkspace(describe,workspaceVar)
 %READFROMWORKSPACE 此处显示有关此函数的摘要
 %   此处显示详细说明
     saveTmp = evalin('base',workspaceVar);
@@ -12,8 +12,8 @@ function describe = ReadFromWorkspace(describe,workspaceVar)
     describe.movingVelocity1 = [describe.movingVelocity1 , saveTmp.movingVelocity1];
     describe.movingVelocity2 = [describe.movingVelocity2 , saveTmp.movingVelocity2];
     describe.runLength1 = [describe.runLength1 , saveTmp.runLength1];
-    describe.runLength2 = [describe.runLength2 , saveTmp.runLength2];     
-    %describe.metadata = [describe.metadata , saveTmp.metadata];
+    describe.runLength2 = [describe.runLength2 , saveTmp.runLength2];
     describe.meanfitError = [describe.meanfitError , saveTmp.meanfitError];
+    describe.standardDeviation = [describe.standardDeviation , saveTmp.standardDeviation];
 end
 
