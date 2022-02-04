@@ -20,5 +20,6 @@ function [] = PlotScatterAxes(handles,datalength,relativePositionX,relativePosit
     title(handles.XYScatterAxes,'Drift-correctedXY')
     xlabel(handles.XYScatterAxes,'x (nm)') 
     ylabel(handles.XYScatterAxes,'y (nm)') 
+    
 end
 

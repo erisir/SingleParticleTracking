@@ -20,11 +20,13 @@ function [] = PlotHistgram(handles)
     for traceId = 1:gTraces.moleculenum
         metadata=gTraces.Metadata(traceId) ; % Indexs(i) is the real index
         type = metadata.SetCatalog;        
-        if  strcmp(type,'Temp')  %static
+        DataQuality = metadata.DataQuality;
+        if  strcmp(type,'Temp') && strcmp(DataQuality,'All') %static
             staticParticleId = [staticParticleId,traceId];
         end        
-        %if ~strcmp(type,'All') && ~strcmp(type,'Stepping') && ~strcmp(type,'Diffusion') && ~strcmp(type,'Temp') % processive 
-        if strcmp(type,'Stuck_Go') || strcmp(type,'Stuck_Go_Stuck') || strcmp(type,'Go_Stuck') || strcmp(type,'Go_Stuck_Go')
+        if ~strcmp(type,'All') && ~strcmp(type,'Stepping') && ~strcmp(type,'Diffusion') && ~strcmp(type,'Temp') % processive 
+         
+        %if strcmp(type,'Stuck_Go') || strcmp(type,'Stuck_Go_Stuck') || strcmp(type,'Go_Stuck') || strcmp(type,'Go_Stuck_Go')
           processiveParticleId = [processiveParticleId,traceId];
         end
         if strcmp(type,'Stuck_Go') || strcmp(type,'Stuck_Go_Stuck')  % stuck-move
@@ -71,7 +73,7 @@ function [] = PlotHistgram(handles)
     subplot(2,4,4);
     HistAndFit(processiveParticleDescribe.totalBindDuration,'exp1',[10,10,500],'Processive Total BindDuration(s)');
     subplot(2,4,5);
-    HistAndFit(staticParticleDescribe.totalBindDuration,'exp2',[10,10,500],'Static Total BindDuration(s)');
+    HistAndFit(staticParticleDescribe.totalBindDuration,'exp1',[10,10,500],'Static Total BindDuration(s)');
     subplot(2,4,6);
     HistAndFit(stuckAndMoveParticleDescribe.dwellTimeBeforeMovement,'exp1',[10,10,500],'Processive Stuck Before Move Duration(s)');
     %HistAndFit(staticParticleDescribe.standardDeviation,'gauss1',[0,1,25],'Static standard deviation(nm)');

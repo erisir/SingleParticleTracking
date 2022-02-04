@@ -56,6 +56,8 @@ function [slopes] = PlotDistanceAndFit(handles,displacement,frameIndicator,dista
     if nargin == 8
         yyaxis(handles.DistanceAxes,'right');
         hold(handles.DistanceAxes, 'off');
+        plot(handles.DistanceAxes,180,0);
+      
         pltAmp = plot(handles.DistanceAxes,frameIndicator,Amplitude,'-.g');  %plot the smooth distance
         pltAmp.Color(4) = 0.7;
         yStickMax = max(Amplitude);
@@ -64,6 +66,7 @@ function [slopes] = PlotDistanceAndFit(handles,displacement,frameIndicator,dista
             yStickMax = 800;
         end
         ylim(handles.DistanceAxes,[0,yStickMax]);
+         
     end
     
 
@@ -75,8 +78,10 @@ function [slopes] = PlotDistanceAndFit(handles,displacement,frameIndicator,dista
     title(handles.DistanceAxes,['Distance from landing site:  TraceId= ',num2str(TracesId),'  STD = ',num2str(std(displacement),2),'  FitErr = ',num2str(mean(fitError),2),   '  Inteisity = ',num2str(mean(Amplitude),4)]);
     time_per_framems = str2num(get(handles.Frame_Expusure_Timems,'String'))+str2num(get(handles.Frame_Transfer_Timems,'String'));
     fps = 1000/time_per_framems;
-    xlabel(handles.DistanceAxes,['frame ( fps=',num2str(fps,4),', ',num2str(1000/fps,4),'ms/frame)']); 
-    ylabel(handles.DistanceAxes,'distance (nm)') ;
+    %xlabel(handles.DistanceAxes,['frame ( fps=',num2str(fps,4),', ',num2str(1000/fps,4),'ms/frame)']); 
+    xlabel(handles.DistanceAxes,'Time (s)'); 
+    yyaxis(handles.DistanceAxes,'left');
+    ylabel(handles.DistanceAxes,'Distance (nm)') ;
   
 end
 

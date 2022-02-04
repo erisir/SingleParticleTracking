@@ -71,6 +71,9 @@ function describe= GetTracesDescribe(traceIds,time_per_frames,refit)
     runLength2 = RemoveOdd(runLength2);
     meanfitError = RemoveOdd(meanfitError);
     
+ 
+    
+    
     describe.width = width;
     describe.intensity =  intensity;
     describe.totalBindDuration =totalBindDuration ;
