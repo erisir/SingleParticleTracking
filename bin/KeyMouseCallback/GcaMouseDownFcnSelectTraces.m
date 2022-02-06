@@ -7,21 +7,16 @@ function [] = GcaMouseDownFcnSelectTraces(object, eventdata,handles,index)
     pos = eventdata.IntersectionPoint;
     TracesId = gTraces.CurrentShowIndex(index);
     plotstr = 'og';
-    if button ==1    
-        if gTraces.Metadata(TracesId).DataQuality == "Good"%second round ,select bad from bad
-            gTraces.Metadata(TracesId).DataQuality = "Bad";
-            plotstr = 'or';
-        end
-        
-        if gTraces.Metadata(TracesId).DataQuality == "All"%from round, select good/bad from all;
+    if button ==1         
+        if gTraces.Metadata(TracesId).DataQuality == "All"% select good/bad from all;
             gTraces.Metadata(TracesId).DataQuality = "Good";
             plotstr = 'ok';
         end
     end
     if button ==3    %right click
         if gTraces.Metadata(TracesId).DataQuality == "All"
-            gTraces.Metadata(TracesId).DataQuality = "Perfect";
-            plotstr = 'og';
+            gTraces.Metadata(TracesId).DataQuality = "Bad";
+            plotstr = 'or';
         end
     end
     
