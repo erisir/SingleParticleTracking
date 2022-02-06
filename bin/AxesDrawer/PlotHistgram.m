@@ -21,6 +21,14 @@ function [] = PlotHistgram(handles)
         metadata=gTraces.Metadata(traceId) ; % Indexs(i) is the real index
         type = metadata.SetCatalog;        
         DataQuality = metadata.DataQuality;
+        
+        if DataQuality == "Error"
+            continue
+        end       
+        if ~isTimePointInTrustBands(get(handles.TrustBands,'String'),traceId)
+            continue
+        end
+        
         if  strcmp(type,'Temp') && strcmp(DataQuality,'All') %static
             staticParticleId = [staticParticleId,traceId];
         end        

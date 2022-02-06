@@ -22,7 +22,7 @@ function varargout = Main(varargin)
 
 % Edit the above text to modify the response to help Main
 
-% Last Modified by GUIDE v2.5 15-Mar-2021 01:27:03
+% Last Modified by GUIDE v2.5 05-Feb-2022 02:25:30
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -389,3 +389,26 @@ end
 time = eventdata.IntersectionPoint;
 time(1)
 SetFittingsegment(handles,time(1));
+
+
+
+function TrustBands_Callback(hObject, eventdata, handles)
+% hObject    handle to TrustBands (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of TrustBands as text
+%        str2double(get(hObject,'String')) returns contents of TrustBands as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function TrustBands_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to TrustBands (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end

@@ -48,6 +48,12 @@ function   LoadMetadata(handles)
             temp.Config.DriftY = smooth(mean(drifty,2),10);
             temp.Config.fiducialFrameIndicator = fiducialFrameIndicator;
         end
+         if ~isfield(Config,'FirstFrame')
+            temp.Config.FirstFrame = gTraces.Config.FirstFrame;%frame
+        end
+        if ~isfield(Config,'LastFrame')
+            temp.Config.LastFrame = gTraces.Config.LastFrame;%nm
+        end
         if ~isfield(Config,'smoothWindowSize')
             temp.Config.smoothWindowSize = 10;%frame
         end
@@ -81,6 +87,9 @@ function   LoadMetadata(handles)
         if ~isfield(Config,'IntensityAxesBinEnd')
             temp.Config.IntensityAxesBinEnd =  500;
         end
+        if ~isfield(Config,'TrustBands')
+            temp.Config.TrustBands =  "";
+        end
     end
     versionMatch = strcmp(temp.Config.Version,gTraces.Config.Version);
     tempVersionStr = gTraces.Config.Version;
@@ -107,6 +116,7 @@ function   LoadMetadata(handles)
     set(handles.PathLengthAxes_BinEnd,'String',num2str(gTraces.Config.PathLengthAxesBinEnd));
     set(handles.IntensityAxes_BinSize,'String',num2str(gTraces.Config.IntensityAxesBinSize));
     set(handles.IntensityAxes_BinEnd,'String',num2str(gTraces.Config.IntensityAxesBinEnd));
+    set(handles.TrustBands,'String',gTraces.Config.TrustBands);
 
     catalognums = size(gTraces.Config.Catalogs,1);
 

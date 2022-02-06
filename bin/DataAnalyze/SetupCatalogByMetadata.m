@@ -8,10 +8,16 @@ function [fitErrorTotalNums] = SetupCatalogByMetadata(handles)
     dataQuality = handles.Data_Quality_Show_Group.SelectedObject.String;
 
     fitErrorTotalNums = 0;
-    
+    outofTrustBandsNums = 0;
     for trackId = 1:gTraces.moleculenum
         
         if gTraces.Metadata(trackId).DataQuality == "Error"
+            fitErrorTotalNums = fitErrorTotalNums+1;
+            continue
+        end
+        
+        if ~isTimePointInTrustBands(get(handles.TrustBands,'String'),trackId)
+            %outofTrustBandsNums = outofTrustBandsNums+1;
             fitErrorTotalNums = fitErrorTotalNums+1;
             continue
         end

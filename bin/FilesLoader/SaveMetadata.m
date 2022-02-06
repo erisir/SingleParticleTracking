@@ -24,7 +24,8 @@ function  SaveMetadata(handles)
 
     gTraces.Config.IntensityAxesBinSize = str2num(get(handles.IntensityAxes_BinSize,'String'));
     gTraces.Config.IntensityAxesBinEnd = str2num(get(handles.IntensityAxes_BinEnd,'String'));
-
+    gTraces.Config.TrustBands = get(handles.TrustBands,'String');
+    
     formatedData.metadata = gTraces.Metadata;
     formatedData.Config = gTraces.Config; 
 
