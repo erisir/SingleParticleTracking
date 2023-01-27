@@ -16,8 +16,9 @@ function [] = PlotHistgram(handles)
     stuckAndMoveParticleId = [];
     moveAndStuckParticleId = [];
     
- 
-    for traceId = 1:gTraces.moleculenum
+    selectEnd = gTraces.moleculenum;
+   % selectEnd = 2000;
+    for traceId = 1:selectEnd
         metadata=gTraces.Metadata(traceId) ; % Indexs(i) is the real index
         type = metadata.SetCatalog;        
         DataQuality = metadata.DataQuality;
@@ -71,24 +72,39 @@ function [] = PlotHistgram(handles)
     end
 
     figure;
+    
     subplot(2,4,1);
-    HistAndFit(processiveParticleDescribe.movingVelocity1,'gauss1',[0,1,40],'Velocity(nm/s)');
+    fitdataTemp = processiveParticleDescribe.movingVelocity1;
+    HistAndFit(fitdataTemp,'poisson',[0,1,5*mean(fitdataTemp)],'Velocity(nm/s)');
+    
     subplot(2,4,2);
-    HistAndFit(processiveParticleDescribe.runLength1,'gauss1',[0,3,200],'Runlength(nm)');
+    fitdataTemp = processiveParticleDescribe.runLength1;
+    HistAndFit(fitdataTemp,'gauss1',[0,3,5*mean(fitdataTemp)],'Runlength(nm)');
+    
     subplot(2,4,3);
-    HistAndFit(processiveParticleDescribe.movingDuration1,'exp1',[5,4,100],'Processive Moving Duration(s)');
+    fitdataTemp = processiveParticleDescribe.movingDuration1;
+    HistAndFit(fitdataTemp,'exp1',[5,4,5*mean(fitdataTemp)],'Processive Moving Duration(s)');
 
     subplot(2,4,4);
-    HistAndFit(processiveParticleDescribe.totalBindDuration,'exp1',[10,10,500],'Processive Total BindDuration(s)');
+    fitdataTemp = processiveParticleDescribe.totalBindDuration;
+    HistAndFit(fitdataTemp,'exp1',[10,10,5*mean(fitdataTemp)],'Processive Total BindDuration(s)');
+    
     subplot(2,4,5);
-    HistAndFit(staticParticleDescribe.totalBindDuration,'exp1',[10,10,500],'Static Total BindDuration(s)');
+    fitdataTemp = staticParticleDescribe.totalBindDuration;
+    HistAndFit(fitdataTemp,'exp1',[3,5,5*mean(fitdataTemp)],'Static Total BindDuration(s)');
+    
     subplot(2,4,6);
-    HistAndFit(stuckAndMoveParticleDescribe.dwellTimeBeforeMovement,'exp1',[10,10,500],'Processive Stuck Before Move Duration(s)');
+    fitdataTemp = stuckAndMoveParticleDescribe.dwellTimeBeforeMovement;
+    HistAndFit(fitdataTemp,'exp1',[10,5,5*mean(fitdataTemp)],'Processive Stuck Before Move Duration(s)');
     %HistAndFit(staticParticleDescribe.standardDeviation,'gauss1',[0,1,25],'Static standard deviation(nm)');
+    
     subplot(2,4,7);
+    fitdataTemp = moveAndStuckParticleDescribe.dwellTimeAfterMovement;
     %HistAndFit(moveAndStuckParticleDescribe.dwellTimeAfterMovement,'exp1',[10,10,500],'Static Intensity(a.u.)');
-    HistAndFit(moveAndStuckParticleDescribe.dwellTimeAfterMovement,'exp1',[10,10,500],'Processive Stuck After Move Duration(s)');
+    HistAndFit(fitdataTemp,'exp1',[10,10,5*mean(fitdataTemp)],'Processive Stuck After Move Duration(s)');
+    
     subplot(2,4,8);
-    HistAndFit(staticParticleDescribe.meanfitError,'gauss1',[1,0.5,15],' Fit Error(nm)');
+    fitdataTemp = staticParticleDescribe.meanfitError;
+    HistAndFit(fitdataTemp,'gauss1',[1,0.5,5*mean(fitdataTemp)],' Fit Error(nm)');
 end
 

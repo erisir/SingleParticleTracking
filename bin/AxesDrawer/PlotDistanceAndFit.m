@@ -10,7 +10,7 @@ function [slopes] = PlotDistanceAndFit(handles,displacement,frameIndicator,dista
     %xlim(handles.DistanceAxes,[0,300]);
     %ylim(handles.DistanceAxes,[0,100]);
     hold(handles.DistanceAxes, 'on');
-    pltDisplacement2 = plot(handles.DistanceAxes,frameIndicator,displacement,'ko','Markersize',1); %plot raw smooth in backgroud in a transparent way      
+    pltDisplacement2 = plot(handles.DistanceAxes,frameIndicator,displacement,'ko','Markersize',3); %plot raw smooth in backgroud in a transparent way    
     pltDisplacement2.Color(4) = 0.2;
     pltError = plot(handles.DistanceAxes,frameIndicator,fitError,'r');
     pltError.Color(4) = 0.8;
@@ -40,6 +40,7 @@ function [slopes] = PlotDistanceAndFit(handles,displacement,frameIndicator,dista
         P2 = polyfit(frameIndicator(fitStart2:fitEnd2),smDisplacement(fitStart2:fitEnd2),1);
 
         pltP1 = plot(handles.DistanceAxes,frameIndicator(fitStart:fitEnd),P1(1)*frameIndicator(fitStart:fitEnd)+P1(2),'--r','LineWidth',2);
+        
         if get(handles.DistanceAxes_Show_Both_Slope,'value')
             plot(handles.DistanceAxes,str2num(distanceMd(3))*x,y,'b-','LineWidth',1.1);
             plot(handles.DistanceAxes,str2num(distanceMd(4))*x,y,'r-','LineWidth',1.1);

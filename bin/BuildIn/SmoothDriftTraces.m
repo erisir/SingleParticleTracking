@@ -1,5 +1,7 @@
 function [driftx,drifty,smoothDriftx,smoothDrifty] = SmoothDriftTraces(Traces,fiducialIndex) 
     
+    Traces.Config.LastFrame=700;
+    Traces.Config.FirstFrame=11;
     driftx = zeros(Traces.Config.LastFrame-Traces.Config.FirstFrame+1,1);
     drifty = driftx;     
     

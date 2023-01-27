@@ -9,9 +9,9 @@ function series = GetTimeSeriesByTraceId(TracesId,noDriftCorrection)
     if isfield(gTraces.Config,'fiducialFrameIndicator')
         noDriftCorrection =0;
     end
-    % = traces.CurrentShowIndex(index);
     results = gTraces.molecules(TracesId).Results;
     drift = gTraces.molecules(TracesId).Drift;
+    %drift = 0;
     frameIndicator = results(:,1);    %time = results(:,2); fps is 1 so time is equal to frame
     
     time = results(:,2); %fps is 1 so time is equal to frame

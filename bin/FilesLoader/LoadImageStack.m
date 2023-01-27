@@ -36,5 +36,6 @@ function  LoadImageStack(handles)
     set(handles.Slider_Threadhold_High,'SliderStep',[2/intensity_high,0.01]);
 
     LogMsg(handles,["Finish Loading Stack   ",file]);
+    beep;
 end
 

@@ -19,7 +19,7 @@ function [slopes] = PlotTrace(handles,index,updateAxes)
 
     LogMsg(handles,['plot trace[id][',int2str(TracesId),']']);
     
-    smoothWindowSize =  gTraces.Config.smoothWindowSize;
+    smoothWindowSize = gTraces.Config.smoothWindowSize;
     pixelSize = gTraces.Config.pixelSize;
     
     time_per_framems = str2num(get(handles.Frame_Expusure_Timems,'String'))+str2num(get(handles.Frame_Transfer_Timems,'String')); %#ok<ST2NM>
@@ -81,8 +81,8 @@ function [slopes] = PlotTrace(handles,index,updateAxes)
         case 3% set segment slide move on distance axis, update distance axes
 
             s2 = PlotDistanceAndFit(handles,displacement,frameIndicator,distanceMd,TracesId,colorCode,fitError,Amplitude);
-            slopes(3) = s2(1);
-            slopes(4) = s2(2);
+            slopes(3) = s2(1)/time_per_frames;
+            slopes(4) = s2(2)/time_per_frames;
 
         otherwise
             if updateAxes ==0
@@ -98,11 +98,11 @@ function [slopes] = PlotTrace(handles,index,updateAxes)
             %sl = PlotPathLengthAndFit(handles,pathlenght,frameIndicator,pathLengthMd,TracesId,colorCode);
             s2 = PlotDistanceAndFit(handles,displacement,frameIndicator,distanceMd,TracesId,colorCode,fitError,Amplitude);
             PlotScatterAxes(handles,datalength,relativePositionX,relativePositionY,smoothRelativePosX,smoothRelativePosY,colorCode);
-
+            %PlotTransformXY(frameIndicator,relativePositionX,relativePositionY,0);
             %slopes(1) =  sl(1);
             %slopes(2) =  sl(2);          
-            slopes(2) =  s2(1);
-            slopes(4) =  s2(2); 
+            slopes(2) =  s2(1)/time_per_frames;
+            slopes(4) =  s2(2)/time_per_frames; 
     end
 end
 

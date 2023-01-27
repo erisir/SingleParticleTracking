@@ -144,5 +144,6 @@ function   LoadMetadata(handles)
     PlotTrace(handles,1,0);%plot all
 
     LogMsg(handles,"Finish Loading Metatata "+file+" "+versionCoverStr);
+    beep;
 end
 

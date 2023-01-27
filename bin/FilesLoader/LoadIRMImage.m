@@ -24,5 +24,6 @@ function LoadIRMImage(handles)
     set(handles.Slider_Threadhold_High,'value',intensity_high/2);
     imshow(gImages.IRMImage,[intensity_low,intensity_high] ,'Parent',handles.ImageWindowAxes);
     LogMsg(handles,["Finish Loading IRM image  ",file]);
+     beep;
 end
 

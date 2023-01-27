@@ -22,6 +22,7 @@ function  LoadTraces(handles)
     gTraces.Config.Version =  "21.3.8";
     
     LogMsg(handles,["Finish Loading Traces Data  ",file]);
+    beep;
     s = '-------------- o ';
     seperator = [s,s,s,s,s,s,s];
     set(handles.figure1,'Name',['FIESTA Data Processing', seperator, file]);

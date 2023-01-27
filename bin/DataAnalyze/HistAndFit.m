@@ -9,14 +9,19 @@ pLineWidth =1.5;
 binstart = bin(1);
 binsize = bin(2);
 binend = bin(3);
+hold off;
 h1 = histogram(data,binstart:binsize:binend);
-hold on;
 y = h1.Values;
+normalizedY = y/size(data,2);
+y = normalizedY;
+
 %x = 1:size(y,2);
 x = binstart:binsize:(binend-binsize);
-
+h1 = bar(x,y);
 yfit = y;
-titleStr = sprintf('N:%d, mean:%.2f, median:%.2f',numel(data),mean(data), median(data));
+hold on;
+%titleStr = sprintf('N:%d, mean:%.2f, median:%.2f',numel(data),mean(data), median(data));
+titleStr = sprintf('N:%d, mean:%.2f, std:%.2f',numel(data),mean(data), std(data));
 legendStr = "";
 retMean = mean(data);
 retMedian = median(data);
@@ -34,7 +39,7 @@ switch fitOption
         retFit = f.b1;
         legendStr = sprintf('gauss2(%0.2f ¡À %0.2f)(%0.2f ¡À %0.2f)', f.b1, f.c1, f.b2, f.c2);
     case "poisson"
-        f = fitdist(data,'poisson');
+        f = fitdist(data','poisson');
         lambda = f.lambda;
         yfit = zeros(1,size(x,2));
         for i =1:size(x,2)
@@ -73,7 +78,7 @@ plot(x,y,'.b','MarkerSize',pMarksize);
 
 %axis([0,xAxesEnd,0,max(h1.Values)+5]);
 xlabel(xlabelStr);
-ylabel('Counts');
+ylabel('Probability');
 yaxil = ylim;
 ylim([yaxil(1),yaxil(2)*1.1]);
 title(titleStr);

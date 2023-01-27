@@ -25,6 +25,9 @@ end
 
 gTraces.Config.fiducialMarkerIndex = fiducialIndex;
 
+%gTraces.Config.FirstFrame = 11;
+%gTraces.Config.LastFrame = 700;
+            
 [gTraces.driftx,gTraces.drifty,gTraces.smoothDriftx,gTraces.smoothDrifty] = SmoothDriftTraces(gTraces,fiducialIndex);
 framecolumn = gTraces.molecules(gTraces.Config.fiducialMarkerIndex(1)).Results(:,1);
 gTraces.fiducialFrameIndicator = framecolumn;%save the start frame of the ficucial for substration

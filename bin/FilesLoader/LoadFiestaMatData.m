@@ -1,4 +1,4 @@
-function [molecules,Config] = LoadFiestaMatData(file_path)
+ function [molecules,Config] = LoadFiestaMatData(file_path)
 %LOADMATDATA load the traces data from the *.mat file which generate by
 %Fiesta, it contains all the info by we only use the .Molecule data which
 %is composed by xpos,ypos,z, distance etc.
@@ -13,12 +13,12 @@ function [molecules,Config] = LoadFiestaMatData(file_path)
             Config.Threshold = tempConfig.Threshold.Value;
         end
         if ~isfield(tempConfig,'FirstTFrame')
-            Config.FirstFrame = 36;
+            Config.FirstFrame = 11
         else
             Config.FirstFrame = tempConfig.FirstTFrame;
         end
         if ~isfield(tempConfig,'LastFrame')
-            Config.LastFrame = 1000;
+            Config.LastFrame = 700
         else
             Config.LastFrame = tempConfig.LastFrame;
         end
