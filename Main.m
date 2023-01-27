@@ -22,7 +22,7 @@ function varargout = Main(varargin)
 
 % Edit the above text to modify the response to help Main
 
-% Last Modified by GUIDE v2.5 05-Feb-2022 02:25:30
+% Last Modified by GUIDE v2.5 26-Jan-2023 23:26:01
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -412,3 +412,11 @@ function TrustBands_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in ExportData.
+function ExportData_Callback(hObject, eventdata, handles)
+% hObject    handle to ExportData (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+DataExporter(handles);
