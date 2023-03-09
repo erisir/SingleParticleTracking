@@ -22,7 +22,7 @@ function varargout = Main(varargin)
 
 % Edit the above text to modify the response to help Main
 
-% Last Modified by GUIDE v2.5 26-Jan-2023 23:26:01
+% Last Modified by GUIDE v2.5 09-Mar-2023 09:19:38
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -53,7 +53,7 @@ function Main_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for Main
 handles.output = hObject;
 global Workspace;
-Workspace= 'F:\ExperimentalRawData\DataProcessing\';
+Workspace = 'F:\ExperimentalRawData\2023\';
 DirRoot = [fileparts( mfilename('fullpath') ) filesep];
 DirBin = [DirRoot 'bin' filesep];
 addpath(genpath(DirBin));
@@ -379,7 +379,7 @@ function DistanceAxes_ButtonDownFcn(hObject, eventdata, handles)
 % hObject    handle to DistanceAxes (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-button = eventdata.Button
+button = eventdata.Button;
 if button ==1
     set(handles.Distance_Section_List,'Value',1);
 end
@@ -420,3 +420,12 @@ function ExportData_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 DataExporter(handles);
+
+
+% --- Executes on button press in PlotInNewFigure.
+function PlotInNewFigure_Callback(hObject, eventdata, handles)
+% hObject    handle to PlotInNewFigure (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of PlotInNewFigure

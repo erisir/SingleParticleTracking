@@ -24,7 +24,11 @@ function [slopes] = PlotTrace(handles,index,updateAxes)
     
     time_per_framems = str2num(get(handles.Frame_Expusure_Timems,'String'))+str2num(get(handles.Frame_Transfer_Timems,'String')); %#ok<ST2NM>
     time_per_frames = time_per_framems/1000;
-    slopes = [0,0,0,0];
+    %slopes 
+    %called from SetFittingsegment (that called from Slider_Section_Select_Callback)
+    %slopes = [0,0,0,0] =
+    %[PathLengthSlope(1),PathLengthSlope(2),DistanceSlope(1),DistanceSlope(2)]
+    slopes = [0,0,0,0];%
     [intensityMd,pathLengthMd,distanceMd] = GetMetadataByTracesId(TracesId); %gets the start and end frames of each trace from metadata
     setCatalog = gTraces.Metadata(TracesId).SetCatalog;
    
@@ -98,11 +102,10 @@ function [slopes] = PlotTrace(handles,index,updateAxes)
             %sl = PlotPathLengthAndFit(handles,pathlenght,frameIndicator,pathLengthMd,TracesId,colorCode);
             s2 = PlotDistanceAndFit(handles,displacement,frameIndicator,distanceMd,TracesId,colorCode,fitError,Amplitude);
             PlotScatterAxes(handles,datalength,relativePositionX,relativePositionY,smoothRelativePosX,smoothRelativePosY,colorCode);
-            %PlotTransformXY(frameIndicator,relativePositionX,relativePositionY,0);
-            %slopes(1) =  sl(1);
-            %slopes(2) =  sl(2);          
-            slopes(2) =  s2(1)/time_per_frames;
-            slopes(4) =  s2(2)/time_per_frames; 
+            if handles.PlotInNewFigure.Value ==1
+                PlotTransformXY(frameIndicator,relativePositionX,relativePositionY,0);
+            end
+
     end
 end
 
