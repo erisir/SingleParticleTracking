@@ -70,8 +70,8 @@ function [] = PlotHistgram(handles)
         assignin('base',['stuckAndMoveParticleDescribe',str],stuckAndMoveParticleDescribe);
         assignin('base',['moveAndStuckParticleDescribe',str],moveAndStuckParticleDescribe);  
     end
-
-    figure;
+   
+    figure('name',gTraces.fileName);
     
     subplot(2,4,1);
     fitdataTemp = processiveParticleDescribe.movingVelocity1;

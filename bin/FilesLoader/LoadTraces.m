@@ -16,6 +16,7 @@ function  LoadTraces(handles)
     [molecule,config] = LoadFiestaMatData(filefullpath);
     gTraces = [];
     gTraces.TracesPath = path;
+    gTraces.fileName = file;
     gTraces.molecules = molecule;
     gTraces.moleculenum =  size(gTraces.molecules,2);% show in the total tag
     gTraces.Config = config;
