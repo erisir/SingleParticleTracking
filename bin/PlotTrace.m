@@ -103,7 +103,8 @@ function [slopes] = PlotTrace(handles,index,updateAxes)
             s2 = PlotDistanceAndFit(handles,displacement,frameIndicator,distanceMd,TracesId,colorCode,fitError,Amplitude);
             PlotScatterAxes(handles,datalength,relativePositionX,relativePositionY,smoothRelativePosX,smoothRelativePosY,colorCode);
             if handles.PlotInNewFigure.Value ==1
-                PlotTransformXY(frameIndicator,relativePositionX,relativePositionY,0);
+                TraceRotationAngle = str2double(get(handles.TraceRotationAngle,'String'));
+                PlotTransformXY(frameIndicator,time_per_frames,relativePositionX,relativePositionY,TraceRotationAngle);
             end
 
     end

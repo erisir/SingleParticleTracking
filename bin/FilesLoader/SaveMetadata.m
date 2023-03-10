@@ -16,14 +16,6 @@ function  SaveMetadata(handles)
     gTraces.Config.ExpusureTimems = str2num(get(handles.Frame_Expusure_Timems,'String'));
     gTraces.Config.FrameTrasferTimems = str2num(get(handles.Frame_Transfer_Timems,'String'));
 
-    gTraces.Config.DistanceAxesBinSize = str2num(get(handles.DistanceAxes_BinSize,'String'));
-    gTraces.Config.DistanceAxesBinEnd = str2num(get(handles.DistanceAxes_BinEnd,'String'));
-
-    gTraces.Config.PathLengthAxesBinSize = str2num(get(handles.PathLengthAxes_BinSize,'String'));
-    gTraces.Config.PathLengthAxesBinEnd = str2num(get(handles.PathLengthAxes_BinEnd,'String'));
-
-    gTraces.Config.IntensityAxesBinSize = str2num(get(handles.IntensityAxes_BinSize,'String'));
-    gTraces.Config.IntensityAxesBinEnd = str2num(get(handles.IntensityAxes_BinEnd,'String'));
     gTraces.Config.TrustBands = get(handles.TrustBands,'String');
     
     formatedData.metadata = gTraces.Metadata;

@@ -110,12 +110,7 @@ function   LoadMetadata(handles)
     set(handles.Traces_SetType_List,'String',gTraces.Config.Catalogs); 
     set(handles.Frame_Expusure_Timems,'String',num2str(gTraces.Config.ExpusureTimems));
     set(handles.Frame_Transfer_Timems,'String',num2str(gTraces.Config.FrameTrasferTimems));
-    set(handles.DistanceAxes_BinSize,'String',num2str(gTraces.Config.DistanceAxesBinSize));
-    set(handles.DistanceAxes_BinEnd,'String',num2str(gTraces.Config.DistanceAxesBinEnd));
-    set(handles.PathLengthAxes_BinSize,'String',num2str(gTraces.Config.PathLengthAxesBinSize));
-    set(handles.PathLengthAxes_BinEnd,'String',num2str(gTraces.Config.PathLengthAxesBinEnd));
-    set(handles.IntensityAxes_BinSize,'String',num2str(gTraces.Config.IntensityAxesBinSize));
-    set(handles.IntensityAxes_BinEnd,'String',num2str(gTraces.Config.IntensityAxesBinEnd));
+
     set(handles.TrustBands,'String',gTraces.Config.TrustBands);
 
     catalognums = size(gTraces.Config.Catalogs,1);

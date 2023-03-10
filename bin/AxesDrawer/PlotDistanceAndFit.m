@@ -12,7 +12,7 @@ function [slopes] = PlotDistanceAndFit(handles,displacement,frameIndicator,dista
     hold(handles.DistanceAxes, 'on');
     pltDisplacement2 = plot(handles.DistanceAxes,frameIndicator,displacement,'ko','Markersize',3); %plot raw smooth in backgroud in a transparent way    
     pltDisplacement2.Color(4) = 0.2;
-    pltError = plot(handles.DistanceAxes,frameIndicator,fitError,'r');
+    pltError = plot(handles.DistanceAxes,frameIndicator,fitError,'-.g');
     pltError.Color(4) = 0.8;
     
     res= ylim(handles.DistanceAxes);
@@ -59,7 +59,8 @@ function [slopes] = PlotDistanceAndFit(handles,displacement,frameIndicator,dista
         hold(handles.DistanceAxes, 'off');
         plot(handles.DistanceAxes,180,0);
       
-        pltAmp = plot(handles.DistanceAxes,frameIndicator,Amplitude,'-.g');  %plot the smooth distance
+        pltAmp = plot(handles.DistanceAxes,frameIndicator,Amplitude,'-.');  %plot the smooth distance
+        pltAmp.Color =  "#D95319";
         pltAmp.Color(4) = 0.7;
         yStickMax = max(Amplitude);
         yStickMax =yStickMax*1.2;
@@ -67,7 +68,7 @@ function [slopes] = PlotDistanceAndFit(handles,displacement,frameIndicator,dista
             yStickMax = 800;
         end
         ylim(handles.DistanceAxes,[0,yStickMax]);
-         
+        ylabel(handles.DistanceAxes,'Intensity (a.u.)');
     end
     
 
@@ -80,7 +81,7 @@ function [slopes] = PlotDistanceAndFit(handles,displacement,frameIndicator,dista
     time_per_framems = str2num(get(handles.Frame_Expusure_Timems,'String'))+str2num(get(handles.Frame_Transfer_Timems,'String'));
     fps = 1000/time_per_framems;
     %xlabel(handles.DistanceAxes,['frame ( fps=',num2str(fps,4),', ',num2str(1000/fps,4),'ms/frame)']); 
-    xlabel(handles.DistanceAxes,'Time (s)'); 
+    xlabel(handles.DistanceAxes,'Time (frame)'); 
     yyaxis(handles.DistanceAxes,'left');
     ylabel(handles.DistanceAxes,'Distance (nm)') ;
   

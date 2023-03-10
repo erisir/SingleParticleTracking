@@ -1,14 +1,6 @@
 function   PlotIntensityAxes(handles,timesec,Amplitude,intensityMd)
 %PLOTTHEINTENSITYTRACE  
 %    
-    global gImages;
-    if get(handles.ShowRawIntensity ,'Value') && ~isempty(gImages)
-        meanx = str2num(get(handles.CurrentPointXpos,'String'));
-        meany = str2num(get(handles.CurrentPointYpos,'String'));
-
-        plot(handles.IntensityAxes,GetZprojectIntensityByXY(gImages.rawImagesStack,meanx,meany)); %plot the intensity trace we calculate by ourself
-        hold(handles.IntensityAxes,'on');
-    end
     currentDisplayFrame = floor(get(handles.Slider_Stack_Index,'Value'));
     plot(handles.IntensityAxes,timesec,Amplitude,'g');%plot the amplitude generated from fiesta, which should be same with what we calculate.
 
@@ -33,8 +25,8 @@ function   PlotIntensityAxes(handles,timesec,Amplitude,intensityMd)
     grid(handles.IntensityAxes,'on');
 
     title(handles.IntensityAxes,'Intensity of the spot [mean(x),mean(y)]')
-    xlabel(handles.IntensityAxes,'frame') 
+    xlabel(handles.IntensityAxes,'Time (frame)') 
     ylabel(handles.IntensityAxes,'intensity (a.u.)') 
-    
+    ylim([res(1)*0.8,res(2)*1.2]);
 end
 

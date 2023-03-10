@@ -22,7 +22,7 @@ function varargout = Main(varargin)
 
 % Edit the above text to modify the response to help Main
 
-% Last Modified by GUIDE v2.5 09-Mar-2023 09:19:38
+% Last Modified by GUIDE v2.5 10-Mar-2023 02:38:42
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -54,6 +54,7 @@ function Main_OpeningFcn(hObject, eventdata, handles, varargin)
 handles.output = hObject;
 global Workspace;
 Workspace = 'F:\ExperimentalRawData\2023\';
+%Workspace = 'F:\ExperimentalRawData\2022_2021_2020\20200519_[0,2,10,20nM]Cel7a_NaOH_ABCellulose_Good\2nM_10nM_20nM_Cel7a500pMQdot_NaOH_Cellulose\2nM\Metadata';
 DirRoot = [fileparts( mfilename('fullpath') ) filesep];
 DirBin = [DirRoot 'bin' filesep];
 addpath(genpath(DirBin));
@@ -71,10 +72,10 @@ function varargout = Main_OutputFcn(hObject, eventdata, handles)
 
 % Get default command line output from handles structure
 varargout{1} = handles.output;
-
-% --- Executes on button press in LoadImageStack.
+ 
+% --- Executes on button press in File.
 function LoadImageStack_Callback(hObject, eventdata, handles)
-% hObject    handle to LoadImageStack (see GCBO)
+% hObject    handle to File (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 LoadImageStack(handles);
@@ -119,7 +120,7 @@ function ShowHistgram_Callback(hObject, eventdata, handles)
 % hObject    handle to ShowHistgram (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-PlotHistgram(handles);
+
 
 % --- Executes on slider movement.
 function Slider_Threadhold_Low_Callback(hObject, eventdata, handles)
@@ -149,7 +150,7 @@ function Slider_Stack_Index_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-SetSlideIndex(handles,floor(get(hObject,'Value')),true);
+SetSlideIndex(handles,round(get(hObject,'Value')),true);
 
 function Current_Frame_Id_Callback(hObject, eventdata, handles)
 % hObject    handle to Current_Frame_Id (see GCBO)
@@ -212,6 +213,7 @@ function DistanceAxes_Show_Both_Slope_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of DistanceAxes_Show_Both_Slope
+% automaticaly detected and checked if the start/end of 1 and 2 are different
 index = str2double(get(handles.Current_Trace_Id,'String'));
 updateAxes = 5;
 PlotTrace(handles,index,updateAxes);
@@ -357,23 +359,6 @@ function IntensityAxes_BinSize_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of IntensityAxes_BinSize as a double
 PlotHistgram(handles);
 
-
-% --- Executes on button press in Debug1.
-function Debug1_Callback(hObject, eventdata, handles)
-% hObject    handle to Debug1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-debug1(handles);
-
-
-% --- Executes on button press in Debug2.
-function Debug2_Callback(hObject, eventdata, handles)
-% hObject    handle to Debug2 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-debug2(handles);
-
-
 % --- Executes on mouse press over axes background.
 function DistanceAxes_ButtonDownFcn(hObject, eventdata, handles)
 % hObject    handle to DistanceAxes (see GCBO)
@@ -389,16 +374,6 @@ end
 time = eventdata.IntersectionPoint;
 time(1)
 SetFittingsegment(handles,time(1));
-
-
-
-function TrustBands_Callback(hObject, eventdata, handles)
-% hObject    handle to TrustBands (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of TrustBands as text
-%        str2double(get(hObject,'String')) returns contents of TrustBands as a double
 
 
 % --- Executes during object creation, after setting all properties.
@@ -422,10 +397,35 @@ function ExportData_Callback(hObject, eventdata, handles)
 DataExporter(handles);
 
 
-% --- Executes on button press in PlotInNewFigure.
-function PlotInNewFigure_Callback(hObject, eventdata, handles)
-% hObject    handle to PlotInNewFigure (see GCBO)
+
+% --------------------------------------------------------------------
+function ShowHistogram_Callback(hObject, eventdata, handles)
+% hObject    handle to ShowHistogram (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+PlotHistgram(handles);
+
+ 
+
+
+
+function TraceRotationAngle_Callback(hObject, eventdata, handles)
+% hObject    handle to TraceRotationAngle (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hint: get(hObject,'Value') returns toggle state of PlotInNewFigure
+% Hints: get(hObject,'String') returns contents of TraceRotationAngle as text
+%        str2double(get(hObject,'String')) returns contents of TraceRotationAngle as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function TraceRotationAngle_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to TraceRotationAngle (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end

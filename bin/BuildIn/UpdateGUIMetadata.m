@@ -4,8 +4,6 @@ function [] = UpdateGUIMetadata(handles,setCatalog,DataQuality,intensityMd,pathL
  
     global gTraces;
     
-    set(handles.Intensity_Section_List,'String',intensityMd);
-    set(handles.PathLength_Section_List,'String',pathLengthMd);
     set(handles.Distance_Section_List,'String',distanceMd);
     
     index = find(gTraces.Config.Catalogs==setCatalog);
