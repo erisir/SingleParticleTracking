@@ -33,21 +33,6 @@ function   LoadMetadata(handles)
         temp.Config.Catalogs = ["All";"Stuck_Go";"Go_Stuck";"Stuck_Go_Stuck";"Go_Stuck_Go";"NonLinear";"Stepping";"BackForward";"Diffusion";"Temp"];
     else
         Config = temp.Config;
-        if isfield(Config,'fiducialMarkerIndex')%%data don't have drift correct, correct it manually
-            driftx = [];
-            drifty = [];
-            markerNums = numel(Config.fiducialMarkerIndex);
-            for i = 1:markerNums
-                  results = gTraces.molecules(Config.fiducialMarkerIndex(i)).Results;
-                  driftx = [driftx,results(:,3)];
-                  drifty = [drifty,results(:,4)]; 
-                  fiducialFrameIndicator = results(:,1);
-            end
-       
-            temp.Config.DriftX = smooth(mean(driftx,2),10);
-            temp.Config.DriftY = smooth(mean(drifty,2),10);
-            temp.Config.fiducialFrameIndicator = fiducialFrameIndicator;
-        end
          if ~isfield(Config,'FirstFrame')
             temp.Config.FirstFrame = gTraces.Config.FirstFrame;%frame
         end
@@ -69,27 +54,14 @@ function   LoadMetadata(handles)
         if ~isfield(Config,'FrameTrasferTimems')
              temp.Config.FrameTrasferTimems = 37.5 ;
         end
-        if ~isfield(Config,'DistanceAxesBinSize')
-             temp.Config.DistanceAxesBinSize = 0.3 ;
-        end
-        if ~isfield(Config,'DistanceAxesBinEnd')
-            temp.Config.DistanceAxesBinEnd =  25;
-        end
-        if ~isfield(Config,'PathLengthAxesBinSize')
-             temp.Config.PathLengthAxesBinSize = 1 ;
-        end
-        if ~isfield(Config,'PathLengthAxesBinEnd')
-            temp.Config.PathLengthAxesBinEnd =  100;
-        end
-        if ~isfield(Config,'IntensityAxesBinSize')
-            temp.Config.IntensityAxesBinSize =  1;
-        end
-        if ~isfield(Config,'IntensityAxesBinEnd')
-            temp.Config.IntensityAxesBinEnd =  500;
-        end
         if ~isfield(Config,'TrustBands')
             temp.Config.TrustBands =  "";
         end
+        if isfield(Config,'fiducialMarkerIndex')%%data don't have drift correct, correct it manually
+          [gTraces.driftx,gTraces.drifty,gTraces.smoothDriftx,gTraces.smoothDrifty] = SmoothDriftTraces(gTraces,Config.fiducialMarkerIndex);
+           gTraces.fiducialFrameIndicator = gTraces.Config.FirstFrame:gTraces.Config.LastFrame;%save the start frame of the ficucial for substration
+        end
+        
     end
     versionMatch = strcmp(temp.Config.Version,gTraces.Config.Version);
     tempVersionStr = gTraces.Config.Version;

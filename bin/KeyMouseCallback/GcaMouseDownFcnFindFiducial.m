@@ -1,4 +1,4 @@
-function [] = GcaMouseDownFcnFindFiducial(object, eventdata,handle,index)
+function [] = GcaMouseDownFcnFindFiducial(object, eventdata,p,handle,index)
 %mouse down function, to select trace and show it on main window
 %    
 global gTraces;
@@ -10,6 +10,7 @@ if button == 1
     if isempty(id)
         fiducialIndex = [fiducialIndex,index];%if not there ,add one
         legend(object,'X');
+        p.Color = [0,1,0];
     end
 end
 
@@ -19,18 +20,15 @@ if button ==3%remove index from fiducial list
         if(size(fiducialIndex,2)>1)
             fiducialIndex(id) = [];%if it is there ,remove
             legend(object,'O');
+            p.Color = [1,0,0];
         end
     end
 end
 
 gTraces.Config.fiducialMarkerIndex = fiducialIndex;
 
-%gTraces.Config.FirstFrame = 11;
-%gTraces.Config.LastFrame = 700;
-            
 [gTraces.driftx,gTraces.drifty,gTraces.smoothDriftx,gTraces.smoothDrifty] = SmoothDriftTraces(gTraces,fiducialIndex);
-framecolumn = gTraces.molecules(gTraces.Config.fiducialMarkerIndex(1)).Results(:,1);
-gTraces.fiducialFrameIndicator = framecolumn;%save the start frame of the ficucial for substration
+gTraces.fiducialFrameIndicator = gTraces.Config.FirstFrame:gTraces.Config.LastFrame;%save the start frame of the ficucial for substration
 
  
 
@@ -41,15 +39,16 @@ for i = 1:size(fiducialIndex,2)
     x = gTraces.molecules(fiducialIndex(i)).Results(:,3);
     y = gTraces.molecules(fiducialIndex(i)).Results(:,4);
     str = [str,string(fiducialIndex(i))];
-    plot(handle,x-x(1),y-y(1));%
+    plot(handle,abs(x-x(end)),abs(y-y(end)));%
     hold(handle,'on');  
 end
 str = [str,"smooth"];
 sx = gTraces.smoothDriftx; 
 sy = gTraces.smoothDrifty;
 
-plot(handle,sx,sy,'k*','markersize',10);
-plot(handle,sx,sy,'k','markersize',10);
+plot(handle,abs(sx-sx(end)),abs(sy-sy(end)),'k*','markersize',10);
+plot(handle,abs(sx-sx(end)),abs(sy-sy(end)),'k','markersize',10);
+ 
 legend(handle,str);
     
 end

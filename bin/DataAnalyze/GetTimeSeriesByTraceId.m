@@ -4,11 +4,13 @@ function series = GetTimeSeriesByTraceId(TracesId,noDriftCorrection)
     % get detail info by id,prepare necessary data for processing
     global gTraces;
     if nargin < 2
-       noDriftCorrection =1;
+        noDriftCorrection =1;
+        if isfield(gTraces,'fiducialFrameIndicator')
+            noDriftCorrection =0;
+        end
     end
-    if isfield(gTraces.Config,'fiducialFrameIndicator')
-        noDriftCorrection =0;
-    end
+
+    
     results = gTraces.molecules(TracesId).Results;
     drift = gTraces.molecules(TracesId).Drift;
     %drift = 0;
@@ -23,9 +25,9 @@ function series = GetTimeSeriesByTraceId(TracesId,noDriftCorrection)
         relativePositionX = absXposition  - absXposition(1); 
         relativePositionY = absYposition  - absYposition(1); 
     else
-        correctIndex = FindDriftCorrentIndex( gTraces.Config.fiducialFrameIndicator,frameIndicator);
-        relativePositionX = absXposition  - gTraces.Config.DriftX(correctIndex);
-        relativePositionY = absYposition  - gTraces.Config.DriftY(correctIndex); 
+        correctIndex = FindDriftCorrentIndex( gTraces.fiducialFrameIndicator,frameIndicator);
+        relativePositionX = absXposition  - gTraces.driftx(correctIndex);
+        relativePositionY = absYposition  - gTraces.drifty(correctIndex); 
     end
   
     relativePositionX = relativePositionX-relativePositionX(1);

@@ -48,7 +48,7 @@ function [slopes] = PlotTrace(handles,index,updateAxes)
     UpdateGUIMetadata(handles,setCatalog,DataQuality,intensityMd,pathLengthMd,distanceMd);%sets the start and end frames in gui
         
     % get detail info by id,prepare necessary data for processing
-    series = GetTimeSeriesByTraceId(TracesId);
+    series = GetTimeSeriesByTraceId(TracesId,~handles.ApplyDriftCorrection.Value);
     
     frameIndicator = series.frameIndicator;
     time =series.time; %fps is 1 so time is equal to frame

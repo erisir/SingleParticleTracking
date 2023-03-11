@@ -8,12 +8,7 @@ function [] = InitializeTraces(handles)
     gTraces.Config.MaximumMoveDistance = 1000;%nm
   
     gTraces.Config.FrameTrasferTimems = 0 ;
-    gTraces.Config.DistanceAxesBinSize = 0.3 ;
-    gTraces.Config.DistanceAxesBinEnd =  25;
-    gTraces.Config.PathLengthAxesBinSize = 1 ;
-    gTraces.Config.PathLengthAxesBinEnd =  100;
-    gTraces.Config.IntensityAxesBinSize =  1;
-    gTraces.Config.IntensityAxesBinEnd =  500;
+
     
 
     gTraces.Config.Catalogs = ["All";"Stuck_Go";"Go_Stuck";"Stuck_Go_Stuck";"Go_Stuck_Go";"NonLinear";"Stepping";"BackForward";"Diffusion";"Temp"];

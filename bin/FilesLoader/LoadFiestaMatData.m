@@ -13,14 +13,15 @@
             Config.Threshold = tempConfig.Threshold.Value;
         end
         if ~isfield(tempConfig,'FirstTFrame')
-            Config.FirstFrame = 11
+            Config.FirstFrame = 11;
         else
             Config.FirstFrame = tempConfig.FirstTFrame;
         end
         if ~isfield(tempConfig,'LastFrame')
-            Config.LastFrame = 700
+            Config.LastFrame = 700;
         else
             Config.LastFrame = tempConfig.LastFrame;
+            
         end
         if ~isfield(tempConfig,'Time')
              Config.ExpusureTimems = 1037;
@@ -39,14 +40,8 @@
         Config.ExpusureTimems = 1037;
         Config.pixelSize = 65.98;
     end
-
-   
-        
-        
-       
-        
-
-         
+    
+    Config.StackSize = Config.LastFrame - Config.FirstFrame+1;
 
 end
 

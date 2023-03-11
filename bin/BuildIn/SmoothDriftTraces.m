@@ -1,14 +1,17 @@
 function [driftx,drifty,smoothDriftx,smoothDrifty] = SmoothDriftTraces(Traces,fiducialIndex) 
     
-    Traces.Config.LastFrame=700;
-    Traces.Config.FirstFrame=11;
-    driftx = zeros(Traces.Config.LastFrame-Traces.Config.FirstFrame+1,1);
-    drifty = driftx;     
+    frames = Traces.Config.FirstFrame:Traces.Config.LastFrame;
+    frames = frames';
+    driftx = zeros(Traces.Config.StackSize,1);
+    drifty = zeros(Traces.Config.StackSize,1);     
     
-    fiducialNums = size(fiducialIndex,2);
+    fiducialNums = numel(fiducialIndex);
     for i = 1:fiducialNums
-        xPos =Traces.molecules(fiducialIndex(i)).Results(:,3);
-        yPos =Traces.molecules(fiducialIndex(i)).Results(:,4);       
+        frameIndicator = Traces.molecules(fiducialIndex(i)).Results(:,1);
+        xPos   = Traces.molecules(fiducialIndex(i)).Results(:,3);
+        yPos   = Traces.molecules(fiducialIndex(i)).Results(:,4);  
+        xPos = interp1(frameIndicator,xPos,frames);
+        yPos = interp1(frameIndicator,yPos,frames);
         driftx = driftx+xPos;
         drifty = drifty+yPos;       
     end

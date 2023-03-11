@@ -22,7 +22,7 @@ function varargout = Main(varargin)
 
 % Edit the above text to modify the response to help Main
 
-% Last Modified by GUIDE v2.5 10-Mar-2023 02:38:42
+% Last Modified by GUIDE v2.5 11-Mar-2023 04:04:28
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -429,3 +429,29 @@ function TraceRotationAngle_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --------------------------------------------------------------------
+function FindReferenceMolecules_Callback(hObject, eventdata, handles)
+% hObject    handle to FindReferenceMolecules (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global gTraces;
+gTraces.Config.fiducialMarkerIndex = FindFiducialIndex();
+
+
+% --- Executes on button press in ApplyDriftCorrection.
+function ApplyDriftCorrection_Callback(hObject, eventdata, handles)
+% hObject    handle to ApplyDriftCorrection (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of ApplyDriftCorrection
+
+
+% --------------------------------------------------------------------
+function ShowReferenceMolecules_Callback(hObject, eventdata, handles)
+% hObject    handle to ShowReferenceMolecules (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+ShowFiducialMarker();
