@@ -1,4 +1,5 @@
 function PlotTransformXY(frameIndicator,time_per_frames,relativePositionX,relativePositionY,thetaRad)
+    global gPlots;
     figure;
     start = 1;
     endInd = size(relativePositionX,1);
@@ -24,7 +25,7 @@ function PlotTransformXY(frameIndicator,time_per_frames,relativePositionX,relati
     x = -1*max(x_t)*x/datalength;
     y = median(y_t)*ones(1,datalength);
     
-    h1 = subplot(2,1,1);
+    h1 = subplot(4,4,1);
     hold off;
     plot(0,0);
     plot(h1,smooth(x_t,smoothsize),smooth(y_t,smoothsize),'linewidth',3);
@@ -33,7 +34,7 @@ function PlotTransformXY(frameIndicator,time_per_frames,relativePositionX,relati
     xlabel('x (nm)');
     ylabel('y (nm)');
 
-    subplot(2,1,2);
+    gPlots.GlobalXYPlotInNewWindow =subplot(4,4,5:16);
     plot(t,x_t,'.r','markersize',6);
     hold on;
     plot(t,smooth(x_t,smoothsize),'-r','linewidth',3);

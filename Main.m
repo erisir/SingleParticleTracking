@@ -22,7 +22,7 @@ function varargout = Main(varargin)
 
 % Edit the above text to modify the response to help Main
 
-% Last Modified by GUIDE v2.5 11-Mar-2023 04:04:28
+% Last Modified by GUIDE v2.5 11-Mar-2023 11:29:52
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -53,6 +53,7 @@ function Main_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for Main
 handles.output = hObject;
 global Workspace;
+global gPlots;
 Workspace = 'F:\ExperimentalRawData\2023\';
 %Workspace = 'F:\ExperimentalRawData\2022_2021_2020\20200519_[0,2,10,20nM]Cel7a_NaOH_ABCellulose_Good\2nM_10nM_20nM_Cel7a500pMQdot_NaOH_Cellulose\2nM\Metadata';
 DirRoot = [fileparts( mfilename('fullpath') ) filesep];
@@ -455,3 +456,74 @@ function ShowReferenceMolecules_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 ShowFiducialMarker();
+
+
+ 
+
+
+
+function PlotRangeYLim_Callback(hObject, eventdata, handles)
+% hObject    handle to PlotRangeYLim (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of PlotRangeYLim as text
+%        str2double(get(hObject,'String')) returns contents of PlotRangeYLim as a double
+RangeYLim = get(hObject,'String');
+global gPlots;
+if ~isempty(RangeYLim)
+    RangeYLim = split(RangeYLim,',');
+    ylim(gPlots.GlobalXYPlotInNewWindow ,[str2num(RangeYLim{1}),str2num(RangeYLim{2})]);
+end
+
+
+ 
+
+% --- Executes during object creation, after setting all properties.
+function PlotRangeYLim_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to PlotRangeYLim (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function PlotRangeXLim_Callback(hObject, eventdata, handles)
+% hObject    handle to PlotRangeXLim (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of PlotRangeXLim as text
+%        str2double(get(hObject,'String')) returns contents of PlotRangeXLim as a double
+RangeXLim = get(hObject,'String');
+global gPlots;
+
+if ~isempty(RangeXLim)
+    RangeXLim = split(RangeXLim,',');
+    xlim(gPlots.GlobalXYPlotInNewWindow ,[str2num(RangeXLim{1}),str2num(RangeXLim{2})]);
+end
+
+% --- Executes during object creation, after setting all properties.
+function PlotRangeXLim_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to PlotRangeXLim (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --------------------------------------------------------------------
+function CloseAllFigure_Callback(hObject, eventdata, handles)
+% hObject    handle to CloseAllFigure (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+close all;
