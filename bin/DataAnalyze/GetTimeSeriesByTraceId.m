@@ -5,8 +5,10 @@ function series = GetTimeSeriesByTraceId(TracesId,noDriftCorrection)
     global gTraces;
     if nargin < 2
         noDriftCorrection =1;
-        if isfield(gTraces,'fiducialFrameIndicator')
-            noDriftCorrection =0;
+        if isfield(gTraces,'manualDriftCorrection')
+            if gTraces.manualDriftCorrection == 1
+                noDriftCorrection =0;
+            end
         end
     end
 

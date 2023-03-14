@@ -448,14 +448,16 @@ function ApplyDriftCorrection_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of ApplyDriftCorrection
-
+index = str2double(get(handles.Current_Trace_Id,'String'));
+updateAxes = 0;
+PlotTrace(handles,index,updateAxes);
 
 % --------------------------------------------------------------------
 function ShowReferenceMolecules_Callback(hObject, eventdata, handles)
 % hObject    handle to ShowReferenceMolecules (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-ShowFiducialMarker();
+ShowFiducialMarker(handles);
 
 
  
@@ -522,14 +524,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-% --------------------------------------------------------------------
-function ShowAllTracesInTIRFImage_Callback(hObject, eventdata, handles)
-% hObject    handle to ShowAllTracesInTIRFImage (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-close all;
-
-
 % --- Executes on button press in ShowFullStackIntensity.
 function ShowFullStackIntensity_Callback(hObject, eventdata, handles)
 % hObject    handle to ShowFullStackIntensity (see GCBO)
@@ -537,6 +531,26 @@ function ShowFullStackIntensity_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of ShowFullStackIntensity
+index = str2double(get(handles.Current_Trace_Id,'String'));
+updateAxes = 0;
+PlotTrace(handles,index,updateAxes);
+% --------------------------------------------------------------------
+function ShowAllTracesInTIRFImage_Callback(hObject, eventdata, handles)
+% hObject    handle to ShowAllTracesInTIRFImage (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+    global gTraces;
+    figure;
+    distanceMd = get(handles.Distance_Section_List,'String');
+    metadata = [str2num(distanceMd{1}),str2num(distanceMd{2}),str2num(distanceMd{3}),str2num(distanceMd{4})];
+    sx = gTraces.smoothDriftx; 
+    sy = gTraces.smoothDrifty;
+    sx = sx(metadata(3):metadata(4));
+    sy = sy(metadata(3):metadata(4));
+    sx = sx - sx(1);
+    sy = sy - sy(1);
+    distance = sqrt(sx.*sx+sy.*sy);
+    plot(metadata(3):metadata(4),distance,'.-','MarkerSize',6);  
 
 
 % --------------------------------------------------------------------
@@ -544,7 +558,18 @@ function ShowAllProcessiveTracesInTIRFImage_Callback(hObject, eventdata, handles
 % hObject    handle to ShowAllProcessiveTracesInTIRFImage (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+    global gTraces;
+    figure;
+    distanceMd = get(handles.Distance_Section_List,'String');
+    metadata = [str2num(distanceMd{1}),str2num(distanceMd{2}),str2num(distanceMd{3}),str2num(distanceMd{4})];
+    sx = gTraces.smoothDriftx; 
+    sy = gTraces.smoothDrifty;
+    sx = sx(metadata(1):metadata(2));
+    sy = sy(metadata(1):metadata(2));
+    sx = sx - sx(1);
+    sy = sy - sy(1);
+    distance = sqrt(sx.*sx+sy.*sy);
+    plot(metadata(1):metadata(2),distance,'.-','MarkerSize',6); 
 
 % --------------------------------------------------------------------
 function ShowStaticTracesInTIRFImage_Callback(hObject, eventdata, handles)

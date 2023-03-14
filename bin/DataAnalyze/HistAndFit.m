@@ -4,7 +4,7 @@ function [retData] = HistAndFit(data,fitOption,bin,xlabelStr)
 
 %plot
 dataSize = numel(data);
-if dataSize<5
+if dataSize<10
     return
 end
 pMarksize = 8;
@@ -68,13 +68,13 @@ switch fitOption
     case "gauss1"
         f = fit(x.',y.','gauss1');%f(x) =  a1*exp(-((x-b1)/c1)^2)  
         yfit = f.a1*exp(-((x-f.b1)/f.c1).^2);
-        legendStr = sprintf('gauss1: (u¡À¦Ò)=%0.2f ¡À %0.2f', f.b1, f.c1);
+        legendStr = sprintf('gauss1: u=%0.2f sigma %0.2f', f.b1, f.c1);
         retFit = f.b1;
     case "gauss2"
         f = fit(x.',y.','gauss2'); %f(x) =  a1*exp(-((x-b1)/c1)^2) + a2*exp(-((x-b2)/c2)^2)
         yfit = f.a1*exp(-((x-f.b1)/f.c1).^2) + f.a2*exp(-((x-f.b2)/f.c2).^2);
         retFit = f.b1;
-        legendStr = sprintf('gauss2(%0.2f ¡À %0.2f)(%0.2f ¡À %0.2f)', f.b1, f.c1, f.b2, f.c2);
+        legendStr = sprintf('gauss2(u %0.2f sigma %0.2f)(u%0.2f sigma %0.2f)', f.b1, f.c1, f.b2, f.c2);
     case "poisson"
         f = fitdist(data','poisson');
         lambda = f.lambda;

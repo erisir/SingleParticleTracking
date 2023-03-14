@@ -28,6 +28,7 @@ end
 gTraces.Config.fiducialMarkerIndex = fiducialIndex;
 
 [gTraces.driftx,gTraces.drifty,gTraces.smoothDriftx,gTraces.smoothDrifty] = SmoothDriftTraces(gTraces,fiducialIndex);
+gTraces.manualDriftCorrection = 1;
 gTraces.fiducialFrameIndicator = gTraces.Config.FirstFrame:gTraces.Config.LastFrame;%save the start frame of the ficucial for substration
 
  
@@ -46,8 +47,8 @@ str = [str,"smooth"];
 sx = gTraces.smoothDriftx; 
 sy = gTraces.smoothDrifty;
 
-plot(handle,abs(sx-sx(end)),abs(sy-sy(end)),'k*','markersize',10);
-plot(handle,abs(sx-sx(end)),abs(sy-sy(end)),'k','markersize',10);
+plot(handle,abs(sx-sx(end)),abs(sy-sy(end)),'k*','markersize',6);
+plot(handle,abs(sx-sx(end)),abs(sy-sy(end)),'k','markersize',6);
  
 legend(handle,str);
     

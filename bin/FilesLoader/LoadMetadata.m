@@ -60,6 +60,7 @@ function   LoadMetadata(handles)
         if isfield(Config,'fiducialMarkerIndex')%%data don't have drift correct, correct it manually
           [gTraces.driftx,gTraces.drifty,gTraces.smoothDriftx,gTraces.smoothDrifty] = SmoothDriftTraces(gTraces,Config.fiducialMarkerIndex);
            gTraces.fiducialFrameIndicator = gTraces.Config.FirstFrame:gTraces.Config.LastFrame;%save the start frame of the ficucial for substration
+           gTraces.manualDriftCorrection = 1;
         end
         
     end

@@ -2,14 +2,18 @@ function   PlotIntensityAxes(handles,absXposition,absYposition,frameIndicator,Am
 %PLOTTHEINTENSITYTRACE  
 %    
     global gImages;
+    yyaxis(handles.IntensityAxes,'right');
+    plot(handles.IntensityAxes,0,0);
     if get(handles.ShowFullStackIntensity ,'Value') && ~isempty(gImages)
         meanx = str2num(get(handles.CurrentPointXpos,'String'));
         meany = str2num(get(handles.CurrentPointYpos,'String'));
        intensity = GetZprojectIntensityByXY(gImages.rawImagesStack,frameIndicator,absXposition,absYposition);
+       yyaxis(handles.IntensityAxes,'right');
        plot(handles.IntensityAxes,intensity); %plot the intensity trace we calculate by ourself
-       hold(handles.IntensityAxes,'on');
+       %hold(handles.IntensityAxes,'on');
+       ylabel(handles.IntensityAxes,'Raw intensity (a.u.)');
     end
-
+    yyaxis(handles.IntensityAxes,'left');
     currentDisplayFrame = floor(get(handles.Slider_Stack_Index,'Value'));
     plot(handles.IntensityAxes,frameIndicator,Amplitude,'g');%plot the amplitude generated from fiesta, which should be same with what we calculate.
 

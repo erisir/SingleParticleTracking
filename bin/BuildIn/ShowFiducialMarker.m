@@ -1,10 +1,11 @@
-function ShowFiducialMarker()
+function ShowFiducialMarker(handles)
 % hObject    handle to ShowFiducialMarker (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 global gTraces;
 
 figure;
+ 
 handle = subplot(1,1,1);
 fiducialIndex = gTraces.Config.fiducialMarkerIndex ;
 driftx = gTraces.driftx;
@@ -14,8 +15,12 @@ driftx = abs(driftx - driftx(end));
 drifty = abs(drifty - drifty(end));
 
 colNums = ceil(size(fiducialIndex,2)/2);
-plot(handle,driftx,drifty,'.-k ','LineWidth',3,'MakerSize',6);
+sx = gTraces.smoothDriftx; 
+sy = gTraces.smoothDrifty;
 hold on;
+plot(handle,abs(sx-sx(end)),abs(sy-sy(end)),'k*','markersize',6);
+plot(handle,abs(sx-sx(end)),abs(sy-sy(end)),'k','markersize',6);
+
 %plot(handle,driftx,drifty,'k*','markersize',10);
 str = ["smooth"];
 for i = 1:size(fiducialIndex,2)

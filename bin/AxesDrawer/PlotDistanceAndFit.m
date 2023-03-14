@@ -69,6 +69,10 @@ function [slopes] = PlotDistanceAndFit(handles,displacement,frameIndicator,dista
         end
         ylim(handles.DistanceAxes,[0,yStickMax]);
         ylabel(handles.DistanceAxes,'Intensity (a.u.)');
+        %legend([pltDisplacement2;pltAmp;pltError],["Displacement";"Intensity";"FitError"]);
+        legend([pltAmp;pltError],["Intensity";"FitError"]);
+    else
+        legend([pltDisplacement2;pltError],["Displacement";"FitError"]);
     end
     
 
@@ -84,6 +88,6 @@ function [slopes] = PlotDistanceAndFit(handles,displacement,frameIndicator,dista
     xlabel(handles.DistanceAxes,'Time (frame)'); 
     yyaxis(handles.DistanceAxes,'left');
     ylabel(handles.DistanceAxes,'Distance (nm)') ;
-  
+    
 end
 

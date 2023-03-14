@@ -8,7 +8,7 @@ function  SetFittingsegment(handles,time)
     TraceId = gTraces.CurrentShowIndex(index);
 
     switch gTraces.LastSelectedList
-        case 'Intensity_Section_List'   
+        case 'Intensity_Section_List1'   
             selected  =floor(get(handles.Intensity_Section_List,'Value'));
             gTraces.Metadata(TraceId).IntensityStartEndTimePoint(selected) = time;
             

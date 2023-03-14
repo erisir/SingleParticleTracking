@@ -2,6 +2,7 @@ function [Index] = FindFiducialIndex()
 % find out which spot is the tetraspack
 % base on the longest lifetime and good fit error
 global gTraces;
+gTraces.manualDriftCorrection = 0;
 % find those particles that bright for 80% of time
 corelationThreadhold = 0.5;%???
 dwellTime = zeros(1,gTraces.moleculenum);
@@ -10,7 +11,7 @@ for traceId = 1:gTraces.moleculenum
     dwellTime(traceId) = gTraces.Metadata(traceId).IntensityDwell(1);   
 end
 
-Index = find(dwellTime >= 0.8*gTraces.Config.StackSize);% 80% of time being bright
+Index = find(dwellTime >= 0.9*gTraces.Config.StackSize);% 80% of time being bright
 fiducialDistance = zeros(numel(Index),gTraces.Config.StackSize);
 for i =1:numel(Index)
     series = GetTimeSeriesByTraceId(Index(i));
