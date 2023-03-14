@@ -40,7 +40,7 @@
         Config.ExpusureTimems = 1037;
         Config.pixelSize = 65.98;
     end
-    
+    Config.Catalogs = ["All";"Stuck_Go";"Go_Stuck";"Stuck_Go_Stuck";"Go_Stuck_Go";"NonLinear";"Stepping";"BackForward";"Diffusion";"Temp"];
     Config.StackSize = Config.LastFrame - Config.FirstFrame+1;
 
 end

@@ -10,19 +10,19 @@ function [driftx,drifty,smoothDriftx,smoothDrifty] = SmoothDriftTraces(Traces,fi
         frameIndicator = Traces.molecules(fiducialIndex(i)).Results(:,1);
         xPos   = Traces.molecules(fiducialIndex(i)).Results(:,3);
         yPos   = Traces.molecules(fiducialIndex(i)).Results(:,4);  
-        xPos = interp1(frameIndicator,xPos,frames(frameIndicator(1):frameIndicator(end)));
-        yPos = interp1(frameIndicator,yPos,frames(frameIndicator(1):frameIndicator(end)));
+        xPos = interp1(frameIndicator,xPos,frames(frameIndicator(1)-Traces.Config.FirstFrame+1:frameIndicator(end)-Traces.Config.FirstFrame+1));
+        yPos = interp1(frameIndicator,yPos,frames(frameIndicator(1)-Traces.Config.FirstFrame+1:frameIndicator(end)-Traces.Config.FirstFrame+1));
         xPosBefore = [];
         yPosBefore = [];
         xPosAfter = [];
         yPosAfter = [];
-        if frameIndicator(1)>1
-            xPosBefore = xPos(1)*ones(frameIndicator(1)-1,1);
-            yPosBefore = yPos(1)*ones(frameIndicator(1)-1,1);
+        if frameIndicator(1)>Traces.Config.FirstFrame
+            xPosBefore = xPos(1)*ones(frameIndicator(1)-Traces.Config.FirstFrame,1);
+            yPosBefore = yPos(1)*ones(frameIndicator(1)-Traces.Config.FirstFrame,1);
         end
-        if frameIndicator(end)<Traces.Config.StackSize
-            xPosAfter = xPos(end)*ones(Traces.Config.StackSize-frameIndicator(end),1);
-            yPosAfter = yPos(end)*ones(Traces.Config.StackSize-frameIndicator(end),1);
+        if frameIndicator(end)<Traces.Config.LastFrame
+            xPosAfter = xPos(end)*ones(Traces.Config.LastFrame-frameIndicator(end),1);
+            yPosAfter = yPos(end)*ones(Traces.Config.LastFrame-frameIndicator(end),1);
         end
         xPos = [xPosBefore;xPos;xPosAfter];
         yPos = [yPosBefore;yPos;yPosAfter];
