@@ -77,7 +77,7 @@ function [slopes] = PlotTrace(handles,index,updateAxes)
                 PlotZoomInImages(handles,frameIndicator,absXposition,absYposition,pixelSize,Amplitude);  
             end    
             SetSlideIndex(handles,intensityMd(1),false);%go to the beginning of the trace when first call
-            PlotIntensityAxes(handles,frameIndicator,Amplitude,intensityMd);   
+            PlotIntensityAxes(handles,absXposition,absYposition,frameIndicator,Amplitude,intensityMd);   
         case 2% set segment slide move on pathlength axis, update pathlength axes
             %sl = PlotPathLengthAndFit(handles,pathlenght,frameIndicator,pathLengthMd,TracesId,colorCode);
             %slopes(1) = sl(1); 
@@ -98,7 +98,7 @@ function [slopes] = PlotTrace(handles,index,updateAxes)
         
                      
             %set(handles.Slider_Stack_Index,'Value',round(str2num(intensityMd(1))));
-            PlotIntensityAxes(handles,frameIndicator,Amplitude,intensityMd);   
+            PlotIntensityAxes(handles,absXposition,absYposition,frameIndicator,Amplitude,intensityMd);   
             %sl = PlotPathLengthAndFit(handles,pathlenght,frameIndicator,pathLengthMd,TracesId,colorCode);
             s2 = PlotDistanceAndFit(handles,displacement,frameIndicator,distanceMd,TracesId,colorCode,fitError,Amplitude);
             PlotScatterAxes(handles,datalength,relativePositionX,relativePositionY,smoothRelativePosX,smoothRelativePosY,colorCode);

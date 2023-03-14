@@ -65,6 +65,7 @@ function   LoadMetadata(handles)
     end
     versionMatch = strcmp(temp.Config.Version,gTraces.Config.Version);
     tempVersionStr = gTraces.Config.Version;
+    temp.Config.StackSize = gTraces.Config.StackSize;
     gTraces.Config = temp.Config;
     gTraces.Config.Version = tempVersionStr;
     gTraces.Metadata = temp.metadata;

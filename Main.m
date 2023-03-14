@@ -22,7 +22,7 @@ function varargout = Main(varargin)
 
 % Edit the above text to modify the response to help Main
 
-% Last Modified by GUIDE v2.5 11-Mar-2023 11:29:52
+% Last Modified by GUIDE v2.5 13-Mar-2023 19:27:25
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -508,6 +508,7 @@ if ~isempty(RangeXLim)
     xlim(gPlots.GlobalXYPlotInNewWindow ,[str2num(RangeXLim{1}),str2num(RangeXLim{2})]);
 end
 
+
 % --- Executes during object creation, after setting all properties.
 function PlotRangeXLim_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to PlotRangeXLim (see GCBO)
@@ -522,8 +523,31 @@ end
 
 
 % --------------------------------------------------------------------
-function CloseAllFigure_Callback(hObject, eventdata, handles)
-% hObject    handle to CloseAllFigure (see GCBO)
+function ShowAllTracesInTIRFImage_Callback(hObject, eventdata, handles)
+% hObject    handle to ShowAllTracesInTIRFImage (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 close all;
+
+
+% --- Executes on button press in ShowFullStackIntensity.
+function ShowFullStackIntensity_Callback(hObject, eventdata, handles)
+% hObject    handle to ShowFullStackIntensity (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of ShowFullStackIntensity
+
+
+% --------------------------------------------------------------------
+function ShowAllProcessiveTracesInTIRFImage_Callback(hObject, eventdata, handles)
+% hObject    handle to ShowAllProcessiveTracesInTIRFImage (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --------------------------------------------------------------------
+function ShowStaticTracesInTIRFImage_Callback(hObject, eventdata, handles)
+% hObject    handle to ShowStaticTracesInTIRFImage (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
