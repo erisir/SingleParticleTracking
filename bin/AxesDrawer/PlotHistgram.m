@@ -70,41 +70,40 @@ function [] = PlotHistgram(handles)
         assignin('base',['stuckAndMoveParticleDescribe',str],stuckAndMoveParticleDescribe);
         assignin('base',['moveAndStuckParticleDescribe',str],moveAndStuckParticleDescribe);  
     end
-   
+    gTraces.TargetParameters={'Velocity(nm/s)';'Runlength(nm)';'Processive Moving Duration(s)';'Processive Total BindDuration(s)'...
+        ;'Static Total BindDuration(s)';'Processive Stuck Before Move Duration(s)';'Processive Stuck After Move Duration(s)';' Fit Error(nm)'};
     figure('name',gTraces.fileName);
-    
-    subplot(2,4,1);
-    fitdataTemp = processiveParticleDescribe.movingVelocity1;
-    HistAndFit(fitdataTemp,'poisson',[0,1,5*mean(fitdataTemp)],'Velocity(nm/s)');
-    
-    subplot(2,4,2);
-    fitdataTemp = processiveParticleDescribe.runLength1;
-    HistAndFit(fitdataTemp,'gauss1',[0,3,5*mean(fitdataTemp)],'Runlength(nm)');
-    
-    subplot(2,4,3);
-    fitdataTemp = processiveParticleDescribe.movingDuration1;
-    HistAndFit(fitdataTemp,'exp1',[5,4,5*mean(fitdataTemp)],'Processive Moving Duration(s)');
+    [checkCount,checkboxStatus] = FindPlotHistCheckbox(handles);
+    if checkCount>4
+        col = 4;
+        row = 2;
+    else
+        col = checkCount;
+        row = 1;
+    end
+    fitdata = cell(1,8);
+    fitdata{1} = processiveParticleDescribe.movingVelocity1;
+    fitdata{2} = processiveParticleDescribe.runLength1;
+    fitdata{3} = processiveParticleDescribe.movingDuration1;
+    fitdata{4} = processiveParticleDescribe.totalBindDuration;
+    fitdata{5} = staticParticleDescribe.totalBindDuration;
+    fitdata{6} = stuckAndMoveParticleDescribe.dwellTimeBeforeMovement;
+    fitdata{7} = moveAndStuckParticleDescribe.dwellTimeAfterMovement;
+    fitdata{8} = staticParticleDescribe.meanfitError;
 
-    subplot(2,4,4);
-    fitdataTemp = processiveParticleDescribe.totalBindDuration;
-    HistAndFit(fitdataTemp,'exp1',[10,10,5*mean(fitdataTemp)],'Processive Total BindDuration(s)');
+    fitOption  = {'poisson';'gauss1';'exp1';'exp1';'exp1';'exp1';'exp1';'gauss1'};
+    fitStartAndBinSize = {[0,1]  ;[0,3]    ;[5,4]    ;[10,10];...
+                          [3,5]  ;[10,5]   ;[10,10]  ;[1,0.5]};
+                      
+    checkedFitdata =  fitdata(find(checkboxStatus==1));   
+    checkedFitOption =  fitOption(find(checkboxStatus==1));   
+    checkedFitStartAndBinSize =  fitStartAndBinSize(find(checkboxStatus==1));   
+    checkedTargetParameters = gTraces.TargetParameters(find(checkboxStatus==1));   
+    for i = 1:checkCount
+        subplot(row,col,i);
+        fitdataTemp =  checkedFitdata{i};
+        HistAndFit(fitdataTemp,checkedFitOption{i},[checkedFitStartAndBinSize{i},5*mean(fitdataTemp)],checkedTargetParameters{i});
+    end
     
-    subplot(2,4,5);
-    fitdataTemp = staticParticleDescribe.totalBindDuration;
-    HistAndFit(fitdataTemp,'exp1',[3,5,5*mean(fitdataTemp)],'Static Total BindDuration(s)');
-    
-    subplot(2,4,6);
-    fitdataTemp = stuckAndMoveParticleDescribe.dwellTimeBeforeMovement;
-    HistAndFit(fitdataTemp,'exp1',[10,5,5*mean(fitdataTemp)],'Processive Stuck Before Move Duration(s)');
-    %HistAndFit(staticParticleDescribe.standardDeviation,'gauss1',[0,1,25],'Static standard deviation(nm)');
-    
-    subplot(2,4,7);
-    fitdataTemp = moveAndStuckParticleDescribe.dwellTimeAfterMovement;
-    %HistAndFit(moveAndStuckParticleDescribe.dwellTimeAfterMovement,'exp1',[10,10,500],'Static Intensity(a.u.)');
-    HistAndFit(fitdataTemp,'exp1',[10,10,5*mean(fitdataTemp)],'Processive Stuck After Move Duration(s)');
-    
-    subplot(2,4,8);
-    fitdataTemp = staticParticleDescribe.meanfitError;
-    HistAndFit(fitdataTemp,'gauss1',[1,0.5,5*mean(fitdataTemp)],' Fit Error(nm)');
 end
 

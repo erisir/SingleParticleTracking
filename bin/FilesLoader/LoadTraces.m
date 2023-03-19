@@ -21,7 +21,7 @@ function  LoadTraces(handles)
     gTraces.moleculenum =  size(gTraces.molecules,2);% show in the total tag
     gTraces.Config = config;
     gTraces.Config.Version =  "21.3.8";
-    
+ 
     LogMsg(handles,["Finish Loading Traces Data  ",file]);
     beep;
     s = '-------------- o ';

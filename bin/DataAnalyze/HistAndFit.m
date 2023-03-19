@@ -42,7 +42,7 @@ if strcmp(fitOption,'exp1')
     cdfY = max(cdfY) - cdfY;
     [cdff,cdfr]  = fit(cdfX.',cdfY.','exp1');%f(x) =  a1*exp(-((x-b1)/c1)^2) 
     yfit = cdff.a*exp(cdff.b.*x);
-    p =plot(cdfX,cdfY,'.g','MarkerSize',2);
+    p =plot(cdfX,cdfY,'.g','MarkerSize',5);
     p.Color = "#D95319";
     hold on;
     p = plot(x,yfit,'-g','LineWidth',2);

@@ -22,7 +22,7 @@ function varargout = Main(varargin)
 
 % Edit the above text to modify the response to help Main
 
-% Last Modified by GUIDE v2.5 13-Mar-2023 19:27:25
+% Last Modified by GUIDE v2.5 19-Mar-2023 00:59:47
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -576,3 +576,76 @@ function ShowStaticTracesInTIRFImage_Callback(hObject, eventdata, handles)
 % hObject    handle to ShowStaticTracesInTIRFImage (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+
+
+% --- Executes on button press in HistPlotCheckbox11.
+function HistPlotCheckbox11_Callback(hObject, eventdata, handles)
+% hObject    handle to HistPlotCheckbox11 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of HistPlotCheckbox11
+
+
+% --- Executes on button press in HistPlotCheckbox12.
+function HistPlotCheckbox12_Callback(hObject, eventdata, handles)
+% hObject    handle to HistPlotCheckbox12 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of HistPlotCheckbox12
+
+
+% --- Executes on button press in HistPlotCheckbox13.
+function HistPlotCheckbox13_Callback(hObject, eventdata, handles)
+% hObject    handle to HistPlotCheckbox13 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of HistPlotCheckbox13
+
+
+% --- Executes on button press in HistPlotCheckbox14.
+function HistPlotCheckbox14_Callback(hObject, eventdata, handles)
+% hObject    handle to HistPlotCheckbox14 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of HistPlotCheckbox14
+
+
+% --- Executes on button press in HistPlotCheckbox21.
+function HistPlotCheckbox21_Callback(hObject, eventdata, handles)
+% hObject    handle to HistPlotCheckbox21 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of HistPlotCheckbox21
+
+
+% --- Executes on button press in HistPlotCheckbox22.
+function HistPlotCheckbox22_Callback(hObject, eventdata, handles)
+% hObject    handle to HistPlotCheckbox22 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of HistPlotCheckbox22
+
+
+% --- Executes on button press in HistPlotCheckbox23.
+function HistPlotCheckbox23_Callback(hObject, eventdata, handles)
+% hObject    handle to HistPlotCheckbox23 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of HistPlotCheckbox23
+
+
+% --- Executes on button press in HistPlotCheckbox24.
+function HistPlotCheckbox24_Callback(hObject, eventdata, handles)
+% hObject    handle to HistPlotCheckbox24 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of HistPlotCheckbox24
