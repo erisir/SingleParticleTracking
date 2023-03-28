@@ -33,18 +33,20 @@ function PlotTransformXY(frameIndicator,time_per_frames,relativePositionX,relati
     plot(x_t,y_t,'.k','Markersize',6);
     xlabel('x (nm)');
     ylabel('y (nm)');
-
     gPlots.GlobalXYPlotInNewWindow =subplot(4,4,5:16);
-    plot(t,x_t,'.r','markersize',6);
+
+    plot(t,x_t,'-.r','markersize',6);
     hold on;
-    plot(t,smooth(x_t,smoothsize),'-r','linewidth',3);
+    plot(t,smooth(x_t,smoothsize),'-g','linewidth',3);
     plot(t,y_t,'.g','markersize',6);
     plot(t,smooth(y_t,smoothsize),'-g','linewidth',3);
+
     xlabel('Time (s)');
     ylabel('Position (nm)');
     yt = ylim;
     grid on;
     yticks(floor(yt(1)):8:floor(yt(2)));
-    title('X Pos (red)  Y Pos (green)');
+    title('Y Pos nm');
+    %title('X Pos (red)  Y Pos (green)');
 end
 

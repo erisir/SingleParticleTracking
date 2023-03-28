@@ -58,7 +58,7 @@ end
 
 
 %titleStr = sprintf('N:%d, mean:%.2f, median:%.2f',numel(data),mean(data), median(data));
-titleStr = sprintf('N:%d, mean:%.2f, std:%.2f',numel(data),mean(data), std(data));
+titleStr = sprintf('N:%d, mean:%.2f, std:%.2f, bin:%.1f,',numel(data),mean(data), std(data),binsize);
 
 retMean = mean(data);
 retMedian = median(data);

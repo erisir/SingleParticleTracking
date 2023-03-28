@@ -90,10 +90,10 @@ function [] = PlotHistgram(handles)
     fitdata{6} = stuckAndMoveParticleDescribe.dwellTimeBeforeMovement;
     fitdata{7} = moveAndStuckParticleDescribe.dwellTimeAfterMovement;
     fitdata{8} = staticParticleDescribe.meanfitError;
-
+    assignin('base','TimeB9',staticParticleDescribe.totalBindDuration);
     fitOption  = {'poisson';'gauss1';'exp1';'exp1';'exp1';'exp1';'exp1';'gauss1'};
     fitStartAndBinSize = {[0,1]  ;[0,3]    ;[5,4]    ;[10,10];...
-                          [3,5]  ;[10,5]   ;[10,10]  ;[1,0.5]};
+                          [0,3]  ;[10,5]   ;[10,10]  ;[1,0.5]};
                       
     checkedFitdata =  fitdata(find(checkboxStatus==1));   
     checkedFitOption =  fitOption(find(checkboxStatus==1));   

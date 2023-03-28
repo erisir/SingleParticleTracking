@@ -22,7 +22,7 @@ function varargout = Main(varargin)
 
 % Edit the above text to modify the response to help Main
 
-% Last Modified by GUIDE v2.5 19-Mar-2023 00:59:47
+% Last Modified by GUIDE v2.5 24-Mar-2023 13:47:13
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -649,3 +649,11 @@ function HistPlotCheckbox24_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of HistPlotCheckbox24
+
+
+% --------------------------------------------------------------------
+function ShowTraceConfig_Callback(hObject, eventdata, handles)
+% hObject    handle to ShowTraceConfig (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+ShowTraceConfig(handles);
