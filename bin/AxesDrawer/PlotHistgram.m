@@ -92,8 +92,8 @@ function [] = PlotHistgram(handles)
     fitdata{8} = staticParticleDescribe.meanfitError;
     assignin('base','TimeB9',staticParticleDescribe.totalBindDuration);
     fitOption  = {'poisson';'gauss1';'exp1';'exp1';'exp1';'exp1';'exp1';'gauss1'};
-    fitStartAndBinSize = {[0,1]  ;[0,3]    ;[5,4]    ;[10,10];...
-                          [0,3]  ;[10,5]   ;[10,10]  ;[1,0.5]};
+    fitStartAndBinSize = {[0,0.5]  ;[0,3]    ;[5,4]    ;[10,10];...
+                          [0,0.2]  ;[10,5]   ;[10,10]  ;[1,0.5]};
                       
     checkedFitdata =  fitdata(find(checkboxStatus==1));   
     checkedFitOption =  fitOption(find(checkboxStatus==1));   
@@ -102,7 +102,7 @@ function [] = PlotHistgram(handles)
     for i = 1:checkCount
         subplot(row,col,i);
         fitdataTemp =  checkedFitdata{i};
-        HistAndFit(fitdataTemp,checkedFitOption{i},[checkedFitStartAndBinSize{i},5*mean(fitdataTemp)],checkedTargetParameters{i});
+        HistAndFit(fitdataTemp,checkedFitOption{i},[checkedFitStartAndBinSize{i},220],checkedTargetParameters{i});
     end
     
 end

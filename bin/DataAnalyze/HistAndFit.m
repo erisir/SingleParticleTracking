@@ -86,9 +86,17 @@ switch fitOption
         legendStr =  sprintf('poisson(lambda) = (%0.2f)',lambda);
     case "exp1"
         [f,r]  = fit(x.',y.','exp1');%f(x) =  a1*exp(-((x-b1)/c1)^2) 
+        fun = @(x,xdata)x(1)*exp(x(2)*xdata);
+        options = optimoptions('lsqcurvefit','Algorithm','levenberg-marquardt');
+        lb = [];
+        ub = [];
+        [yfit,RESNORM,RESIDUAL,EXITFLAG,OUTPUT,LAMBDA]  = lsqcurvefit(fun,x.',x.',y.',lb,ub,options);
+       % yfit = lsqcurvefit(fun,x.',x.',y.');
+        
         yfit = f.a*exp(f.b.*x);
-        retFit = abs(1/f.b);
+        retFit = 1;%abs(1/f.b);
         legendStr =  sprintf('exp1: T=%.2f,rs=%.2f',abs(1/f.b),r.rsquare);
+        
     case "exp2"
         [f,r]  = fit(x.',y.','exp2');%f(x) =  a1*exp(-((x-b1)/c1)^2) + a2*exp(-((x-b2)/c2)^2)
         yfit = f.a*exp(f.b.*x)+f.c*exp(f.d.*x);

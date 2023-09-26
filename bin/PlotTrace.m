@@ -6,12 +6,15 @@ function [slopes] = PlotTrace(handles,index,updateAxes)
     if ~isfield( gTraces, 'molecules' )
         return
     end
-    
-    if index<1
-        index = 1;
+    if gTraces.CurrentShowNums < 1
+        return
     end
+    
     if index >gTraces.CurrentShowNums
         index = gTraces.CurrentShowNums;
+    end
+    if index<1
+        index = 1;
     end
     
     set(handles.Current_Trace_Id,'String',int2str(index));

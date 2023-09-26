@@ -22,7 +22,7 @@ function varargout = Main(varargin)
 
 % Edit the above text to modify the response to help Main
 
-% Last Modified by GUIDE v2.5 24-Mar-2023 13:47:13
+% Last Modified by GUIDE v2.5 02-Apr-2023 15:32:30
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -657,3 +657,27 @@ function ShowTraceConfig_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 ShowTraceConfig(handles);
+
+
+
+function GlobalSmoothSize_Callback(hObject, eventdata, handles)
+% hObject    handle to GlobalSmoothSize (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of GlobalSmoothSize as text
+%        str2double(get(hObject,'String')) returns contents of GlobalSmoothSize as a double
+global gTraces;
+gTraces.Config.smoothWindowSize = str2double(get(hObject,'String'));
+
+% --- Executes during object creation, after setting all properties.
+function GlobalSmoothSize_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to GlobalSmoothSize (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end

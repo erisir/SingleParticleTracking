@@ -23,13 +23,14 @@ function series = GetTimeSeriesByTraceId(TracesId,noDriftCorrection)
     absYposition = results(:,4);   
     Amplitude =  results(:,8);
     fitError = results(:,9);
+    gTraces.fiducialFrameIndicator = 1:143200;
     if (drift == 1) || noDriftCorrection ==1
         relativePositionX = absXposition  - absXposition(1); 
         relativePositionY = absYposition  - absYposition(1); 
     else
         correctIndex = FindDriftCorrentIndex( gTraces.fiducialFrameIndicator,frameIndicator);
-        relativePositionX = absXposition  - gTraces.driftx(correctIndex);
-        relativePositionY = absYposition  - gTraces.drifty(correctIndex); 
+        relativePositionX = absXposition  - gTraces.smoothDriftx(correctIndex);%gTraces.driftx(correctIndex);
+        relativePositionY = absYposition  - gTraces.smoothDrifty(correctIndex);%gTraces.drifty(correctIndex); 
     end
   
     relativePositionX = relativePositionX-relativePositionX(1);

@@ -1,5 +1,6 @@
 function [driftx,drifty,smoothDriftx,smoothDrifty] = SmoothDriftTraces(Traces,fiducialIndex) 
-    
+    Traces.Config.LastFrame = 143200;
+    Traces.Config.StackSize = 143200;
     frames = Traces.Config.FirstFrame:Traces.Config.LastFrame;
     frames = frames';
     driftx = zeros(Traces.Config.StackSize,1);
@@ -9,7 +10,7 @@ function [driftx,drifty,smoothDriftx,smoothDrifty] = SmoothDriftTraces(Traces,fi
     for i = 1:fiducialNums
         frameIndicator = Traces.molecules(fiducialIndex(i)).Results(:,1);
         xPos   = Traces.molecules(fiducialIndex(i)).Results(:,3);
-        yPos   = Traces.molecules(fiducialIndex(i)).Results(:,4);  
+        yPos   = Traces.molecules(fiducialIndex(i)).Results(:,4);
         xPos = interp1(frameIndicator,xPos,frames(frameIndicator(1)-Traces.Config.FirstFrame+1:frameIndicator(end)-Traces.Config.FirstFrame+1));
         yPos = interp1(frameIndicator,yPos,frames(frameIndicator(1)-Traces.Config.FirstFrame+1:frameIndicator(end)-Traces.Config.FirstFrame+1));
         xPosBefore = [];

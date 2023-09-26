@@ -3,7 +3,7 @@ function [] = InitializeTraces(handles)
 %   
     global gTraces;
     gTraces.Config.smoothWindowSize = 10;%frame
-    gTraces.Config.maxFitError = 7;%nm
+    gTraces.Config.maxFitError = 15;%nm
     gTraces.Config.MinimumMoveDistance = 10;%nm
     gTraces.Config.MaximumMoveDistance = 1000;%nm
   
