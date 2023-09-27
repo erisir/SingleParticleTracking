@@ -102,7 +102,7 @@ function [] = PlotHistgram(handles)
     for i = 1:checkCount
         subplot(row,col,i);
         fitdataTemp =  checkedFitdata{i};
-        HistAndFit(fitdataTemp,checkedFitOption{i},[checkedFitStartAndBinSize{i},220],checkedTargetParameters{i});
+        HistAndFit(fitdataTemp,checkedFitOption{i},[checkedFitStartAndBinSize{i},max(fitdataTemp)],checkedTargetParameters{i});
     end
     
 end
