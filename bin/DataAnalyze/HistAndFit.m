@@ -95,8 +95,7 @@ switch fitOption
         
         yfit = f.a*exp(f.b.*x);
         retFit = 1;%abs(1/f.b);
-        legendStr =  sprintf('exp1: T=%.2f,rs=%.2f',abs(1/f.b),r.rsquare);
-        
+        legendStr =  sprintf('exp1: T=%.2f,rs=%.2f',abs(1/f.b),r.rsquare);       
     case "exp2"
         [f,r]  = fit(x.',y.','exp2');%f(x) =  a1*exp(-((x-b1)/c1)^2) + a2*exp(-((x-b2)/c2)^2)
         yfit = f.a*exp(f.b.*x)+f.c*exp(f.d.*x);

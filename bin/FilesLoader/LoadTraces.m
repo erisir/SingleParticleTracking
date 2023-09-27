@@ -20,6 +20,8 @@ function  LoadTraces(handles)
     gTraces.molecules = molecule;
     gTraces.moleculenum =  size(gTraces.molecules,2);% show in the total tag
     gTraces.Config = config;
+    gTraces.histgramAvailableFitOption = {'gauss1';'exp1';'exp2';'CDF';'poisson'};
+    gTraces.histgramFitOption = {'poisson';'gauss1';'exp1';'exp1';'exp1';'exp1';'exp1';'gauss1'};
     gTraces.Config.Version =  "21.3.8";
  
     LogMsg(handles,["Finish Loading Traces Data  ",file]);

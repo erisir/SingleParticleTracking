@@ -22,7 +22,7 @@ function varargout = Main(varargin)
 
 % Edit the above text to modify the response to help Main
 
-% Last Modified by GUIDE v2.5 02-Apr-2023 15:32:30
+% Last Modified by GUIDE v2.5 26-Sep-2023 22:09:53
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -579,85 +579,12 @@ function ShowStaticTracesInTIRFImage_Callback(hObject, eventdata, handles)
 
 
 
-% --- Executes on button press in HistPlotCheckbox11.
-function HistPlotCheckbox11_Callback(hObject, eventdata, handles)
-% hObject    handle to HistPlotCheckbox11 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of HistPlotCheckbox11
-
-
-% --- Executes on button press in HistPlotCheckbox12.
-function HistPlotCheckbox12_Callback(hObject, eventdata, handles)
-% hObject    handle to HistPlotCheckbox12 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of HistPlotCheckbox12
-
-
-% --- Executes on button press in HistPlotCheckbox13.
-function HistPlotCheckbox13_Callback(hObject, eventdata, handles)
-% hObject    handle to HistPlotCheckbox13 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of HistPlotCheckbox13
-
-
-% --- Executes on button press in HistPlotCheckbox14.
-function HistPlotCheckbox14_Callback(hObject, eventdata, handles)
-% hObject    handle to HistPlotCheckbox14 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of HistPlotCheckbox14
-
-
-% --- Executes on button press in HistPlotCheckbox21.
-function HistPlotCheckbox21_Callback(hObject, eventdata, handles)
-% hObject    handle to HistPlotCheckbox21 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of HistPlotCheckbox21
-
-
-% --- Executes on button press in HistPlotCheckbox22.
-function HistPlotCheckbox22_Callback(hObject, eventdata, handles)
-% hObject    handle to HistPlotCheckbox22 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of HistPlotCheckbox22
-
-
-% --- Executes on button press in HistPlotCheckbox23.
-function HistPlotCheckbox23_Callback(hObject, eventdata, handles)
-% hObject    handle to HistPlotCheckbox23 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of HistPlotCheckbox23
-
-
-% --- Executes on button press in HistPlotCheckbox24.
-function HistPlotCheckbox24_Callback(hObject, eventdata, handles)
-% hObject    handle to HistPlotCheckbox24 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of HistPlotCheckbox24
-
-
 % --------------------------------------------------------------------
 function ShowTraceConfig_Callback(hObject, eventdata, handles)
 % hObject    handle to ShowTraceConfig (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 ShowTraceConfig(handles);
-
 
 
 function GlobalSmoothSize_Callback(hObject, eventdata, handles)
@@ -670,14 +597,85 @@ function GlobalSmoothSize_Callback(hObject, eventdata, handles)
 global gTraces;
 gTraces.Config.smoothWindowSize = str2double(get(hObject,'String'));
 
-% --- Executes during object creation, after setting all properties.
-function GlobalSmoothSize_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to GlobalSmoothSize (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
 
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
+
+% --- Executes when selected object is changed in uibuttongroup_vel.
+function uibuttongroup_vel_SelectionChangedFcn(hObject, eventdata, handles)
+% hObject    handle to the selected object in uibuttongroup_vel 
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global gTraces;
+temp = char(eventdata.NewValue.Tag);
+fitOption = gTraces.histgramAvailableFitOption{1+str2num(temp(end))};
+gTraces.histgramFitOption{1} =fitOption;
+
+% --- Executes when selected object is changed in uibuttongroup_rl.
+function uibuttongroup_rl_SelectionChangedFcn(hObject, eventdata, handles)
+% hObject    handle to the selected object in uibuttongroup_rl 
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global gTraces;
+temp = char(eventdata.NewValue.Tag);
+fitOption = gTraces.histgramAvailableFitOption{1+str2num(temp(end))};
+gTraces.histgramFitOption{2} =fitOption;
+
+% --- Executes when selected object is changed in uibuttongroup_proc_time_seg.
+function uibuttongroup_proc_time_seg_SelectionChangedFcn(hObject, eventdata, handles)
+% hObject    handle to the selected object in uibuttongroup_proc_time_seg 
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global gTraces;
+temp = char(eventdata.NewValue.Tag);
+fitOption = gTraces.histgramAvailableFitOption{1+str2num(temp(end))};
+gTraces.histgramFitOption{3} =fitOption;
+
+% --- Executes when selected object is changed in uibuttongroup_proc_T_tol.
+function uibuttongroup_proc_T_tol_SelectionChangedFcn(hObject, eventdata, handles)
+% hObject    handle to the selected object in uibuttongroup_proc_T_tol 
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global gTraces;
+temp = char(eventdata.NewValue.Tag);
+fitOption = gTraces.histgramAvailableFitOption{1+str2num(temp(end))};
+gTraces.histgramFitOption{4} =fitOption;
+
+% --- Executes when selected object is changed in uibuttongroup_Static_Time.
+function uibuttongroup_Static_Time_SelectionChangedFcn(hObject, eventdata, handles)
+% hObject    handle to the selected object in uibuttongroup_Static_Time 
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global gTraces;
+temp = char(eventdata.NewValue.Tag);
+fitOption = gTraces.histgramAvailableFitOption{1+str2num(temp(end))};
+gTraces.histgramFitOption{5} =fitOption;
+
+% --- Executes when selected object is changed in uibuttongroup_stuck_bm_time.
+function uibuttongroup_stuck_bm_time_SelectionChangedFcn(hObject, eventdata, handles)
+% hObject    handle to the selected object in uibuttongroup_stuck_bm_time 
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global gTraces;
+temp = char(eventdata.NewValue.Tag);
+fitOption = gTraces.histgramAvailableFitOption{1+str2num(temp(end))};
+gTraces.histgramFitOption{6} =fitOption;
+
+% --- Executes when selected object is changed in uibuttongroup_stuck_am_time.
+function uibuttongroup_stuck_am_time_SelectionChangedFcn(hObject, eventdata, handles)
+% hObject    handle to the selected object in uibuttongroup_stuck_am_time 
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global gTraces;
+temp = char(eventdata.NewValue.Tag);
+fitOption = gTraces.histgramAvailableFitOption{1+str2num(temp(end))};
+gTraces.histgramFitOption{7} =fitOption;
+ 
+% --- Executes when selected object is changed in uibuttongroup_fiterror.
+function uibuttongroup_fiterror_SelectionChangedFcn(hObject, eventdata, handles)
+% hObject    handle to the selected object in uibuttongroup_fiterror 
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global gTraces;
+temp = char(eventdata.NewValue.Tag);
+fitOption = gTraces.histgramAvailableFitOption{1+str2num(temp(end))};
+gTraces.histgramFitOption{8} =fitOption;
+

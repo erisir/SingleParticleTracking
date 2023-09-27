@@ -91,7 +91,7 @@ function [] = PlotHistgram(handles)
     fitdata{7} = moveAndStuckParticleDescribe.dwellTimeAfterMovement;
     fitdata{8} = staticParticleDescribe.meanfitError;
     assignin('base','TimeB9',staticParticleDescribe.totalBindDuration);
-    fitOption  = {'poisson';'gauss1';'exp1';'exp1';'exp1';'exp1';'exp1';'gauss1'};
+    fitOption  = gTraces.histgramFitOption;%{'poisson';'gauss1';'exp1';'exp1';'exp1';'exp1';'exp1';'gauss1'};
     fitStartAndBinSize = {[0,0.5]  ;[0,3]    ;[5,4]    ;[10,10];...
                           [0,0.2]  ;[10,5]   ;[10,10]  ;[1,0.5]};
                       
