@@ -4,14 +4,15 @@ function [Index] = FindFiducialIndex()
 global gTraces;
 gTraces.manualDriftCorrection = 0;
 % find those particles that bright for 80% of time
-corelationThreadhold = 0.5;%???
+corelationThreadhold = 0.59;%???
+durationThreadhold = 0.95;
 dwellTime = zeros(1,gTraces.moleculenum);
 frames = gTraces.Config.FirstFrame:gTraces.Config.LastFrame;
 for traceId = 1:gTraces.moleculenum
     dwellTime(traceId) = gTraces.Metadata(traceId).IntensityDwell(1);   
 end
 
-Index = find(dwellTime >= 0.9*gTraces.Config.StackSize);% 80% of time being bright
+Index = find(dwellTime >= durationThreadhold*gTraces.Config.StackSize);% 80% of time being bright
 fiducialDistance = zeros(numel(Index),gTraces.Config.StackSize);
 for i =1:numel(Index)
     series = GetTimeSeriesByTraceId(Index(i));
@@ -30,7 +31,8 @@ end
 
 [sortIncValue,sortIndex] = sort(corelation);
 IndexFound = Index(sortIndex(find(sortIncValue >= corelationThreadhold)));
- 
+findNumber = size(IndexFound,2);
+disp(['Tracking - found: ',num2str(findNumber),' fiducial markers!'])
 if(size(IndexFound,2)> 20) % reduce it to 20 if there is too much,we don't need them all
     IndexFound = Index(sortIndex(end-19:end));
 end

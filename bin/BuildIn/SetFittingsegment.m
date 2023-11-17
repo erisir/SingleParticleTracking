@@ -41,8 +41,8 @@ function  SetFittingsegment(handles,time)
 
     [intensityMd,pathlengthMd,distanceMd] = GetMetadataByTracesId(TraceId);
 
-    set(handles.Intensity_Section_List,'String',intensityMd);
-    set(handles.PathLength_Section_List,'String',pathlengthMd);
+    %set(handles.Intensity_Section_List,'String',intensityMd);
+    %set(handles.PathLength_Section_List,'String',pathlengthMd);
     set(handles.Distance_Section_List,'String',distanceMd);
 end
 
