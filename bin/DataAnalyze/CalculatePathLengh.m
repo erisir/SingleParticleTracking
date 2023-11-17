@@ -14,7 +14,7 @@ function [pathlenght] = CalculatePathLengh(smoothRelativePosX,smoothRelativePosY
     %distance between each frame
     deltaDistance = sqrt(deltaX.*deltaX+deltaY.*deltaY);
     
-    pathlenght = zeros(1,length);
+    pathlenght = zeros(length,1);
     accErr = zeros(1,length);
     for j = 1:(length-1)
         pathlenght(j+1) = sum(deltaDistance(1:j));

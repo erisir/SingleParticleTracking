@@ -22,7 +22,7 @@ function varargout = Main(varargin)
 
 % Edit the above text to modify the response to help Main
 
-% Last Modified by GUIDE v2.5 26-Sep-2023 22:09:53
+% Last Modified by GUIDE v2.5 17-Nov-2023 16:57:47
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -395,7 +395,7 @@ function ExportData_Callback(hObject, eventdata, handles)
 % hObject    handle to ExportData (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-DataExporter(handles);
+DataExporter(handles,'Metadata');
 
 
 
@@ -679,3 +679,11 @@ temp = char(eventdata.NewValue.Tag);
 fitOption = gTraces.histgramAvailableFitOption{1+str2num(temp(end))};
 gTraces.histgramFitOption{8} =fitOption;
 
+
+
+% --------------------------------------------------------------------
+function Export_Current_Traces_Callback(hObject, eventdata, handles)
+% hObject    handle to Export_Current_Traces (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+DataExporter(handles,'CurrentTrace');
