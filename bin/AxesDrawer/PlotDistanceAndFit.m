@@ -22,11 +22,12 @@ function [slopes] = PlotDistanceAndFit(handles,displacement,frameIndicator,dista
     plot(handles.DistanceAxes,str2num(distanceMd(1))*x,y,'b-');
     plot(handles.DistanceAxes,str2num(distanceMd(2))*x,y,'r-');
     
-   
-    
-    currentDisplayFrame = floor(get(handles.Slider_Stack_Index,'Value'));
-    if currentDisplayFrame ~= 0
-        plot(handles.DistanceAxes,currentDisplayFrame*x,y,'k');
+    global gImages;
+    if  isfield(gImages,'rawImagesStack')
+        currentDisplayFrame = floor(get(handles.Slider_Stack_Index,'Value'));
+        if currentDisplayFrame ~= 0
+            plot(handles.DistanceAxes,currentDisplayFrame*x,y,'k');
+        end
     end
     metadata = gTraces.Metadata(TracesId).DistanceStartEndTimePoint;% [1,2,3,4]
     fitStart = find(frameIndicator==metadata(1));

@@ -1,13 +1,19 @@
-function [Index] = FindFiducialIndex()
+function [Index] = FindFiducialIndex(handles)
 % find out which spot is the tetraspack
 % base on the longest lifetime and good fit error
 global gTraces;
+Index = -1;
 gTraces.manualDriftCorrection = 0;
 % find those particles that bright for 80% of time
 corelationThreadhold = 0.59;%???
 durationThreadhold = 0.95;
 dwellTime = zeros(1,gTraces.moleculenum);
 frames = gTraces.Config.FirstFrame:gTraces.Config.LastFrame;
+if ~isfield(gTraces,'Metadata')
+     LogMsg(handles,"You need to Initialize the metadata first!");
+     beep();
+     return;
+end
 for traceId = 1:gTraces.moleculenum
     dwellTime(traceId) = gTraces.Metadata(traceId).IntensityDwell(1);   
 end

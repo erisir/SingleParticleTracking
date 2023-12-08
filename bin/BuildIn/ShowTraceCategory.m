@@ -15,5 +15,9 @@ function ShowTraceCategory(handles,category)
         set(handles.TotalParticleNum,'String',int2str(gTraces.CurrentShowNums));
     end
     set(handles.Current_Trace_Id,'String',num2str(1)); %go to the first 
+    %update plot
+    index = str2double(get(handles.Current_Trace_Id,'String'));
+    updateAxes = 0;
+    PlotTrace(handles,index,updateAxes);
 end
 

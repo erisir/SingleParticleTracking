@@ -90,15 +90,19 @@ function [slopes] = PlotTrace(handles,index,updateAxes)
             s2 = PlotDistanceAndFit(handles,displacement,frameIndicator,distanceMd,TracesId,colorCode,fitError,Amplitude);
             slopes(3) = s2(1)/time_per_frames;
             slopes(4) = s2(2)/time_per_frames;
-
+            res= ylim(handles.DistanceAxes);
+            yMax = floor(res(2));
+            x = double(distanceMd);
+            strx = (x(2)-x(1))/4+x(1);
+            text(handles.DistanceAxes,strx,yMax/2,[num2str(slopes(3),3),' nm/s'],'FontSize',13);
         otherwise
-            if updateAxes ==0
+            if updateAxes ==0 && isfield(gImages,'rawImagesStack')
                 SetSlideIndex(handles,str2num(intensityMd(1)),false);%go to the beginning of the trace when first call
             end
             
-            
-            PlotZoomInImages(handles,frameIndicator,absXposition,absYposition,pixelSize,Amplitude);  
-        
+            if  isfield(gImages,'rawImagesStack')
+                PlotZoomInImages(handles,frameIndicator,absXposition,absYposition,pixelSize,Amplitude);  
+            end
                      
             %set(handles.Slider_Stack_Index,'Value',round(str2num(intensityMd(1))));
             PlotIntensityAxes(handles,absXposition,absYposition,frameIndicator,Amplitude,intensityMd);   

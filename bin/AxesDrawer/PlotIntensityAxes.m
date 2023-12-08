@@ -29,11 +29,12 @@ function   PlotIntensityAxes(handles,absXposition,absYposition,frameIndicator,Am
     plot(handles.IntensityAxes,str2num(intensityMd(2))*x,y,'r','LineWidth',1);
     %plot(handles.IntensityAxes,str2num(intensityMd(3))*x,y,'.b','LineWidth',0.2);
     %plot(handles.IntensityAxes,str2num(intensityMd(4))*x,y,'.r','LineWidth',0.2);
-
-    if currentDisplayFrame ~=0
-        plot(handles.IntensityAxes,currentDisplayFrame*x,y,'-k');
-    end       
-
+   
+    if  isfield(gImages,'rawImagesStack')
+        if currentDisplayFrame ~=0
+            plot(handles.IntensityAxes,currentDisplayFrame*x,y,'-k');
+        end       
+    end
     hold(handles.IntensityAxes,'off');
     grid(handles.IntensityAxes,'on');
 

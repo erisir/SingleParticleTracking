@@ -22,7 +22,7 @@ function varargout = Main(varargin)
 
 % Edit the above text to modify the response to help Main
 
-% Last Modified by GUIDE v2.5 17-Nov-2023 16:57:47
+% Last Modified by GUIDE v2.5 26-Nov-2023 16:40:03
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -438,7 +438,7 @@ function FindReferenceMolecules_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 global gTraces;
-gTraces.Config.fiducialMarkerIndex = FindFiducialIndex();
+gTraces.Config.fiducialMarkerIndex = FindFiducialIndex(handles);
 
 
 % --- Executes on button press in ApplyDriftCorrection.
@@ -687,3 +687,20 @@ function Export_Current_Traces_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 DataExporter(handles,'CurrentTrace');
+
+
+% --- Executes on button press in Discard_Current.
+function Discard_Current_Callback(hObject, eventdata, handles)
+% hObject    handle to Discard_Current (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+SetTraceQuality(handles,'Bad');
+
+index = str2double(get(handles.Current_Trace_Id,'String'));
+updateAxes = 0;
+PlotTrace(handles,index+1,updateAxes);
+
+if handles.System_Debug.Value ==1
+    set(handles.Traces_SetType_List,'Value',3);
+    SetTraceCategory(handles,"Go_Stuck");%setdefault to go stuck
+end

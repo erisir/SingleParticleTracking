@@ -60,8 +60,13 @@ function [] = InitializeTraces(handles)
     gTraces.CurrentShowTpye = 'All';
     gTraces.CurrentShowNums = gTraces.moleculenum ;
     gTraces.CurrentShowIndex = 1:gTraces.moleculenum;
-
-    PlotTrace(handles,1,0);%plot all
+    
+    drift = gTraces.molecules(1).Drift;%from FIESTA ==1 if done drift correction
+    if drift == 1
+        PlotTrace(handles,1,0);%plot all
+    else
+        gTraces.Config.fiducialMarkerIndex = FindFiducialIndex(handles);
+    end
 
     set(handles.Current_Trace_Id,'String',int2str(1));
     set(handles.TotalParticleNum,'String',int2str(gTraces.moleculenum));

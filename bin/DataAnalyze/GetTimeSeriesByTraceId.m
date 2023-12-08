@@ -14,7 +14,7 @@ function series = GetTimeSeriesByTraceId(TracesId,noDriftCorrection)
 
     
     results = gTraces.molecules(TracesId).Results;
-    drift = gTraces.molecules(TracesId).Drift;
+    drift = gTraces.molecules(TracesId).Drift;%from FIESTA ==1 if done drift correction
     %drift = 0;
     frameIndicator = results(:,1);    %time = results(:,2); fps is 1 so time is equal to frame
     
@@ -23,7 +23,7 @@ function series = GetTimeSeriesByTraceId(TracesId,noDriftCorrection)
     absYposition = results(:,4);   
     Amplitude =  results(:,8);
     fitError = results(:,9);
-    gTraces.fiducialFrameIndicator = 1:143200;
+    gTraces.fiducialFrameIndicator = gTraces.Config.FirstFrame:gTraces.Config.LastFrame;
     if (drift == 1) || noDriftCorrection ==1
         relativePositionX = absXposition  - absXposition(1); 
         relativePositionY = absYposition  - absYposition(1); 

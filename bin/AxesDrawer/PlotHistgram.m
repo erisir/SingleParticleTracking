@@ -45,7 +45,6 @@ function [] = PlotHistgram(handles)
             moveAndStuckParticleId = [moveAndStuckParticleId,traceId];
         end
     end
-
     staticParticleDescribe = GetTracesDescribe(staticParticleId,time_per_frames); 
     processiveParticleDescribe = GetTracesDescribe(processiveParticleId,time_per_frames);
     stuckAndMoveParticleDescribe = GetTracesDescribe(stuckAndMoveParticleId,time_per_frames);

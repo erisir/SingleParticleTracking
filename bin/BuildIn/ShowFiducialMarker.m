@@ -3,10 +3,15 @@ function ShowFiducialMarker(handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 global gTraces;
+if ~isfield(gTraces.Config,'fiducialMarkerIndex')
+     LogMsg(handles,"You need to find fiducial marker first!");
+     beep();
+     return;
+end
+figure('name',gTraces.fileName);
 
-figure;
- 
 handle = subplot(1,1,1);
+
 fiducialIndex = gTraces.Config.fiducialMarkerIndex ;
 driftx = gTraces.driftx;
 drifty = gTraces.drifty;
